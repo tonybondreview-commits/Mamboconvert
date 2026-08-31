@@ -1,7 +1,7 @@
 /* Service worker: network-first, così le nuove ricette arrivano da sole quando sei online.
    Offline usa l'ultima versione in cache. Cambia CACHE per forzare la pulizia. */
 const CACHE = 'cucina-mambo-v2';
-const ASSETS = ['./', './index.html', './manifest.webmanifest',
+const ASSETS = ['./', './index.html', './manifest.webmanifest', './logo.png',
   './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
