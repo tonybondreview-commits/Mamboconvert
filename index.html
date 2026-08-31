@@ -281,6 +281,14 @@ ul.ing .n i{font-style:normal;color:var(--muted);font-size:11.5px;margin-left:6p
   border:1px solid rgba(196,107,255,.4)
 }
 .step .n::before{content:counter(s)}
+/* dosi da inserire in questo passaggio */
+.stepadd{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.stepadd .ai{display:inline-flex;gap:6px;align-items:baseline;background:var(--surf2);
+  border:1px solid var(--line);border-radius:10px;padding:7px 11px;font-size:14px;line-height:1.2}
+.stepadd .ai b{color:var(--saffron);font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.stepadd .ai span{color:var(--cream)}
+.steplead{font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);
+  margin:14px 0 2px;font-weight:600}
 /* quadranti — ispirati alla manopola della macchina */
 .dials{
   display:flex;gap:4px;padding:18px 8px 16px;border-top:1px solid var(--line);
@@ -1476,6 +1484,44 @@ function delFoto(target){
 gCam.onchange=e=>{const file=e.target.files[0]; if(!file||!fotoTarget)return;
   imgToDataURL(file,d=>{ if(d){ setFoto(fotoTarget,d); if(deck.classList.contains('open'))buildDeck(); render(); } });};
 
+/* ============================================================
+   DOSI PER PASSAGGIO
+   Assegna ogni ingrediente al primo passaggio che lo nomina,
+   così ogni step mostra "cosa inserire e quanto" (scalato).
+   Match sulla parola principale (prima parola), con fallback
+   alle altre parole; radici di 6 caratteri per gestire
+   singolare/plurale (zucchina/zucchine).
+   ============================================================ */
+function radice(w){ return w.slice(0,Math.min(6,w.length)); }
+function combacia(tok,w){ const a=radice(w),b=radice(tok); return (a.length>=3&&tok.startsWith(a))||(b.length>=3&&w.startsWith(b)); }
+// sinonimi: quando il passaggio usa una parola generica al posto del nome
+const ALIAS=[
+ [/macinat|manzo|maiale|salsicc|vitello|guancial|pancett|polpa/,'carne'],
+ [/spaghett|penne|bucatin|maccheron|linguin|fusill|rigaton|tagliatell|pasta mista|pasta corta/,'pasta'],
+ [/tuorl|albumi/,'uova'],
+];
+function assegnaIng(r){
+  const perStep=r.steps.map(()=>[]);
+  const toks=r.steps.map(s=>norm(s.x).split(/\s+/).filter(Boolean));
+  r.ing.forEach(i=>{
+    const nn=norm(i.n);
+    const words=nn.split(/\s+/).filter(w=>w.length>=3);
+    if(!words.length)return;
+    const alias=ALIAS.filter(([re])=>re.test(nn)).map(([,a])=>a);
+    const cand=[words[0],...words.slice(1).sort((a,b)=>b.length-a.length),...alias];
+    let placed=false;
+    for(const w of cand){ if(placed)break;
+      for(let si=0; si<toks.length; si++){
+        if(toks[si].some(t=>combacia(t,w))){ perStep[si].push(i); placed=true; break; } } }
+  });
+  return perStep;
+}
+function dosiHTML(list,r){
+  if(!list||!list.length)return '';
+  return `<div class="steplead">Aggiungi ora</div><div class="stepadd">${list.map(i=>
+    `<span class="ai"><b>${fmtQ(scala(i,r.porz,S.porz))} ${esc(i.u)}</b><span>${esc(i.n)}</span></span>`).join('')}</div>`;
+}
+
 /* ---------- DETTAGLIO ---------- */
 function vDett(){
   const r=RICETTE.find(x=>x.id===S.open), f=S.porz/r.porz, vol=r.vol*f;
@@ -1510,15 +1556,15 @@ function vDett(){
       <span class="n">${esc(i.n)}${i.s==='s'?'<i>non scala in proporzione</i>':i.s==='f'?'<i>quantità fissa</i>':''}</span>
       <span class="q">${fmtQ(scala(i,r.porz,S.porz))} ${esc(i.u)}</span></li>`).join('')}</ul></div>
     <h3 class="sec">Sul Mambo Touch <span>${r.steps.length} passaggi</span></h3>
-    <div class="steps">${r.steps.map((s,idx)=>{const has=s.t!=='—'||s.v!=='—';const k=stepKey(r.id,idx);const sf=S.stepfoto[k];
+    <div class="steps">${(()=>{const add=assegnaIng(r);return r.steps.map((s,idx)=>{const has=s.t!=='—'||s.v!=='—';const k=stepKey(r.id,idx);const sf=S.stepfoto[k];
       return `<div class="step">
         ${sf?`<img class="stepmedia" src="${esc(sf)}" alt="Passaggio ${idx+1}">`:''}
         <div class="txt"><span class="n"></span><span>${esc(s.x)}${
-        s.a&&s.a!=='—'?`<span class="accpill">${icoAcc(s.a)}${esc(s.a)}</span>`:''}</span></div>
+        s.a&&s.a!=='—'?`<span class="accpill">${icoAcc(s.a)}${esc(s.a)}</span>`:''}${dosiHTML(add[idx],r)}</span></div>
       ${has?quadri(s):''}
       <div class="bimby">Sul Bimby era <b>${esc(s.b)}</b></div>
       <button class="stepcam" data-picstep="${r.id}" data-i="${idx}">${camSvg}${sf?'Cambia foto del passaggio':'Aggiungi foto del passaggio'}</button>
-      </div>`;}).join('')}</div>
+      </div>`;}).join('')})()}</div>
     ${r.note&&r.note.length?`<h3 class="sec">Note di conversione</h3>${r.note.map(n=>`<div class="note">${esc(n)}</div>`).join('')}`:''}
     <div class="acts">
       <button class="btn play" data-deck="${r.id}"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Presentazione</button>
@@ -1568,11 +1614,13 @@ function buildDeck(){
     <ul class="singred">${r.ing.map(i=>`<li><span>${esc(i.n)}</span><span class="sq">${fmtQ(scala(i,r.porz,S.porz))} ${esc(i.u)}</span></li>`).join('')}</ul>
   </div></section>`);
   /* passaggi */
+  const add=assegnaIng(r);
   r.steps.forEach((s,idx)=>{const has=s.t!=='—'||s.v!=='—';
     slides.push(`<section class="slide"><div class="inner">
       <div class="kicker">Passaggio ${idx+1} di ${r.steps.length}</div>
       <div class="sph2">${slideMediaStep(r,idx)}</div>
       <div class="stext">${esc(s.x)}${s.a&&s.a!=='—'?` <span class="accpill">${icoAcc(s.a)}${esc(s.a)}</span>`:''}</div>
+      ${dosiHTML(add[idx],r)}
       ${has?`<div class="sdials">${quadri(s)}</div>`:''}
       ${s.b&&s.b!=='—'?`<div class="sbimby">Sul Bimby: <b>${esc(s.b)}</b></div>`:''}
     </div></section>`);
