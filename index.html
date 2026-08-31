@@ -3100,6 +3100,17 @@ if('serviceWorker' in navigator){
     navigator.serviceWorker.addEventListener('controllerchange',()=>{ if(reloaded)return; reloaded=true; location.reload(); });
   });
 }
+
+/* ---- Statistiche: Cloudflare Web Analytics (privacy-friendly, senza cookie) ----
+   Incolla qui il token dato da Cloudflare (Web Analytics -> Add a site -> Manual).
+   Finché è vuoto non viene caricato nulla. */
+const CF_TOKEN='';
+if(CF_TOKEN){
+  var cfb=document.createElement('script'); cfb.defer=true;
+  cfb.src='https://static.cloudflareinsights.com/beacon.min.js';
+  cfb.setAttribute('data-cf-beacon', JSON.stringify({token:CF_TOKEN}));
+  document.head.appendChild(cfb);
+}
 </script>
 </body>
 </html>
