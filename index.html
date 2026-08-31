@@ -1110,6 +1110,509 @@ const PRIMI2 = [
 RICETTE.push(...PRIMI2);
 
 /* ============================================================
+   BLOCCO 3 — 50 ricette in più (parte A: 1-25)
+   ============================================================ */
+const BLOCCO3 = [
+
+/* ---- BASI E SALSE ---- */
+{id:'brodo-vegetale', nome:'Brodo vegetale', cat:'Basi e salse', tempo:45, porz:4, vol:2000,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['base','vegetariano','leggero'],
+ ing:[{q:150,u:'g',n:'carote'},{q:120,u:'g',n:'sedano'},{q:150,u:'g',n:'cipolla'},{q:100,u:'g',n:'pomodoro'},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'},{q:1500,u:'ml',n:'acqua',b:1},{q:8,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Metti tutte le verdure a pezzi grossi in caraffa con l’acqua e il sale.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Porta a bollore e cuoci dolcemente col cestello capovolto sul coperchio.', t:'40 min', v:'1', T:'100°C', P:'5', a:'MamboMix', b:'40 min · 100°C · vel 1'},
+  {x:'Filtra il brodo. Se lo vuoi più corposo, frulla le verdure e rimettile dentro.', t:'30 sec', v:'6', T:'—', P:'—', a:'Lame', b:'30 sec · vel 6'}],
+ note:['Congelalo negli stampi del ghiaccio: hai il brodo caldo pronto per i risotti, dove serve sempre.']},
+
+{id:'brodo-carne', nome:'Brodo di carne', cat:'Basi e salse', tempo:80, porz:4, vol:2000,
+ caraffa:'Acciaio', acc:['MamboMix'], tag:['base','carne','lento'],
+ ing:[{q:400,u:'g',n:'carne di manzo per brodo'},{q:120,u:'g',n:'carote'},{q:100,u:'g',n:'sedano'},{q:120,u:'g',n:'cipolla'},{q:1500,u:'ml',n:'acqua',b:1},{q:9,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Metti carne, verdure a pezzi, acqua e sale in caraffa.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Cuoci a lungo e dolcemente col cestello capovolto sul coperchio; schiuma se serve.', t:'75 min', v:'1', T:'100°C', P:'4', a:'MamboMix', b:'75 min · 100°C · vel 1'},
+  {x:'Filtra. Tieni la carne per un bollito o per il ripieno dei tortellini.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Se hai SlowMambo, questo è il caso ideale: 95°C a movimento lento per 2 ore rende il brodo più limpido.']},
+
+{id:'dado-vegetale', nome:'Dado vegetale fatto in casa', cat:'Basi e salse', tempo:35, porz:4, vol:700,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['base','conserva','vegetariano'],
+ ing:[{q:300,u:'g',n:'carote'},{q:200,u:'g',n:'sedano'},{q:200,u:'g',n:'cipolla'},{q:100,u:'g',n:'porro'},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'},{q:200,u:'g',n:'sale grosso',s:'s',b:1}],
+ steps:[
+  {x:'Trita tutte le verdure fino a ridurle in poltiglia grossolana.', t:'20 sec', v:'7', T:'—', P:'—', a:'Lame', b:'20 sec · vel 7'},
+  {x:'Aggiungi il sale e cuoci per far evaporare l’acqua, senza dosatore.', t:'25 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'25 min · 100°C · vel 1 antiorario'},
+  {x:'Frulla fine per una crema densa e conservala in vasetto in frigo.', t:'30 sec', v:'9', T:'—', P:'—', a:'Lame', b:'30 sec · vel 9'}],
+ note:['Il sale è il conservante: un cucchiaino di questa crema sostituisce un dado. Dura mesi in frigo.']},
+
+{id:'ragu-bianco', nome:'Ragù bianco', cat:'Basi e salse', tempo:60, porz:4, vol:1300,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['carne','lento'],
+ ing:[{q:100,u:'g',n:'cipolla'},{q:80,u:'g',n:'carota'},{q:80,u:'g',n:'sedano'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:400,u:'g',n:'macinato misto'},{q:120,u:'ml',n:'vino bianco',s:'s'},{q:300,u:'ml',n:'brodo di carne'},{q:1,u:'rametto',n:'rosmarino',s:'s'},{q:6,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita cipolla, carota e sedano.', t:'6 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Unisci l’olio e fai il soffritto.', t:'6 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'5 min · Varoma · vel 1'},
+  {x:'Aggiungi la carne e rosolala bene, deve perdere il colore.', t:'8 min', v:'1', T:'120°C', P:'9', a:'MamboMix', b:'7 min · Varoma · vel 1 antiorario'},
+  {x:'Sfuma con il vino senza dosatore.', t:'5 min', v:'1', T:'120°C', P:'9', a:'MamboMix', b:'5 min · Varoma · vel 1 antiorario'},
+  {x:'Versa il brodo, il rosmarino e il sale e cuoci col cestello capovolto.', t:'35 min', v:'1', T:'98°C', P:'4', a:'MamboMix', b:'35 min · 100°C · vel 1 antiorario'}],
+ note:['Senza pomodoro il rischio di attaccarsi è più alto: tieni sempre un fondo di brodo e potenza bassa.']},
+
+{id:'salsa-tonnata', nome:'Salsa tonnata', cat:'Basi e salse', tempo:6, porz:4, vol:400,
+ caraffa:'Acciaio', acc:['Lame'], tag:['veloce','a freddo','pesce'],
+ ing:[{q:160,u:'g',n:'tonno sott’olio sgocciolato'},{q:2,u:'pz',n:'tuorli sodi'},{q:4,u:'pz',n:'acciughe',s:'s'},{q:20,u:'g',n:'capperi',s:'s'},{q:120,u:'ml',n:'olio di semi',s:'s',b:1},{q:15,u:'ml',n:'succo di limone',s:'s'}],
+ steps:[
+  {x:'Metti tonno, tuorli sodi, acciughe e capperi in caraffa e frulla.', t:'20 sec', v:'7', T:'—', P:'—', a:'Lame', b:'20 sec · vel 7'},
+  {x:'Con le lame in movimento versa l’olio a filo dal foro, poi il limone.', t:'40 sec', v:'5', T:'—', P:'—', a:'Lame', b:'40 sec · vel 5'}],
+ note:['Per il vitello tonnato classico: niente maionese, la cremosità la danno i tuorli sodi e l’olio a filo.']},
+
+/* ---- PRIMI ---- */
+{id:'pasta-fagioli', nome:'Pasta e fagioli', cat:'Primi', tempo:40, porz:4, vol:1800,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['legumi','comfort','vegetariano'],
+ ing:[{q:250,u:'g',n:'pasta mista corta'},{q:400,u:'g',n:'fagioli borlotti lessati'},{q:70,u:'g',n:'cipolla'},{q:60,u:'g',n:'sedano'},{q:60,u:'g',n:'pancetta'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:150,u:'g',n:'passata di pomodoro'},{q:800,u:'ml',n:'brodo vegetale'},{q:1,u:'rametto',n:'rosmarino',s:'s'},{q:6,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita cipolla e sedano.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Aggiungi olio e pancetta e rosola.', t:'5 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'4 min · Varoma · vel 1'},
+  {x:'Unisci metà dei fagioli, la passata e il brodo, poi frulla per dare cremosità.', t:'20 sec', v:'7', T:'—', P:'—', a:'Lame', b:'20 sec · vel 7'},
+  {x:'Rimetti il MamboMix, aggiungi i fagioli interi, il rosmarino e porta a bollore.', t:'8 min', v:'1', T:'100°C', P:'8', a:'MamboMix', b:'8 min · 100°C · vel 1 antiorario'},
+  {x:'Butta la pasta e cuoci il tempo di confezione più 1 minuto.', t:'12 min', v:'1', T:'100°C', P:'9', a:'MamboMix', b:'11 min · 100°C · vel 1 antiorario'}],
+ note:['Frullare metà legumi è il trucco per la cremosità senza panna, come per pasta e ceci.']},
+
+{id:'pasta-broccoli', nome:'Pasta con i broccoli arriminati', cat:'Primi', tempo:30, porz:4, vol:1600,
+ caraffa:'Acciaio', acc:['Lame','MamboMix','Cestello'], tag:['vegetariano','siciliana'],
+ ing:[{q:320,u:'g',n:'pasta corta'},{q:500,u:'g',n:'broccoli'},{q:2,u:'spicchi',n:'aglio',s:'s'},{q:4,u:'pz',n:'acciughe',s:'s'},{q:30,u:'g',n:'uvetta',s:'s'},{q:30,u:'g',n:'pinoli'},{q:50,u:'ml',n:'olio extravergine',s:'s',b:1},{q:1,u:'bustina',n:'zafferano',s:'s'},{q:6,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Metti 900 ml d’acqua in caraffa e i broccoli a cimette nel cestello; cuoci al vapore.', t:'12 min', v:'—', T:'120°C', P:'10', a:'Cestello', b:'12 min · Varoma · vel 1'},
+  {x:'Svuota, metti olio, aglio a fette e acciughe in caraffa e falli sciogliere.', t:'4 min', v:'0', T:'110°C', P:'6', a:'MamboMix', b:'4 min · 100°C · vel 1'},
+  {x:'Unisci broccoli, uvetta, pinoli e zafferano sciolto in poca acqua e amalgama.', t:'4 min', v:'0', T:'100°C', P:'5', a:'MamboMix', b:'4 min · 100°C · vel 1 antiorario'},
+  {x:'Cuoci la pasta a parte e mantecala nel condimento.', t:'2 min', v:'0', T:'100°C', P:'6', a:'MamboMix', b:'2 min · 100°C · vel 1 antiorario'}],
+ note:['“Arriminati” vuol dire mescolati: velocità 0 col MamboMix per non ridurre i broccoli in crema.']},
+
+{id:'orecchiette-cime', nome:'Orecchiette con cime di rapa', cat:'Primi', tempo:25, porz:4, vol:1600,
+ caraffa:'Acciaio', acc:['MamboMix','Cestello'], tag:['vegetariano','pugliese'],
+ ing:[{q:350,u:'g',n:'orecchiette'},{q:600,u:'g',n:'cime di rapa'},{q:3,u:'spicchi',n:'aglio',s:'s'},{q:5,u:'pz',n:'acciughe',s:'s'},{q:50,u:'ml',n:'olio extravergine',s:'s',b:1},{q:1,u:'pizzico',n:'peperoncino',s:'s',b:1},{q:6,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Metti 1 L d’acqua salata in caraffa. Cuoci le cime di rapa nel cestello.', t:'8 min', v:'—', T:'120°C', P:'10', a:'Cestello', b:'8 min · Varoma · vel 1'},
+  {x:'Togli il cestello, butta le orecchiette nell’acqua e cuocile.', t:'12 min', v:'1', T:'100°C', P:'9', a:'MamboMix', b:'12 min · 100°C · vel 1 antiorario'},
+  {x:'A parte scalda olio, aglio a fette, acciughe e peperoncino finché si sciolgono.', t:'4 min', v:'0', T:'110°C', P:'6', a:'—', b:'in padella'},
+  {x:'Scola pasta e cime, condiscile con l’olio alle acciughe.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Cimette e pasta nella stessa acqua: prima le verdure nel cestello, poi la pasta sotto.']},
+
+{id:'zuppa-farro', nome:'Zuppa di farro e verdure', cat:'Primi', tempo:45, porz:4, vol:1900,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','cereali','leggero'],
+ ing:[{q:250,u:'g',n:'farro perlato'},{q:80,u:'g',n:'cipolla'},{q:70,u:'g',n:'carota'},{q:70,u:'g',n:'sedano'},{q:150,u:'g',n:'patate'},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:150,u:'g',n:'pomodori pelati'},{q:1000,u:'ml',n:'brodo vegetale'},{q:7,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita cipolla, carota e sedano.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Aggiungi l’olio e soffriggi.', t:'5 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'4 min · Varoma · vel 1'},
+  {x:'Unisci farro sciacquato, patate a cubetti, pelati, brodo e sale.', t:'35 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'32 min · 100°C · vel 1 antiorario'}],
+ note:['Il farro perlato non va ammollato; quello decorticato sì, altrimenti resta duro.']},
+
+{id:'crema-funghi', nome:'Crema di funghi', cat:'Primi', tempo:30, porz:4, vol:1500,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','vellutata','veloce'],
+ ing:[{q:600,u:'g',n:'funghi champignon'},{q:150,u:'g',n:'patate'},{q:70,u:'g',n:'cipolla'},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:600,u:'ml',n:'brodo vegetale'},{q:50,u:'ml',n:'panna',s:'s'},{q:6,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita la cipolla.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Unisci l’olio e fai appassire.', t:'5 min', v:'1', T:'120°C', P:'7', a:'MamboMix', b:'4 min · Varoma · vel 1'},
+  {x:'Aggiungi funghi a fette, patate a cubi, brodo e sale.', t:'18 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'18 min · 100°C · vel 1 antiorario'},
+  {x:'Monta le lame, aggiungi la panna e frulla fino a crema liscia.', t:'1 min', v:'8', T:'—', P:'—', a:'Lame', b:'1 min · vel 8'}],
+ note:['Tieni da parte qualche fungo saltato per guarnire: la crema frullata è tutta liscia.']},
+
+{id:'crema-piselli', nome:'Crema di piselli e menta', cat:'Primi', tempo:25, porz:4, vol:1400,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','vellutata','primavera'],
+ ing:[{q:600,u:'g',n:'piselli'},{q:120,u:'g',n:'patate'},{q:60,u:'g',n:'scalogno'},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:600,u:'ml',n:'brodo vegetale'},{q:6,u:'foglie',n:'menta',s:'s'},{q:6,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita lo scalogno.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Unisci l’olio e fai appassire.', t:'4 min', v:'1', T:'120°C', P:'7', a:'MamboMix', b:'4 min · Varoma · vel 1'},
+  {x:'Aggiungi piselli, patate, brodo e sale.', t:'15 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'15 min · 100°C · vel 1 antiorario'},
+  {x:'Unisci la menta e frulla fine con le lame.', t:'1 min', v:'8', T:'—', P:'—', a:'Lame', b:'1 min · vel 8'}],
+ note:['La menta va a fine cottura: se cuoce, perde il profumo e vira all’amaro.']},
+
+{id:'passato-verdura', nome:'Passato di verdura', cat:'Primi', tempo:40, porz:4, vol:1900,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','leggero','vellutata'],
+ ing:[{q:200,u:'g',n:'patate'},{q:150,u:'g',n:'carote'},{q:150,u:'g',n:'zucchine'},{q:150,u:'g',n:'fagiolini'},{q:100,u:'g',n:'sedano'},{q:80,u:'g',n:'cipolla'},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:1000,u:'ml',n:'acqua o brodo'},{q:8,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita cipolla e sedano.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Aggiungi l’olio e soffriggi.', t:'5 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'4 min · Varoma · vel 1'},
+  {x:'Unisci tutte le altre verdure a cubi, l’acqua e il sale.', t:'28 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'28 min · 100°C · vel 1 antiorario'},
+  {x:'Frulla fino a passato liscio.', t:'1 min', v:'8', T:'—', P:'—', a:'Lame', b:'1 min · vel 8'}],
+ note:['È il minestrone frullato: stesse verdure, ma tutto passato. Ottimo con crostini.']},
+
+{id:'stracciatella', nome:'Stracciatella in brodo', cat:'Primi', tempo:15, porz:4, vol:1400,
+ caraffa:'Acciaio', acc:['Lame'], tag:['veloce','comfort','romana'],
+ ing:[{q:1200,u:'ml',n:'brodo di carne'},{q:4,u:'pz',n:'uova'},{q:80,u:'g',n:'parmigiano grattugiato'},{q:1,u:'pizzico',n:'noce moscata',s:'s',b:1},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'}],
+ steps:[
+  {x:'Scalda il brodo in caraffa fino a bollore.', t:'12 min', v:'1', T:'100°C', P:'9', a:'Lame', b:'12 min · 100°C · vel 1'},
+  {x:'Sbatti a parte uova, parmigiano e noce moscata. Versali nel brodo bollente dal foro con le lame a bassa velocità.', t:'2 min', v:'3', T:'100°C', P:'8', a:'Lame', b:'2 min · 100°C · vel 3'},
+  {x:'Spegni, unisci il prezzemolo e servi subito.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Il brodo deve bollire quando versi le uova: è così che si formano gli straccetti.']},
+
+{id:'risotto-asparagi', nome:'Risotto agli asparagi', cat:'Primi', tempo:30, porz:4, vol:1500,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','primavera'],
+ ing:[{q:320,u:'g',n:'riso Carnaroli'},{q:400,u:'g',n:'asparagi'},{q:70,u:'g',n:'scalogno'},{q:30,u:'g',n:'burro'},{q:60,u:'ml',n:'vino bianco',s:'s'},{q:850,u:'ml',n:'brodo vegetale caldo'},{q:50,u:'g',n:'parmigiano grattugiato'},{q:30,u:'g',n:'burro per mantecare'},{q:4,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita lo scalogno.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Unisci il burro e fai appassire.', t:'4 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'4 min · 100°C · vel 1'},
+  {x:'Aggiungi le punte e i gambi a rondelle degli asparagi e insaporisci.', t:'5 min', v:'1', T:'110°C', P:'7', a:'MamboMix', b:'5 min · Varoma · vel 1 antiorario'},
+  {x:'Unisci il riso, tosta e sfuma con il vino.', t:'5 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'5 min · 120°C · vel 1 antiorario'},
+  {x:'Versa il brodo caldo e il sale.', t:'15 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'15 min · 100°C · vel 1 antiorario'},
+  {x:'Manteca a fuoco spento con burro freddo e parmigiano.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Tieni da parte qualche punta cotta al vapore per decorare: nel risotto si ammorbidiscono.']},
+
+{id:'risotto-zucca', nome:'Risotto alla zucca', cat:'Primi', tempo:30, porz:4, vol:1500,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','autunno'],
+ ing:[{q:320,u:'g',n:'riso Carnaroli'},{q:400,u:'g',n:'zucca pulita'},{q:70,u:'g',n:'cipolla'},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:60,u:'ml',n:'vino bianco',s:'s'},{q:850,u:'ml',n:'brodo vegetale caldo'},{q:50,u:'g',n:'parmigiano grattugiato'},{q:30,u:'g',n:'burro'},{q:4,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita la cipolla.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Unisci l’olio e fai appassire.', t:'4 min', v:'1', T:'120°C', P:'7', a:'MamboMix', b:'4 min · Varoma · vel 1'},
+  {x:'Aggiungi la zucca a cubetti e falla ammorbidire.', t:'6 min', v:'1', T:'110°C', P:'7', a:'MamboMix', b:'6 min · Varoma · vel 1 antiorario'},
+  {x:'Unisci il riso, tosta e sfuma con il vino.', t:'5 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'5 min · 120°C · vel 1 antiorario'},
+  {x:'Versa il brodo caldo e il sale.', t:'15 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'15 min · 100°C · vel 1 antiorario'},
+  {x:'Manteca a fuoco spento con burro e parmigiano.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['La zucca si spappola e dà cremosità da sola: è un risotto che perdona anche i meno esperti.']},
+
+{id:'risotto-pere-gorgonzola', nome:'Risotto pere e gorgonzola', cat:'Primi', tempo:28, porz:4, vol:1400,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','elegante'],
+ ing:[{q:320,u:'g',n:'riso Carnaroli'},{q:2,u:'pz',n:'pere'},{q:120,u:'g',n:'gorgonzola'},{q:60,u:'g',n:'scalogno'},{q:30,u:'g',n:'burro'},{q:60,u:'ml',n:'vino bianco',s:'s'},{q:800,u:'ml',n:'brodo vegetale caldo'},{q:40,u:'g',n:'parmigiano grattugiato'},{q:4,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita lo scalogno.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Unisci il burro e fai appassire.', t:'4 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'4 min · 100°C · vel 1'},
+  {x:'Aggiungi una pera a cubetti, il riso e tosta, poi sfuma con il vino.', t:'5 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'5 min · 120°C · vel 1 antiorario'},
+  {x:'Versa il brodo caldo e il sale.', t:'15 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'15 min · 100°C · vel 1 antiorario'},
+  {x:'Manteca a fuoco spento con gorgonzola, parmigiano e la seconda pera a dadini.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Una pera cuoce nel risotto e sparisce, l’altra a crudo dà croccantezza e freschezza.']},
+
+{id:'gnocchi-gorgonzola', nome:'Gnocchi al gorgonzola', cat:'Primi', tempo:15, porz:4, vol:1100,
+ caraffa:'Habana', acc:['Lame','MamboMix'], tag:['vegetariano','veloce','comfort'],
+ ing:[{q:800,u:'g',n:'gnocchi di patate'},{q:180,u:'g',n:'gorgonzola'},{q:150,u:'ml',n:'latte'},{q:40,u:'g',n:'parmigiano grattugiato'},{q:20,u:'g',n:'noci',s:'s'},{q:2,u:'g',n:'pepe nero',s:'s',b:1}],
+ steps:[
+  {x:'Metti gorgonzola a pezzi e latte in caraffa e scalda finché è cremoso.', t:'6 min', v:'2', T:'80°C', P:'4', a:'MamboMix', b:'6 min · 80°C · vel 2'},
+  {x:'Aggiungi il parmigiano e il pepe e amalgama.', t:'30 sec', v:'3', T:'70°C', P:'3', a:'MamboMix', b:'30 sec · 70°C · vel 3'},
+  {x:'Lessa gli gnocchi e conditi con la crema e le noci sbriciolate.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Caraffa Habana: il formaggio fuso sull’acciaio si attacca. Sotto gli 85°C la crema resta liscia.']},
+
+{id:'pasta-forno', nome:'Pasta al forno', cat:'Primi', tempo:70, porz:6, vol:1900,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['forno','festivo','comfort'],
+ ing:[{q:400,u:'g',n:'mezze maniche'},{q:700,u:'g',n:'passata di pomodoro'},{q:200,u:'g',n:'macinato di manzo'},{q:200,u:'g',n:'mozzarella'},{q:100,u:'g',n:'parmigiano grattugiato'},{q:70,u:'g',n:'cipolla'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:8,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita la cipolla.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Aggiungi l’olio e il macinato e rosola.', t:'8 min', v:'1', T:'120°C', P:'9', a:'MamboMix', b:'7 min · Varoma · vel 1 antiorario'},
+  {x:'Versa la passata e il sale e cuoci il sugo.', t:'20 min', v:'1', T:'100°C', P:'5', a:'MamboMix', b:'18 min · 100°C · vel 1 antiorario'},
+  {x:'Lessa la pasta molto al dente, condiscila col sugo, mozzarella e parmigiano in teglia.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Inforna fino a gratinare la superficie.', t:'25 min', v:'—', T:'forno 200°C', P:'—', a:'—', b:'forno 200°C · 25 min'}],
+ note:['Dosi su 6 porzioni: è un piatto da teglia. La pasta molto al dente finisce di cuocere in forno.']},
+
+{id:'tortellini-brodo', nome:'Tortellini in brodo', cat:'Primi', tempo:20, porz:4, vol:1500,
+ caraffa:'Acciaio', acc:['MamboMix'], tag:['festivo','emiliana','comfort'],
+ ing:[{q:400,u:'g',n:'tortellini freschi'},{q:1400,u:'ml',n:'brodo di carne'},{q:40,u:'g',n:'parmigiano grattugiato'}],
+ steps:[
+  {x:'Porta il brodo a bollore in caraffa.', t:'12 min', v:'1', T:'100°C', P:'9', a:'MamboMix', b:'12 min · 100°C · vel 1'},
+  {x:'Cala i tortellini e cuocili delicatamente col MamboMix.', t:'5 min', v:'1', T:'100°C', P:'8', a:'MamboMix', b:'5 min · 100°C · vel 1 antiorario'},
+  {x:'Servi con parmigiano a parte.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Mai le lame coi tortellini: li aprirebbero. MamboMix a velocità 1, il minimo che li muove.']},
+
+{id:'polenta', nome:'Polenta', cat:'Primi', tempo:45, porz:4, vol:1700,
+ caraffa:'Acciaio', acc:['Lame','Farfalla'], tag:['vegetariano','comfort','base'],
+ ing:[{q:300,u:'g',n:'farina di mais',b:1},{q:1200,u:'ml',n:'acqua',b:1},{q:10,u:'g',n:'sale',s:'s',b:1},{q:20,u:'ml',n:'olio extravergine',s:'s',b:1}],
+ steps:[
+  {x:'Porta acqua, sale e olio a bollore in caraffa.', t:'10 min', v:'1', T:'100°C', P:'9', a:'Lame', b:'10 min · 100°C · vel 1'},
+  {x:'Versa la farina a pioggia dal foro con le lame in movimento per non fare grumi.', t:'1 min', v:'4', T:'100°C', P:'8', a:'Lame', b:'1 min · 100°C · vel 4'},
+  {x:'Monta la farfalla e cuoci mescolando in continuazione.', t:'30 min', v:'2', T:'100°C', P:'5', a:'Farfalla', b:'30 min · 100°C · vel 1 antiorario'}],
+ note:['La farfalla evita che si attacchi sul fondo, il vero problema della polenta nel robot. Coperchio con dosatore aperto: schizza.']},
+
+/* ---- SECONDI ---- */
+{id:'scaloppine-limone', nome:'Scaloppine al limone', cat:'Secondi', tempo:20, porz:4, vol:1000,
+ caraffa:'Acciaio', acc:['MamboMix'], tag:['carne','veloce'],
+ ing:[{q:600,u:'g',n:'fettine di vitello'},{q:1,u:'pz',n:'limone',s:'s'},{q:30,u:'g',n:'farina 00',b:1},{q:40,u:'g',n:'burro'},{q:150,u:'ml',n:'brodo vegetale'},{q:5,u:'g',n:'sale',s:'s',b:1},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'}],
+ steps:[
+  {x:'Infarina le fettine a mano. Scalda il burro in caraffa.', t:'3 min', v:'0', T:'110°C', P:'8', a:'—', b:'3 min · Varoma · vel 1'},
+  {x:'Aggiungi le fettine e rosolale a coperchio aperto.', t:'6 min', v:'1', T:'120°C', P:'9', a:'MamboMix', b:'6 min · Varoma · vel 1 antiorario'},
+  {x:'Versa succo di limone e brodo, sala e fai restringere: il fondo si lega da solo.', t:'6 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'6 min · 100°C · vel 1 antiorario'},
+  {x:'Prezzemolo a fine cottura, a macchina spenta.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['La farina sulle fettine è ciò che lega la salsa: non saltarla.']},
+
+{id:'scaloppine-marsala', nome:'Scaloppine al marsala', cat:'Secondi', tempo:20, porz:4, vol:1000,
+ caraffa:'Acciaio', acc:['MamboMix'], tag:['carne','veloce','elegante'],
+ ing:[{q:600,u:'g',n:'fettine di vitello'},{q:100,u:'ml',n:'marsala',s:'s'},{q:30,u:'g',n:'farina 00',b:1},{q:40,u:'g',n:'burro'},{q:120,u:'ml',n:'brodo di carne'},{q:5,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Infarina le fettine a mano. Scalda il burro in caraffa.', t:'3 min', v:'0', T:'110°C', P:'8', a:'—', b:'3 min · Varoma · vel 1'},
+  {x:'Aggiungi le fettine e rosolale a coperchio aperto.', t:'6 min', v:'1', T:'120°C', P:'9', a:'MamboMix', b:'6 min · Varoma · vel 1 antiorario'},
+  {x:'Sfuma con il marsala senza dosatore, poi versa il brodo e sala.', t:'7 min', v:'1', T:'110°C', P:'7', a:'MamboMix', b:'7 min · 100°C · vel 1 antiorario'}],
+ note:['Il marsala deve evaporare a coperchio aperto, altrimenti la salsa resta alcolica e dolciastra.']},
+
+{id:'pollo-cacciatora', nome:'Pollo alla cacciatora', cat:'Secondi', tempo:50, porz:4, vol:1600,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['carne','comfort'],
+ ing:[{q:800,u:'g',n:'pollo a pezzi'},{q:80,u:'g',n:'cipolla'},{q:60,u:'g',n:'carota'},{q:60,u:'g',n:'sedano'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:100,u:'ml',n:'vino bianco',s:'s'},{q:400,u:'g',n:'passata di pomodoro'},{q:1,u:'rametto',n:'rosmarino',s:'s'},{q:6,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita cipolla, carota e sedano.', t:'6 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Unisci l’olio e soffriggi.', t:'6 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'5 min · Varoma · vel 1'},
+  {x:'Aggiungi il pollo e rosolalo a coperchio aperto.', t:'10 min', v:'1', T:'120°C', P:'10', a:'MamboMix', b:'10 min · Varoma · vel 1 antiorario'},
+  {x:'Sfuma con il vino, poi unisci passata, rosmarino e sale.', t:'30 min', v:'0', T:'98°C', P:'5', a:'MamboMix', b:'30 min · 100°C · vel 1 antiorario'}],
+ note:['Velocità 0 in umido: il pollo a pezzi con l’osso a velocità 1 si sfalda e si attacca alle pale.']},
+
+{id:'spezzatino-pollo', nome:'Spezzatino di pollo con piselli', cat:'Secondi', tempo:40, porz:4, vol:1500,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['carne','comfort'],
+ ing:[{q:700,u:'g',n:'petto o coscia di pollo a cubi'},{q:250,u:'g',n:'piselli'},{q:80,u:'g',n:'cipolla'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:80,u:'ml',n:'vino bianco',s:'s'},{q:300,u:'g',n:'passata di pomodoro'},{q:200,u:'ml',n:'brodo vegetale'},{q:6,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita la cipolla.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Unisci l’olio e soffriggi.', t:'5 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'4 min · Varoma · vel 1'},
+  {x:'Aggiungi il pollo e rosolalo a coperchio aperto.', t:'8 min', v:'1', T:'120°C', P:'10', a:'MamboMix', b:'8 min · Varoma · vel 1 antiorario'},
+  {x:'Sfuma con il vino, poi unisci passata, brodo e sale.', t:'15 min', v:'0', T:'98°C', P:'5', a:'MamboMix', b:'15 min · 100°C · vel 1 antiorario'},
+  {x:'Aggiungi i piselli e completa.', t:'8 min', v:'0', T:'98°C', P:'5', a:'MamboMix', b:'8 min · 100°C · vel 1 antiorario'}],
+ note:[]}
+];
+
+/* ---- BLOCCO 3 parte B: 26 ricette ---- */
+const BLOCCO4 = [
+{id:'arrosto-vitello', nome:'Arrosto di vitello', cat:'Secondi', tempo:70, porz:4, vol:1400,
+ caraffa:'Acciaio', acc:['MamboMix','Lame'], tag:['carne','festivo','lento'],
+ ing:[{q:800,u:'g',n:'girello di vitello'},{q:80,u:'g',n:'cipolla'},{q:60,u:'g',n:'carota'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:120,u:'ml',n:'vino bianco',s:'s'},{q:400,u:'ml',n:'brodo di carne'},{q:1,u:'rametto',n:'rosmarino',s:'s'},{q:6,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Metti olio, cipolla e carota a pezzi in caraffa e scalda.', t:'4 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'4 min · Varoma · vel 1'},
+  {x:'Aggiungi la carne legata e rosolala su tutti i lati a coperchio aperto.', t:'12 min', v:'1', T:'120°C', P:'10', a:'MamboMix', b:'12 min · Varoma · vel 1 antiorario'},
+  {x:'Sfuma con il vino, poi versa brodo, rosmarino e sale.', t:'45 min', v:'0', T:'98°C', P:'4', a:'MamboMix', b:'45 min · 100°C · vel 1 antiorario'},
+  {x:'Togli la carne, falla riposare e affettala. Frulla il fondo per la salsa.', t:'20 sec', v:'6', T:'—', P:'—', a:'Lame', b:'20 sec · vel 6'}],
+ note:['Affetta l’arrosto solo dopo 10 minuti di riposo, freddo: a caldo si sbriciola.']},
+
+{id:'brasato-barolo', nome:'Brasato al Barolo', cat:'Secondi', tempo:150, porz:4, vol:1600,
+ caraffa:'Acciaio', acc:['MamboMix','Lame'], tag:['carne','festivo','lento'],
+ ing:[{q:900,u:'g',n:'cappello del prete di manzo'},{q:100,u:'g',n:'cipolla'},{q:80,u:'g',n:'carota'},{q:80,u:'g',n:'sedano'},{q:500,u:'ml',n:'vino Barolo',s:'s'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:300,u:'ml',n:'brodo di carne'},{q:2,u:'foglie',n:'alloro',s:'s'},{q:7,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Marina la carne nel vino con le verdure a pezzi per almeno 4 ore.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Scola e tieni il vino. Scalda l’olio e rosola la carne a coperchio aperto.', t:'12 min', v:'1', T:'120°C', P:'10', a:'MamboMix', b:'12 min · Varoma · vel 1 antiorario'},
+  {x:'Aggiungi le verdure della marinata e insaporisci.', t:'6 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'6 min · Varoma · vel 1 antiorario'},
+  {x:'Versa il vino e fallo evaporare senza dosatore.', t:'10 min', v:'0', T:'110°C', P:'7', a:'MamboMix', b:'10 min · Varoma · vel 1 antiorario'},
+  {x:'Unisci brodo, alloro e sale e brasa a lungo e dolcemente.', t:'110 min', v:'0', T:'97°C', P:'3', a:'MamboMix', b:'110 min · 100°C · vel 1 antiorario'},
+  {x:'Togli la carne, frulla il fondo con le verdure e riducilo a salsa.', t:'30 sec', v:'7', T:'—', P:'—', a:'Lame', b:'30 sec · vel 7'}],
+ note:['È la ricetta da SlowMambo per eccellenza: se ce l’hai, l’ultima fase a 95°C a movimento lento è perfetta.','Potenza 3: sopra, il brasato bolle e la carne diventa stopposa invece che fondente.']},
+
+{id:'polpettone', nome:'Polpettone in umido', cat:'Secondi', tempo:55, porz:4, vol:1500,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['carne','comfort'],
+ ing:[{q:500,u:'g',n:'macinato misto'},{q:80,u:'g',n:'pane raffermo'},{q:80,u:'ml',n:'latte',s:'s'},{q:1,u:'pz',n:'uovo',s:'s'},{q:50,u:'g',n:'parmigiano grattugiato'},{q:400,u:'g',n:'passata di pomodoro'},{q:70,u:'g',n:'cipolla'},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:6,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita il pane con il parmigiano.', t:'10 sec', v:'8', T:'—', P:'—', a:'Lame', b:'10 sec · vel 7'},
+  {x:'Aggiungi carne, uovo, latte e sale e amalgama. Togli e forma un polpettone sodo.', t:'20 sec', v:'4', T:'—', P:'—', a:'Lame', b:'20 sec · vel 4 antiorario'},
+  {x:'Nella caraffa pulita trita la cipolla.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Unisci l’olio e soffriggi, poi versa la passata e il sale.', t:'6 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'6 min · Varoma · vel 1'},
+  {x:'Adagia il polpettone nel sugo e cuoci coperto, girandolo a metà.', t:'35 min', v:'0', T:'98°C', P:'5', a:'MamboMix', b:'35 min · 100°C · vel 1 antiorario'}],
+ note:['Velocità 0 e nessuna rotazione: il polpettone resta intero. Giralo a mano scuotendo la caraffa.']},
+
+{id:'frittata-zucchine', nome:'Frittata di zucchine al forno', cat:'Secondi', tempo:35, porz:4, vol:1000,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','forno','veloce'],
+ ing:[{q:6,u:'pz',n:'uova'},{q:400,u:'g',n:'zucchine'},{q:70,u:'g',n:'cipolla'},{q:60,u:'g',n:'parmigiano grattugiato'},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:5,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita la cipolla.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Unisci l’olio e le zucchine a rondelle e falle appassire.', t:'8 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'8 min · Varoma · vel 1 antiorario'},
+  {x:'Fai intiepidire, aggiungi uova, parmigiano e sale e amalgama.', t:'20 sec', v:'4', T:'—', P:'—', a:'Lame', b:'20 sec · vel 4'},
+  {x:'Versa in teglia foderata e cuoci in forno finché è dorata.', t:'18 min', v:'—', T:'forno 190°C', P:'—', a:'—', b:'forno 190°C · 18 min'}],
+ note:['Le zucchine vanno intiepidite prima delle uova, altrimenti le cuociono e la frittata impazzisce.']},
+
+{id:'parmigiana', nome:'Parmigiana di melanzane', cat:'Secondi', tempo:80, porz:6, vol:1900,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','forno','festivo'],
+ ing:[{q:900,u:'g',n:'melanzane'},{q:800,u:'g',n:'passata di pomodoro'},{q:250,u:'g',n:'mozzarella'},{q:100,u:'g',n:'parmigiano grattugiato'},{q:70,u:'g',n:'cipolla'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:8,u:'foglie',n:'basilico',s:'s'},{q:7,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Friggi o cuoci in forno le melanzane a fette, separatamente.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Trita la cipolla.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Unisci l’olio e soffriggi, poi versa passata, basilico e sale e cuoci il sugo.', t:'20 min', v:'1', T:'100°C', P:'5', a:'MamboMix', b:'20 min · 100°C · vel 1 antiorario'},
+  {x:'Alterna in teglia melanzane, sugo, mozzarella e parmigiano.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Inforna fino a gratinare.', t:'30 min', v:'—', T:'forno 190°C', P:'—', a:'—', b:'forno 190°C · 30 min'}],
+ note:['Le melanzane fritte in caraffa non si possono fare: vanno cotte a parte, poi solo il sugo nel Mambo.']},
+
+{id:'peperoni-ripieni', nome:'Peperoni ripieni', cat:'Secondi', tempo:60, porz:4, vol:1400,
+ caraffa:'Acciaio', acc:['Lame'], tag:['forno','comfort'],
+ ing:[{q:4,u:'pz',n:'peperoni'},{q:150,u:'g',n:'carne macinata'},{q:120,u:'g',n:'pane raffermo'},{q:60,u:'ml',n:'latte',s:'s'},{q:1,u:'pz',n:'uovo',s:'s'},{q:60,u:'g',n:'parmigiano grattugiato'},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:5,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita il pane con il parmigiano e il prezzemolo.', t:'10 sec', v:'8', T:'—', P:'—', a:'Lame', b:'10 sec · vel 7'},
+  {x:'Aggiungi carne, uovo, latte e sale e amalgama il ripieno.', t:'20 sec', v:'4', T:'—', P:'—', a:'Lame', b:'20 sec · vel 4'},
+  {x:'Riempi i peperoni svuotati, un filo d’olio, e cuoci in forno.', t:'45 min', v:'—', T:'forno 180°C', P:'—', a:'—', b:'forno 180°C · 45 min'}],
+ note:['Copri con alluminio i primi 30 minuti, poi scopri per dorare: così il peperone si ammorbidisce dentro.']},
+
+{id:'seppie-piselli', nome:'Seppie con piselli', cat:'Secondi', tempo:45, porz:4, vol:1500,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['pesce','comfort'],
+ ing:[{q:700,u:'g',n:'seppie pulite'},{q:300,u:'g',n:'piselli'},{q:2,u:'spicchi',n:'aglio',s:'s'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:80,u:'ml',n:'vino bianco',s:'s'},{q:300,u:'g',n:'passata di pomodoro'},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'},{q:6,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Metti olio e aglio a fette in caraffa e imbiondisci.', t:'3 min', v:'0', T:'110°C', P:'7', a:'MamboMix', b:'3 min · 120°C · vel 1'},
+  {x:'Aggiungi le seppie ad anelli e sfuma con il vino.', t:'6 min', v:'0', T:'120°C', P:'8', a:'MamboMix', b:'6 min · Varoma · vel 1 antiorario'},
+  {x:'Unisci passata e sale e cuoci coperto.', t:'25 min', v:'0', T:'98°C', P:'5', a:'MamboMix', b:'25 min · 100°C · vel 1 antiorario'},
+  {x:'Aggiungi i piselli e completa, poi prezzemolo a crudo.', t:'10 min', v:'0', T:'98°C', P:'5', a:'MamboMix', b:'10 min · 100°C · vel 1 antiorario'}],
+ note:['Le seppie o cuociono pochi minuti o molto a lungo: nel mezzo restano gommose. Qui vanno sul lungo.']},
+
+{id:'cozze-marinara', nome:'Impepata di cozze', cat:'Secondi', tempo:20, porz:4, vol:1400,
+ caraffa:'Acciaio', acc:['MamboMix'], tag:['pesce','veloce','napoletana'],
+ ing:[{q:1500,u:'g',n:'cozze'},{q:2,u:'spicchi',n:'aglio',s:'s'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:80,u:'ml',n:'vino bianco',s:'s'},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'},{q:3,u:'g',n:'pepe nero',s:'s',b:1}],
+ steps:[
+  {x:'Pulisci e spazzola bene le cozze sotto acqua corrente.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Metti olio e aglio a fette in caraffa e imbiondisci.', t:'3 min', v:'0', T:'110°C', P:'7', a:'MamboMix', b:'3 min · 120°C · vel 1'},
+  {x:'Aggiungi le cozze, il vino e il pepe, coperchio chiuso: si aprono in pochi minuti.', t:'7 min', v:'0', T:'120°C', P:'9', a:'MamboMix', b:'7 min · Varoma · vel 1 antiorario'},
+  {x:'Prezzemolo a crudo e servi con il loro liquido filtrato.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Velocità 0 sempre: i gusci a velocità 1 si spaccano. 1,5 kg riempie la caraffa, oltre 6 persone fai due giri.']},
+
+{id:'orata-acqua-pazza', nome:'Orata all’acqua pazza', cat:'Secondi', tempo:30, porz:4, vol:1300,
+ caraffa:'Acciaio', acc:['MamboMix'], tag:['pesce','leggero'],
+ ing:[{q:2,u:'pz',n:'orate'},{q:250,u:'g',n:'pomodorini'},{q:2,u:'spicchi',n:'aglio',s:'s'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:80,u:'ml',n:'vino bianco',s:'s'},{q:200,u:'ml',n:'acqua',s:'f',b:1},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'},{q:5,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Metti olio e aglio in caraffa e imbiondisci.', t:'3 min', v:'0', T:'110°C', P:'7', a:'MamboMix', b:'3 min · 120°C · vel 1'},
+  {x:'Aggiungi i pomodorini a metà, il vino, l’acqua e il sale e porta a bollore.', t:'6 min', v:'0', T:'110°C', P:'8', a:'MamboMix', b:'6 min · Varoma · vel 1 antiorario'},
+  {x:'Adagia le orate pulite e cuoci coperto, senza mescolare.', t:'16 min', v:'0', T:'100°C', P:'6', a:'MamboMix', b:'16 min · 100°C · vel 1 antiorario'},
+  {x:'Prezzemolo a crudo e servi con il fondo.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Velocità 0 e niente pale contro il pesce: cuoce nel vapore del suo fondo, resta intero.']},
+
+{id:'platessa-vapore', nome:'Filetti di platessa al vapore', cat:'Secondi', tempo:25, porz:4, vol:800,
+ caraffa:'Acciaio', acc:['Vaporiera'], tag:['pesce','leggero','vapore','veloce'],
+ ing:[{q:600,u:'g',n:'filetti di platessa'},{q:400,u:'g',n:'patate'},{q:900,u:'ml',n:'acqua',s:'f',b:1},{q:1,u:'pz',n:'limone',s:'s'},{q:20,u:'ml',n:'olio extravergine',s:'s',b:1},{q:5,u:'g',n:'sale',s:'s',b:1},{q:2,u:'rametti',n:'timo',s:'s'}],
+ steps:[
+  {x:'Versa l’acqua in caraffa. Metti le patate a fette nel piano inferiore della vaporiera.', t:'15 min', v:'—', T:'120°C', P:'10', a:'Vaporiera', b:'15 min · Varoma · vel 1'},
+  {x:'Aggiungi i filetti salati con limone e timo nel piano superiore e completa.', t:'8 min', v:'—', T:'120°C', P:'10', a:'Vaporiera', b:'8 min · Varoma · vel 1'},
+  {x:'Condisci con olio a crudo.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['La platessa è sottile: 8 minuti bastano. Se la lasci troppo si sfalda tutta.']},
+
+/* ---- CONTORNI ---- */
+{id:'caponata', nome:'Caponata siciliana', cat:'Contorni', tempo:45, porz:4, vol:1500,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','siciliana','estivo'],
+ ing:[{q:600,u:'g',n:'melanzane'},{q:150,u:'g',n:'sedano'},{q:150,u:'g',n:'cipolla'},{q:200,u:'g',n:'passata di pomodoro'},{q:60,u:'g',n:'olive verdi'},{q:30,u:'g',n:'capperi',s:'s'},{q:40,u:'ml',n:'aceto',s:'s',b:1},{q:20,u:'g',n:'zucchero',s:'s',b:1},{q:50,u:'ml',n:'olio extravergine',s:'s',b:1},{q:5,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Friggi o cuoci a parte le melanzane a cubi.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Trita la cipolla.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Unisci l’olio e il sedano a pezzetti e falli appassire.', t:'6 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'6 min · Varoma · vel 1 antiorario'},
+  {x:'Aggiungi passata, olive, capperi e sale e cuoci.', t:'15 min', v:'0', T:'100°C', P:'5', a:'MamboMix', b:'15 min · 100°C · vel 1 antiorario'},
+  {x:'Unisci le melanzane, poi sfuma con aceto e zucchero (agrodolce) e fai evaporare.', t:'4 min', v:'0', T:'110°C', P:'7', a:'MamboMix', b:'4 min · Varoma · vel 1 antiorario'}],
+ note:['La caponata è meglio il giorno dopo: l’agrodolce ha bisogno di riposare per amalgamarsi.']},
+
+{id:'patate-forno', nome:'Patate al forno', cat:'Contorni', tempo:50, porz:4, vol:1200,
+ caraffa:'Acciaio', acc:['Cestello'], tag:['vegetariano','forno','comfort'],
+ ing:[{q:900,u:'g',n:'patate'},{q:900,u:'ml',n:'acqua',s:'f',b:1},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:1,u:'rametto',n:'rosmarino',s:'s'},{q:6,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Metti l’acqua in caraffa e le patate a spicchi nel cestello; sbollentale al vapore.', t:'10 min', v:'—', T:'120°C', P:'10', a:'Cestello', b:'10 min · Varoma · vel 1'},
+  {x:'Condisci le patate con olio, rosmarino e sale in una teglia.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Cuoci in forno ben caldo, girandole a metà, fino a doratura.', t:'35 min', v:'—', T:'forno 210°C', P:'—', a:'—', b:'forno 210°C · 35 min'}],
+ note:['La sbollentata al vapore è il segreto delle patate croccanti fuori e morbide dentro.']},
+
+{id:'fagiolini-olio', nome:'Fagiolini all’olio e limone', cat:'Contorni', tempo:20, porz:4, vol:700,
+ caraffa:'Acciaio', acc:['Vaporiera'], tag:['vegetariano','leggero','vapore','veloce'],
+ ing:[{q:600,u:'g',n:'fagiolini'},{q:900,u:'ml',n:'acqua',s:'f',b:1},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:1,u:'pz',n:'limone',s:'s'},{q:5,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Metti l’acqua in caraffa e i fagiolini nel piano della vaporiera; cuoci al vapore.', t:'16 min', v:'—', T:'120°C', P:'10', a:'Vaporiera', b:'16 min · Varoma · vel 1'},
+  {x:'Condisci a crudo con olio, succo di limone e sale.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Al vapore restano verdi e sodi; lessati in acqua perdono colore e sali.']},
+
+{id:'funghi-trifolati', nome:'Funghi trifolati', cat:'Contorni', tempo:20, porz:4, vol:900,
+ caraffa:'Acciaio', acc:['MamboMix'], tag:['vegetariano','veloce'],
+ ing:[{q:600,u:'g',n:'funghi champignon'},{q:2,u:'spicchi',n:'aglio',s:'s'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'},{q:5,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Metti olio e aglio a fette in caraffa e imbiondisci.', t:'3 min', v:'0', T:'110°C', P:'7', a:'MamboMix', b:'3 min · 120°C · vel 1'},
+  {x:'Aggiungi i funghi a fette e il sale e saltali a coperchio aperto per far uscire l’acqua.', t:'14 min', v:'1', T:'120°C', P:'9', a:'MamboMix', b:'14 min · Varoma · vel 1 antiorario'},
+  {x:'Prezzemolo a crudo a fine cottura.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['A coperchio aperto e potenza alta: i funghi devono asciugarsi, non lessare nella loro acqua.']},
+
+{id:'finocchi-gratinati', nome:'Finocchi gratinati', cat:'Contorni', tempo:40, porz:4, vol:1200,
+ caraffa:'Acciaio', acc:['Vaporiera'], tag:['vegetariano','forno'],
+ ing:[{q:800,u:'g',n:'finocchi'},{q:900,u:'ml',n:'acqua',s:'f',b:1},{q:80,u:'g',n:'parmigiano grattugiato'},{q:30,u:'g',n:'burro'},{q:1,u:'pizzico',n:'noce moscata',s:'s',b:1},{q:4,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Metti l’acqua in caraffa e i finocchi a spicchi nella vaporiera; cuoci al vapore.', t:'18 min', v:'—', T:'120°C', P:'10', a:'Vaporiera', b:'18 min · Varoma · vel 1'},
+  {x:'Disponili in teglia con fiocchi di burro, parmigiano, noce moscata e sale.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Gratina in forno finché la superficie è dorata.', t:'15 min', v:'—', T:'forno 200°C', P:'—', a:'—', b:'forno 200°C · 15 min'}],
+ note:['I finocchi al vapore perdono meno sapore che lessati e non si inzuppano d’acqua.']},
+
+{id:'cipolline-agrodolce', nome:'Cipolline in agrodolce', cat:'Contorni', tempo:35, porz:4, vol:900,
+ caraffa:'Acciaio', acc:['MamboMix'], tag:['vegetariano','conserva'],
+ ing:[{q:600,u:'g',n:'cipolline borettane'},{q:30,u:'g',n:'burro'},{q:50,u:'ml',n:'aceto balsamico',s:'s',b:1},{q:30,u:'g',n:'zucchero',s:'s',b:1},{q:100,u:'ml',n:'acqua',b:1},{q:4,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Sbuccia le cipolline. Sciogli il burro in caraffa.', t:'2 min', v:'1', T:'110°C', P:'6', a:'MamboMix', b:'2 min · 100°C · vel 1'},
+  {x:'Aggiungi cipolline, zucchero, aceto, acqua e sale.', t:'25 min', v:'0', T:'100°C', P:'5', a:'MamboMix', b:'25 min · 100°C · vel 1 antiorario'},
+  {x:'Scopri e fai restringere fino a glassare.', t:'5 min', v:'0', T:'110°C', P:'7', a:'MamboMix', b:'5 min · Varoma · vel 1 antiorario'}],
+ note:['Velocità 0: le cipolline devono restare intere. La glassa si forma solo scoprendo alla fine.']},
+
+/* ---- DOLCI ---- */
+{id:'pasta-frolla', nome:'Pasta frolla', cat:'Dolci', tempo:8, porz:8, vol:900,
+ caraffa:'Acciaio', acc:['Lame'], tag:['base','dolce','forno'],
+ ing:[{q:300,u:'g',n:'farina 00',b:1},{q:150,u:'g',n:'burro freddo'},{q:120,u:'g',n:'zucchero',b:1},{q:1,u:'pz',n:'uovo',s:'s'},{q:1,u:'pz',n:'tuorlo',s:'s'},{q:1,u:'pz',n:'scorza di limone',s:'s'}],
+ steps:[
+  {x:'Metti farina, zucchero, scorza e burro freddo a cubetti e frulla a sabbia.', t:'15 sec', v:'6', T:'—', P:'—', a:'Lame', b:'15 sec · vel 6'},
+  {x:'Aggiungi uovo e tuorlo e frulla giusto finché si compatta.', t:'15 sec', v:'5', T:'—', P:'—', a:'Lame', b:'15 sec · vel 5'},
+  {x:'Compatta senza lavorarla, avvolgi nella pellicola e riposo in frigo 30 minuti.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Burro freddo e lavorazione lampo: se scaldi la frolla col motore, in forno perde la forma.']},
+
+{id:'ciambellone', nome:'Ciambellone soffice', cat:'Dolci', tempo:15, porz:8, vol:1300,
+ caraffa:'Acciaio', acc:['Lame'], tag:['dolce','forno','colazione'],
+ ing:[{q:3,u:'pz',n:'uova'},{q:250,u:'g',n:'zucchero',b:1},{q:300,u:'g',n:'farina 00',b:1},{q:120,u:'ml',n:'olio di semi',s:'s',b:1},{q:120,u:'ml',n:'latte',s:'s'},{q:16,u:'g',n:'lievito per dolci',s:'s'},{q:1,u:'pz',n:'scorza di limone',s:'s'}],
+ steps:[
+  {x:'Monta uova e zucchero.', t:'2 min', v:'5', T:'—', P:'—', a:'Lame', b:'2 min · vel 4'},
+  {x:'Aggiungi olio, latte e scorza.', t:'20 sec', v:'4', T:'—', P:'—', a:'Lame', b:'20 sec · vel 4'},
+  {x:'Unisci farina e lievito e amalgama senza insistere.', t:'30 sec', v:'4', T:'—', P:'—', a:'Lame', b:'30 sec · vel 4'},
+  {x:'Versa nello stampo a ciambella e inforna.', t:'40 min', v:'—', T:'forno 170°C', P:'—', a:'—', b:'forno 175°C · 40 min'}],
+ note:['Amalgama la farina il minimo indispensabile: troppo lavoro sviluppa glutine e indurisce.']},
+
+{id:'pan-di-spagna', nome:'Pan di Spagna', cat:'Dolci', tempo:20, porz:8, vol:1200,
+ caraffa:'Acciaio', acc:['Farfalla'], tag:['base','dolce','forno'],
+ ing:[{q:4,u:'pz',n:'uova'},{q:120,u:'g',n:'zucchero',b:1},{q:120,u:'g',n:'farina 00',b:1},{q:30,u:'g',n:'amido di mais',b:1},{q:1,u:'pz',n:'scorza di limone',s:'s'}],
+ steps:[
+  {x:'Con la farfalla monta a lungo uova, zucchero e scorza fino a spuma chiara e gonfia.', t:'8 min', v:'4', T:'—', P:'—', a:'Farfalla', b:'8 min · vel 3,5'},
+  {x:'Setaccia farina e amido e incorporali a mano, dal basso verso l’alto, senza smontare.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Versa nello stampo e inforna senza mai aprire il forno.', t:'30 min', v:'—', T:'forno 170°C', P:'—', a:'—', b:'forno 170°C · 30 min'}],
+ note:['Niente lievito: gonfia solo grazie all’aria delle uova montate. Per questo si monta 8 minuti e si incorpora la farina a mano.']},
+
+{id:'plumcake', nome:'Plumcake allo yogurt', cat:'Dolci', tempo:15, porz:8, vol:1200,
+ caraffa:'Acciaio', acc:['Lame'], tag:['dolce','forno','colazione'],
+ ing:[{q:3,u:'pz',n:'uova'},{q:180,u:'g',n:'zucchero',b:1},{q:125,u:'g',n:'yogurt bianco'},{q:280,u:'g',n:'farina 00',b:1},{q:100,u:'ml',n:'olio di semi',s:'s',b:1},{q:16,u:'g',n:'lievito per dolci',s:'s'},{q:80,u:'g',n:'gocce di cioccolato',s:'s'}],
+ steps:[
+  {x:'Monta uova e zucchero.', t:'2 min', v:'5', T:'—', P:'—', a:'Lame', b:'2 min · vel 4'},
+  {x:'Aggiungi yogurt e olio.', t:'20 sec', v:'4', T:'—', P:'—', a:'Lame', b:'20 sec · vel 4'},
+  {x:'Unisci farina e lievito e amalgama, poi incorpora le gocce a mano.', t:'30 sec', v:'4', T:'—', P:'—', a:'Lame', b:'30 sec · vel 4'},
+  {x:'Versa nello stampo da plumcake e inforna.', t:'45 min', v:'—', T:'forno 170°C', P:'—', a:'—', b:'forno 175°C · 45 min'}],
+ note:['Infarina le gocce di cioccolato prima di unirle: così non affondano tutte sul fondo.']},
+
+{id:'budino-cioccolato', nome:'Budino al cioccolato', cat:'Dolci', tempo:12, porz:4, vol:800,
+ caraffa:'Habana', acc:['Lame'], tag:['dolce','veloce','a freddo'],
+ ing:[{q:500,u:'ml',n:'latte'},{q:100,u:'g',n:'cioccolato fondente'},{q:60,u:'g',n:'zucchero',b:1},{q:40,u:'g',n:'amido di mais',b:1},{q:15,u:'g',n:'cacao amaro',b:1}],
+ steps:[
+  {x:'Trita il cioccolato.', t:'10 sec', v:'8', T:'—', P:'—', a:'Lame', b:'10 sec · vel 7'},
+  {x:'Aggiungi latte, zucchero, amido e cacao e mescola a freddo.', t:'15 sec', v:'5', T:'—', P:'—', a:'Lame', b:'15 sec · vel 5'},
+  {x:'Cuoci fino ad addensare.', t:'8 min', v:'4', T:'90°C', P:'4', a:'Lame', b:'8 min · 90°C · vel 4'},
+  {x:'Versa negli stampini e lascia rassodare in frigo almeno 3 ore.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Caraffa Habana: latte, zucchero e cacao sull’acciaio si attaccano al primo grado di troppo.']},
+
+{id:'zabaione', nome:'Zabaione', cat:'Dolci', tempo:12, porz:4, vol:600,
+ caraffa:'Habana', acc:['Farfalla'], tag:['dolce','a freddo'],
+ ing:[{q:4,u:'pz',n:'tuorli'},{q:80,u:'g',n:'zucchero',b:1},{q:80,u:'ml',n:'marsala',s:'s'}],
+ steps:[
+  {x:'Con la farfalla monta tuorli e zucchero fino a spuma chiara.', t:'2 min', v:'4', T:'—', P:'—', a:'Farfalla', b:'2 min · vel 3'},
+  {x:'Aggiungi il marsala e cuoci dolcemente montando, senza far bollire.', t:'6 min', v:'4', T:'70°C', P:'3', a:'Farfalla', b:'6 min · 70°C · vel 3'}],
+ note:['Sopra i 75°C il tuorlo frigge: 70°C con potenza 3 è il punto in cui monta e cuoce insieme.']},
+
+{id:'lemon-curd', nome:'Crema al limone (lemon curd)', cat:'Dolci', tempo:12, porz:4, vol:600,
+ caraffa:'Habana', acc:['Lame'], tag:['dolce','base','a freddo'],
+ ing:[{q:3,u:'pz',n:'uova'},{q:150,u:'g',n:'zucchero',b:1},{q:120,u:'ml',n:'succo di limone',s:'s'},{q:1,u:'pz',n:'scorza di limone',s:'s'},{q:80,u:'g',n:'burro'}],
+ steps:[
+  {x:'Metti uova, zucchero, succo e scorza in caraffa e mescola.', t:'20 sec', v:'5', T:'—', P:'—', a:'Lame', b:'20 sec · vel 5'},
+  {x:'Cuoci mescolando fino ad addensare.', t:'8 min', v:'3', T:'85°C', P:'4', a:'Lame', b:'8 min · 85°C · vel 3'},
+  {x:'Spegni, aggiungi il burro a pezzi e frulla fino a crema lucida.', t:'20 sec', v:'6', T:'—', P:'—', a:'Lame', b:'20 sec · vel 6'}],
+ note:['Il burro va a fuoco spento: è ciò che rende il curd lucido e vellutato. Ottimo su crostate e torte.']},
+
+{id:'castagnaccio', nome:'Castagnaccio', cat:'Dolci', tempo:15, porz:8, vol:1200,
+ caraffa:'Acciaio', acc:['Lame'], tag:['dolce','forno','autunno','vegano'],
+ ing:[{q:300,u:'g',n:'farina di castagne',b:1},{q:400,u:'ml',n:'acqua',b:1},{q:40,u:'g',n:'uvetta',s:'s'},{q:30,u:'g',n:'pinoli'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:1,u:'rametto',n:'rosmarino',s:'s'},{q:1,u:'pizzico',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Metti farina di castagne, acqua, olio e sale in caraffa e frulla senza grumi.', t:'40 sec', v:'6', T:'—', P:'—', a:'Lame', b:'40 sec · vel 6'},
+  {x:'Versa in teglia bassa unta, cospargi uvetta, pinoli e rosmarino.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Inforna finché la superficie si crepa.', t:'30 min', v:'—', T:'forno 190°C', P:'—', a:'—', b:'forno 190°C · 30 min'}],
+ note:['Niente zucchero né uova: dolcifica solo la farina di castagne. Le crepe in superficie sono il segno che è pronto.']},
+
+/* ---- COLAZIONE ---- */
+{id:'pancake', nome:'Pancake', cat:'Colazione', tempo:15, porz:4, vol:900,
+ caraffa:'Acciaio', acc:['Lame'], tag:['dolce','veloce','colazione'],
+ ing:[{q:2,u:'pz',n:'uova'},{q:250,u:'ml',n:'latte'},{q:200,u:'g',n:'farina 00',b:1},{q:30,u:'g',n:'zucchero',s:'s',b:1},{q:8,u:'g',n:'lievito per dolci',s:'s'},{q:20,u:'g',n:'burro fuso'},{q:1,u:'pizzico',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Metti tutti gli ingredienti in caraffa e frulla fino a pastella liscia.', t:'30 sec', v:'6', T:'—', P:'—', a:'Lame', b:'30 sec · vel 6'},
+  {x:'Lascia riposare la pastella 10 minuti.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Cuoci un mestolino alla volta in padella antiaderente calda: gira quando fa le bolle.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'in padella'}],
+ note:['Il riposo della pastella fa attivare il lievito: pancake più alti e soffici.']},
+
+{id:'crema-nocciole', nome:'Crema spalmabile alle nocciole', cat:'Colazione', tempo:12, porz:8, vol:700,
+ caraffa:'Acciaio', acc:['Lame'], tag:['dolce','a freddo','colazione'],
+ ing:[{q:250,u:'g',n:'nocciole tostate'},{q:120,u:'g',n:'zucchero a velo',b:1},{q:40,u:'g',n:'cacao amaro',b:1},{q:60,u:'g',n:'cioccolato fondente'},{q:40,u:'ml',n:'olio di semi',s:'s',b:1},{q:1,u:'pizzico',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Polverizza le nocciole finché rilasciano il loro olio e diventano una pasta.', t:'2 min', v:'9', T:'—', P:'—', a:'Lame', b:'2 min · vel 9'},
+  {x:'Sciogli a parte il cioccolato e aggiungilo con zucchero a velo, cacao, olio e sale.', t:'1 min', v:'7', T:'—', P:'—', a:'Lame', b:'1 min · vel 7'},
+  {x:'Frulla fino a crema liscia e invasala.', t:'1 min', v:'8', T:'—', P:'—', a:'Lame', b:'1 min · vel 8'}],
+ note:['Serve pazienza: le nocciole diventano pasta solo dopo che si scaldano e rilasciano l’olio. Non aggiungere liquidi prima.']}
+];
+RICETTE.push(...BLOCCO3, ...BLOCCO4);
+
+/* ============================================================
    ILLUSTRAZIONI — generate dagli ingredienti reali della ricetta
    Usate come SEGNAPOSTO finché non c'è una foto reale.
    ============================================================ */
