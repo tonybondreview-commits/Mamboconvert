@@ -1,6 +1,6 @@
 {
-  "name": "Cucina Mambo",
-  "short_name": "Cucina Mambo",
+  "name": "Mamboconvert",
+  "short_name": "Mamboconvert",
   "description": "Ricette Bimby convertite per Cecotec Mambo Touch: parametri, dosi per passaggio, modalità cottura con timer.",
   "lang": "it",
   "start_url": ".",
