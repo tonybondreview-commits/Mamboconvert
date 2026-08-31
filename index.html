@@ -1346,15 +1346,25 @@ function mini(o,grad){
 const S={porz:4,tab:'ricette',q:'',cat:'Tutte',open:null,frigo:[],spesa:[],bimby:false,
   foto:{},stepfoto:{},pref:[],cols:1,tema:'giorno'};
 const mem={};
+// HOST = window.storage SOLO se risponde. Alcuni ambienti lo iniettano ma non
+// risolvono mai la promise (capacità non concessa): senza sonda l'await
+// bloccherebbe l'avvio e la pagina resterebbe nera. localStorage resta la
+// fonte primaria (istantanea) sia in webapp sia nell'artifact.
+let HOST=null;
+const conTimeout=(p,ms)=>Promise.race([Promise.resolve(p),new Promise(r=>setTimeout(()=>r(undefined),ms))]);
+async function probeHost(){
+  if(!(window.storage&&window.storage.get))return null;
+  try{ const ok=await conTimeout(Promise.resolve(window.storage.get('__probe__')).then(()=>true),300);
+    return ok?window.storage:null; }catch(e){ return null; }
+}
 async function load(k,d){
-  // 1) storage host (ambiente sandbox)  2) localStorage (webapp normale)  3) memoria
-  try{ if(window.storage&&window.storage.get){const r=await window.storage.get(k);if(r)return JSON.parse(r.value);} }catch(e){}
   try{ const r=localStorage.getItem(k); if(r!==null)return JSON.parse(r); }catch(e){}
+  try{ if(HOST){const r=await conTimeout(HOST.get(k),200);if(r)return JSON.parse(r.value);} }catch(e){}
   return (k in mem)?mem[k]:d;
 }
 async function save(k,v){
   mem[k]=v;
-  try{ if(window.storage&&window.storage.set)await window.storage.set(k,JSON.stringify(v)); }catch(e){}
+  try{ if(HOST)HOST.set(k,JSON.stringify(v)); }catch(e){}
   try{ if(v===null)localStorage.removeItem(k); else localStorage.setItem(k,JSON.stringify(v)); }catch(e){}
 }
 
@@ -1785,6 +1795,7 @@ document.addEventListener('click',e=>{
   if(e.target.closest('[data-bimby]')){S.bimby=!S.bimby;save('mambo:bimby',S.bimby);render();}
 });
 (async()=>{
+  HOST=await probeHost();
   S.porz=await load('mambo:porz',4); S.frigo=await load('mambo:frigo',[]);
   S.spesa=await load('mambo:spesa',[]); S.bimby=await load('mambo:bimby',false);
   S.pref=await load('mambo:pref',[]); S.cols=await load('mambo:cols',1);
