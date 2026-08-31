@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Diagnostica · Mamboconvert</title>
+<style>
+body{margin:0;font:16px/1.5 system-ui,-apple-system,sans-serif;background:#120D0B;color:#FFF3E4}
+.wrap{padding:16px}
+h1{font-size:19px;margin:0 0 4px}
+p.sub{margin:0 0 14px;color:#B39B87;font-size:13.5px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td{padding:7px 6px;border-bottom:1px solid rgba(255,236,214,.14);vertical-align:top}
+td:first-child{color:#B39B87;white-space:nowrap;width:44%}
+b.ok{color:#3FE0A8}b.no{color:#FF5B36}
+.live{position:sticky;top:0;background:#241A16;border:1px solid rgba(255,236,214,.2);
+  border-radius:12px;padding:12px;margin-bottom:14px;z-index:5}
+.big{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+.filler{height:260px;margin:10px 0;border-radius:12px;display:grid;place-items:center;
+  background:linear-gradient(96deg,#FFB424,#FF5B36);color:#241108;font-weight:700;font-size:20px}
+</style>
+</head>
+<body><div class="wrap">
+<h1>Diagnostica Mamboconvert</h1>
+<p class="sub">Scorri questa pagina con un dito, poi fai uno screenshot e mandalo a Claude.</p>
+
+<div class="live">
+  <div>Scorrimento: <span class="big" id="sy">0</span> px</div>
+  <div id="verdict" style="margin-top:6px;font-size:14px">Prova a scorrere…</div>
+</div>
+
+<table id="t"></table>
+
+<div class="filler">scorri ancora ↓</div>
+<div class="filler">ancora ↓</div>
+<div class="filler">ultimo blocco ✓</div>
+<p style="color:#B39B87;font-size:13px">Se sei arrivato qui scorrendo, lo scorrimento funziona.</p>
+</div>
+<script>
+var maxY=0;
+function upd(){
+  var y=window.scrollY||document.documentElement.scrollTop||0;
+  if(y>maxY)maxY=y;
+  document.getElementById('sy').textContent=Math.round(y);
+  document.getElementById('verdict').innerHTML = maxY>40
+    ? '<b class="ok">✓ Lo scorrimento FUNZIONA</b>'
+    : 'Prova a scorrere…';
+}
+window.addEventListener('scroll',upd,{passive:true});
+var vv=window.visualViewport;
+if(vv){vv.addEventListener('resize',render);vv.addEventListener('scroll',upd);}
+function row(k,v){return '<tr><td>'+k+'</td><td>'+v+'</td></tr>';}
+function render(){
+  var de=document.documentElement, cs=getComputedStyle(de), bs=getComputedStyle(document.body);
+  var scale = vv ? Math.round(vv.scale*100)/100 : 'n/d';
+  var zoomBad = (vv && vv.scale > 1.02);
+  var canScroll = de.scrollHeight > window.innerHeight + 5;
+  document.getElementById('t').innerHTML =
+    row('ZOOM pagina', zoomBad ? '<b class="no">'+scale+'× — ZOOMATA (problema)</b>' : '<b class="ok">'+scale+'× (ok)</b>')+
+    row('Altezza pagina', de.scrollHeight+' px')+
+    row('Altezza schermo', window.innerHeight+' px')+
+    row('C\'è da scorrere?', canScroll?'<b class="ok">sì</b>':'<b class="no">no</b>')+
+    row('overflow-y html', cs.overflowY)+
+    row('overflow-y body', bs.overflowY)+
+    row('Larghezza pagina', de.scrollWidth+' px')+
+    row('Larghezza schermo', de.clientWidth+' px')+
+    row('Overflow laterale', de.scrollWidth>de.clientWidth+1?'<b class="no">SÌ (problema)</b>':'<b class="ok">no</b>')+
+    row('Service worker', ('serviceWorker' in navigator)?(navigator.serviceWorker.controller?'attivo':'non attivo'):'non supportato')+
+    row('Browser', navigator.userAgent.slice(0,90));
+}
+render(); upd();
+</script>
+</body>
+</html>

@@ -9,7 +9,7 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#120D0B">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -2508,6 +2508,7 @@ const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').re
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const durata=m=>m<60?m+' min':(m/60).toFixed(1).replace('.0','').replace('.',',')+' h';
 const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati. Contenuti e funzionalità protetti: vietata la copia o la clonazione.';
+const APP_VER='v10 · 31-08';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const view=document.getElementById('view');
 
@@ -2576,7 +2577,7 @@ function vRic(){
     <div class="chips filtri">${FILTRI.map(fl=>`<button class="chip fl" data-filtro="${fl.id}" aria-pressed="${S.filtri.includes(fl.id)}">${esc(fl.lab)}</button>`).join('')}${S.filtri.length?`<button class="chip clr" data-clrfiltri>Azzera ✕</button>`:''}</div>
     ${f.length?`<div class="grid" data-cols="${S.cols}">${f.map((r,i)=>tile(r).replace('class="tile"',`class="tile" style="animation-delay:${Math.min(i*32,320)}ms"`)).join('')}</div>`
       :`<div class="empty">Nessun piatto con questi filtri${q?` per “${esc(S.q)}”`:''}.<br>Togli un filtro o cambia categoria.</div>`}
-    <footer>${f.length} di ${RICETTE.length} ricette. Classici italiani con i parametri convertiti per Mambo Touch. Apri una ricetta per “Cucina passo-passo” col timer, le foto e le tue note.<br><br><span class="avviso">${AVVISO_FOTO}</span><br><br>${CREDITO}</footer></div>`;
+    <footer>${f.length} di ${RICETTE.length} ricette. Classici italiani con i parametri convertiti per Mambo Touch. Apri una ricetta per “Cucina passo-passo” col timer, le foto e le tue note.<br><br><span class="avviso">${AVVISO_FOTO}</span><br><br>${CREDITO}<br><span style="opacity:.55">versione ${APP_VER}</span></footer></div>`;
   const i=document.getElementById('q');
   i.oninput=e=>{S.q=e.target.value;const p=e.target.selectionStart;vRic();
     const n=document.getElementById('q');n.focus();n.setSelectionRange(p,p);};
