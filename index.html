@@ -388,6 +388,24 @@ body.bimby-on .bimby{display:block}
   padding:10px 13px;font-size:13.5px;font-weight:600;flex:none;display:flex;align-items:center;gap:6px}
 .photobar .pbtn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.7}
 .photobar .pbtn.rm{color:var(--tomato)}
+/* foto reali degli accessori */
+.accimg{border-radius:6px;object-fit:cover;background:#fff;vertical-align:middle;display:inline-block}
+.accpill .accimg{border-radius:5px;margin-right:1px}
+.accman{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
+@media(min-width:520px){.accman{grid-template-columns:1fr 1fr}}
+.acccard{display:flex;align-items:center;gap:13px;background:var(--surf);border:1px solid var(--line);
+  border-radius:16px;padding:12px 13px}
+.accthumb{width:56px;height:56px;flex:none;display:grid;place-items:center;border-radius:13px;
+  background:var(--surf2);color:var(--saffron);overflow:hidden}
+.accthumb .ico{width:54px;height:54px}
+.accthumb img.accimg{width:56px;height:56px;border-radius:13px}
+.accinfo{flex:1;min-width:0}
+.accinfo b{display:block;font-size:15.5px;color:var(--cream)}
+.accinfo small{color:var(--muted);font-size:12.5px}
+.accbtns{display:flex;flex-direction:column;gap:6px;flex:none}
+.accbtns .pbtn{background:var(--surf2);border:1px solid var(--line);border-radius:10px;
+  padding:8px 12px;font-size:12.5px;font-weight:600;white-space:nowrap}
+.accbtns .pbtn.rm{color:var(--tomato)}
 
 /* ---------- MODALITÀ PRESENTAZIONE / SLIDE ---------- */
 .deck{position:fixed;inset:0;z-index:80;background:var(--bg);display:none}
@@ -1357,7 +1375,7 @@ function mini(o,grad){
    stepfoto : foto reale del passaggio (id#indice -> url|dataURL)
    ============================================================ */
 const S={porz:4,tab:'ricette',q:'',cat:'Tutte',open:null,frigo:[],spesa:[],bimby:false,
-  foto:{},stepfoto:{},pref:[],cols:1,tema:'giorno'};
+  foto:{},stepfoto:{},accfoto:{},pref:[],cols:1,tema:'giorno'};
 const mem={};
 // HOST = window.storage SOLO se risponde. Alcuni ambienti lo iniettano ma non
 // risolvono mai la promise (capacità non concessa): senza sonda l'await
@@ -1470,6 +1488,9 @@ function setFoto(target,src){
   if(target.tipo==='ric'){
     S.foto[target.id]=src; save('mambo:foto:'+target.id,src);
     load('mambo:fotoidx',[]).then(ix=>{ if(!ix.includes(target.id)){ix.push(target.id);save('mambo:fotoidx',ix);} });
+  } else if(target.tipo==='acc'){
+    S.accfoto[target.id]=src; save('mambo:accfoto:'+target.id,src);
+    load('mambo:accfotoidx',[]).then(ix=>{ if(!ix.includes(target.id)){ix.push(target.id);save('mambo:accfotoidx',ix);} });
   } else {
     const k=stepKey(target.id,target.i);
     S.stepfoto[k]=src; save('mambo:stepfoto:'+k,src);
@@ -1480,11 +1501,18 @@ function delFoto(target){
   if(target.tipo==='ric'){
     delete S.foto[target.id]; save('mambo:foto:'+target.id,null);
     load('mambo:fotoidx',[]).then(ix=>save('mambo:fotoidx',ix.filter(x=>x!==target.id)));
+  } else if(target.tipo==='acc'){
+    delete S.accfoto[target.id]; save('mambo:accfoto:'+target.id,null);
+    load('mambo:accfotoidx',[]).then(ix=>save('mambo:accfotoidx',ix.filter(x=>x!==target.id)));
   } else {
     const k=stepKey(target.id,target.i);
     delete S.stepfoto[k]; save('mambo:stepfoto:'+k,null);
     load('mambo:stepidx',[]).then(ix=>save('mambo:stepidx',ix.filter(x=>x!==k)));
   }
+}
+// icona accessorio: foto reale caricata dall'utente, altrimenti disegno
+function accIco(name){
+  return S.accfoto[name]?`<img class="ico accimg" src="${esc(S.accfoto[name])}" alt="${esc(name)}">`:icoAcc(name);
 }
 gCam.onchange=e=>{const file=e.target.files[0]; if(!file||!fotoTarget)return;
   imgToDataURL(file,d=>{ if(d){ setFoto(fotoTarget,d); if(deck.classList.contains('open'))buildDeck(); render(); } });};
@@ -1550,8 +1578,8 @@ function vDett(){
     </div>
     <div class="card">
       <div class="row"><div class="k">Ti serve</div><div class="v"><div class="accgrid">
-        <span class="accitem">${ICONE.Caraffa}<span>${r.caraffa==='Habana'?'Caraffa Habana':'Caraffa acciaio'}<small>${USO[r.caraffa]}</small></span></span>
-        ${r.acc.map(a=>`<span class="accitem">${icoAcc(a)}<span>${esc(a)}<small>${USO[a]||''}</small></span></span>`).join('')}
+        <span class="accitem">${accIco('Caraffa')}<span>${r.caraffa==='Habana'?'Caraffa Habana':'Caraffa acciaio'}<small>${USO[r.caraffa]}</small></span></span>
+        ${r.acc.map(a=>`<span class="accitem">${accIco(a)}<span>${esc(a)}<small>${USO[a]||''}</small></span></span>`).join('')}
       </div></div></div>
       <div class="row"><div class="k">In caraffa</div><div class="v">circa ${Math.round(vol/50)*50} ml su 2300 utili</div></div>
     </div>
@@ -1565,7 +1593,7 @@ function vDett(){
       return `<div class="step">
         ${sf?`<img class="stepmedia" src="${esc(sf)}" alt="Passaggio ${idx+1}">`:''}
         <div class="txt"><span class="n"></span><span>${esc(s.x)}${
-        s.a&&s.a!=='—'?`<span class="accpill">${icoAcc(s.a)}${esc(s.a)}</span>`:''}${dosiHTML(add[idx],r)}</span></div>
+        s.a&&s.a!=='—'?`<span class="accpill">${accIco(s.a)}${esc(s.a)}</span>`:''}${dosiHTML(add[idx],r)}</span></div>
       ${has?quadri(s):''}
       <div class="bimby">Sul Bimby era <b>${esc(s.b)}</b></div>
       <button class="stepcam" data-picstep="${r.id}" data-i="${idx}">${camSvg}${sf?'Cambia foto del passaggio':'Aggiungi foto del passaggio'}</button>
@@ -1624,7 +1652,7 @@ function buildDeck(){
     slides.push(`<section class="slide"><div class="inner">
       <div class="kicker">Passaggio ${idx+1} di ${r.steps.length}</div>
       <div class="sph2">${slideMediaStep(r,idx)}</div>
-      <div class="stext">${esc(s.x)}${s.a&&s.a!=='—'?` <span class="accpill">${icoAcc(s.a)}${esc(s.a)}</span>`:''}</div>
+      <div class="stext">${esc(s.x)}${s.a&&s.a!=='—'?` <span class="accpill">${accIco(s.a)}${esc(s.a)}</span>`:''}</div>
       ${dosiHTML(add[idx],r)}
       ${has?`<div class="sdials">${quadri(s)}</div>`:''}
       ${s.b&&s.b!=='—'?`<div class="sbimby">Sul Bimby: <b>${esc(s.b)}</b></div>`:''}
@@ -1788,6 +1816,18 @@ function vConv(){
         `<option value="${k}">${v.lab}</option>`).join('')}</select></div></div>
       <div id="cout"></div></div>
 
+    <h3 class="sec">I tuoi accessori <span>foto reali</span></h3>
+    <p class="muted" style="font-size:14px;margin:8px 0 0">Carica la foto di ogni pezzo del tuo Mambo (dal telefono o un link non serve: scegli il file). Comparirà come immagine reale in “Ti serve”, nei passaggi e nelle slide.</p>
+    <div class="accman">${[['Lame','trita e frulla'],['MamboMix','rimesta e impasta'],['Farfalla','monta ed emulsiona'],['Cestello','cuoce in immersione'],['Vaporiera','cottura al vapore'],['Caraffa','caraffa Acciaio / Habana']].map(([n,u])=>`
+      <div class="acccard">
+        <div class="accthumb">${accIco(n)}</div>
+        <div class="accinfo"><b>${n}</b><small>${u}</small></div>
+        <div class="accbtns">
+          <button class="pbtn" data-picacc="${n}">${S.accfoto[n]?'Cambia':'Carica foto'}</button>
+          ${S.accfoto[n]?`<button class="pbtn rm" data-rmacc="${n}">Rimuovi</button>`:''}
+        </div>
+      </div>`).join('')}</div>
+
     <h3 class="sec">Velocità</h3>
     ${T_VEL.map(rigaVel).join('')}
 
@@ -1835,6 +1875,8 @@ document.addEventListener('click',e=>{
   const pf=e.target.closest('[data-picfoto]'); if(pf){ chiediFile({tipo:'ric',id:pf.dataset.picfoto}); return; }
   const rf=e.target.closest('[data-rmfoto]'); if(rf){ delFoto({tipo:'ric',id:rf.dataset.rmfoto}); render(); return; }
   const ps=e.target.closest('[data-picstep]'); if(ps){ chiediFile({tipo:'step',id:ps.dataset.picstep,i:+ps.dataset.i}); return; }
+  const pa=e.target.closest('[data-picacc]'); if(pa){ chiediFile({tipo:'acc',id:pa.dataset.picacc}); return; }
+  const ra=e.target.closest('[data-rmacc]'); if(ra){ delFoto({tipo:'acc',id:ra.dataset.rmacc}); render(); return; }
   const dk=e.target.closest('[data-deck]'); if(dk){ openDeck(dk.dataset.deck); return; }
   const fv=e.target.closest('[data-fav]');
   if(fv){ e.stopPropagation(); const id=fv.dataset.fav;
@@ -1858,6 +1900,8 @@ document.addEventListener('click',e=>{
   for(const id of ix){const d=await load('mambo:foto:'+id,null); if(d)S.foto[id]=d;}
   const six=await load('mambo:stepidx',[]);
   for(const k of six){const d=await load('mambo:stepfoto:'+k,null); if(d)S.stepfoto[k]=d;}
+  const aix=await load('mambo:accfotoidx',[]);
+  for(const n of aix){const d=await load('mambo:accfoto:'+n,null); if(d)S.accfoto[n]=d;}
   render();
 })();
 </script>
