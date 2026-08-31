@@ -178,6 +178,7 @@ body.giorno .hero{box-shadow:0 10px 30px -18px rgba(40,30,20,.45)}
 .chip.fl[aria-pressed="true"]{background:linear-gradient(96deg,var(--mint),var(--acqua));border-color:transparent;color:#04281C;font-weight:700}
 .chip.clr{color:var(--tomato);border-color:var(--line-2)}
 .updrow{display:flex;justify-content:center;margin:16px 0}
+.avviso{display:inline-block;font-style:italic;opacity:.85;border:1px solid var(--line);border-radius:10px;padding:9px 12px;line-height:1.45}
 .updmini{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--saffron);
   background:var(--surf);border:1px solid var(--line-2);border-radius:999px;padding:9px 15px;transition:transform .12s}
 .updmini:active{transform:scale(.95)}
@@ -2509,6 +2510,7 @@ const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').re
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const durata=m=>m<60?m+' min':(m/60).toFixed(1).replace('.0','').replace('.',',')+' h';
 const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati. Contenuti e funzionalità protetti: vietata la copia o la clonazione.';
+const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const view=document.getElementById('view');
 
 /* chiave foto passaggio */
@@ -2576,7 +2578,7 @@ function vRic(){
     <div class="chips filtri">${FILTRI.map(fl=>`<button class="chip fl" data-filtro="${fl.id}" aria-pressed="${S.filtri.includes(fl.id)}">${esc(fl.lab)}</button>`).join('')}${S.filtri.length?`<button class="chip clr" data-clrfiltri>Azzera ✕</button>`:''}</div>
     ${f.length?`<div class="grid" data-cols="${S.cols}">${f.map((r,i)=>tile(r).replace('class="tile"',`class="tile" style="animation-delay:${Math.min(i*32,320)}ms"`)).join('')}</div>`
       :`<div class="empty">Nessun piatto con questi filtri${q?` per “${esc(S.q)}”`:''}.<br>Togli un filtro o cambia categoria.</div>`}
-    <footer>${f.length} di ${RICETTE.length} ricette. Classici italiani con i parametri convertiti per Mambo Touch. Apri una ricetta per “Cucina passo-passo” col timer, le foto e le tue note.<br><br>${CREDITO}</footer></div>`;
+    <footer>${f.length} di ${RICETTE.length} ricette. Classici italiani con i parametri convertiti per Mambo Touch. Apri una ricetta per “Cucina passo-passo” col timer, le foto e le tue note.<br><br><span class="avviso">${AVVISO_FOTO}</span><br><br>${CREDITO}</footer></div>`;
   const i=document.getElementById('q');
   i.oninput=e=>{S.q=e.target.value;const p=e.target.selectionStart;vRic();
     const n=document.getElementById('q');n.focus();n.setSelectionRange(p,p);};
