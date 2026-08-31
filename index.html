@@ -1400,7 +1400,8 @@ function render(){
   const pb=document.getElementById('prBadge'); pb.hidden=!S.pref.length; pb.textContent=S.pref.length;
   document.body.classList.toggle('giorno',S.tema==='giorno');
   document.getElementById('tema').textContent=S.tema==='giorno'?'☀️':'🌙';
-  document.querySelector('meta[name=theme-color]').setAttribute('content',S.tema==='giorno'?'#FAF4EC':'#120D0B');
+  const tc=document.querySelector('meta[name=theme-color]');
+  if(tc)tc.setAttribute('content',S.tema==='giorno'?'#FAF4EC':'#120D0B');
   document.querySelectorAll('nav.tabs button').forEach(t=>t.setAttribute('aria-selected',t.dataset.tab===S.tab));
   if(S.open){vDett();}else{({ricette:vRic,frigo:vFrigo,spesa:vSpesa,conv:vConv,pref:vPref})[S.tab]();window.scrollTo(0,0);}
 }
