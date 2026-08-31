@@ -1,12 +1,15 @@
 /* Service worker: network-first per l'app (nuove ricette da sole quando sei online),
    cache-first per le foto dei piatti (anche remote, es. Pexels) così restano offline
    dopo la prima volta che le vedi. Cambia CACHE per forzare la pulizia dell'app. */
-const CACHE = 'cucina-mambo-v8';
+const CACHE = 'cucina-mambo-v9';
 const IMG_CACHE = 'mambo-fotos';   /* persistente: non si svuota agli aggiornamenti */
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './logo.png', './foto.js',
   './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
+  /* attiva subito la nuova versione: i fix arrivano senza restare bloccati in "waiting".
+     Il reload è protetto da una guardia (una sola volta per sessione) in index.html. */
+  self.skipWaiting();
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).catch(() => {}));
 });
 self.addEventListener('activate', e => {
