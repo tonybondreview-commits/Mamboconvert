@@ -202,7 +202,8 @@ body.giorno .hero{box-shadow:0 10px 30px -18px rgba(40,30,20,.45)}
 .tile{
   position:relative;border-radius:20px;overflow:hidden;background:var(--surf);
   border:1px solid var(--line);text-align:left;display:block;width:100%;padding:0;
-  transition:transform .2s var(--ease),box-shadow .2s;animation:tileIn .4s var(--ease) both
+  transition:transform .2s var(--ease),box-shadow .2s;animation:tileIn .4s var(--ease) both;
+  content-visibility:auto;contain-intrinsic-size:auto 320px
 }
 @keyframes tileIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
 .tile:active{transform:scale(.97)}
@@ -2515,18 +2516,24 @@ function tileMedia(r){
   return S.foto[r.id]?`<img class="art" src="${esc(S.foto[r.id])}" alt="${esc(r.nome)}">`:`<div class="art">${art(r)}</div>`;
 }
 
-function render(){
-  document.getElementById('pNum').textContent=S.porz+' pers.';
-  document.getElementById('pMinus').disabled=S.porz<=1;
-  document.getElementById('pPlus').disabled=S.porz>=12;
-  document.body.classList.toggle('bimby-on',S.bimby);
-  const b=document.getElementById('spBadge'); b.hidden=!S.spesa.length; b.textContent=S.spesa.length;
-  const pb=document.getElementById('prBadge'); pb.hidden=!S.pref.length; pb.textContent=S.pref.length;
+function applyTema(){
   document.body.classList.toggle('giorno',S.tema==='giorno');
   document.getElementById('tema').textContent=S.tema==='giorno'?'☀️':'🌙';
   const tc=document.querySelector('meta[name=theme-color]');
   if(tc)tc.setAttribute('content',S.tema==='giorno'?'#FAF4EC':'#120D0B');
   document.documentElement.style.backgroundColor=S.tema==='giorno'?'#F1F0EE':'#120D0B';
+}
+function applyPorz(){
+  document.getElementById('pNum').textContent=S.porz+' pers.';
+  document.getElementById('pMinus').disabled=S.porz<=1;
+  document.getElementById('pPlus').disabled=S.porz>=12;
+}
+function render(){
+  applyPorz();
+  document.body.classList.toggle('bimby-on',S.bimby);
+  const b=document.getElementById('spBadge'); b.hidden=!S.spesa.length; b.textContent=S.spesa.length;
+  const pb=document.getElementById('prBadge'); pb.hidden=!S.pref.length; pb.textContent=S.pref.length;
+  applyTema();
   document.querySelectorAll('nav.tabs button').forEach(t=>t.setAttribute('aria-selected',t.dataset.tab===S.tab));
   if(S.open){vDett();}else{({ricette:vRic,frigo:vFrigo,spesa:vSpesa,conv:vConv,pref:vPref})[S.tab]();window.scrollTo(0,0);}
 }
@@ -3048,10 +3055,10 @@ function vConv(){
 /* ---------- EVENTI ---------- */
 document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;S.open=null;render();});
 document.getElementById('tema').onclick=()=>{
-  S.tema=S.tema==='giorno'?'notte':'giorno'; save('mambo:tema',S.tema); render(); };
+  S.tema=S.tema==='giorno'?'notte':'giorno'; save('mambo:tema',S.tema); applyTema(); };
 function bumpN(){const n=document.getElementById('pNum');n.classList.remove('bump');void n.offsetWidth;n.classList.add('bump');}
-document.getElementById('pMinus').onclick=()=>{if(S.porz>1){S.porz--;save('mambo:porz',S.porz);render();bumpN();}};
-document.getElementById('pPlus').onclick=()=>{if(S.porz<12){S.porz++;save('mambo:porz',S.porz);render();bumpN();}};
+document.getElementById('pMinus').onclick=()=>{if(S.porz>1){S.porz--;save('mambo:porz',S.porz);applyPorz();if(S.open)vDett();bumpN();}};
+document.getElementById('pPlus').onclick=()=>{if(S.porz<12){S.porz++;save('mambo:porz',S.porz);applyPorz();if(S.open)vDett();bumpN();}};
 document.addEventListener('click',e=>{
   const pf=e.target.closest('[data-picfoto]'); if(pf){ chiediFile({tipo:'ric',id:pf.dataset.picfoto}); return; }
   const rf=e.target.closest('[data-rmfoto]'); if(rf){ delFoto({tipo:'ric',id:rf.dataset.rmfoto}); render(); return; }
