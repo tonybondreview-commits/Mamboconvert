@@ -110,6 +110,8 @@ header{
 .logomk{width:44px;height:44px;flex:none;border-radius:50%;object-fit:cover}
 .logo em{font-style:normal;background:linear-gradient(96deg,var(--saffron),var(--tomato));
   -webkit-background-clip:text;background-clip:text;color:transparent}
+.inghead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.stepper.det .n{min-width:74px}
 .stepper{display:flex;align-items:center;background:var(--surf2);border-radius:999px;padding:3px;flex:none}
 .stepper button{width:32px;height:30px;border-radius:999px;font-size:18px;display:grid;place-items:center;color:var(--cream);transition:transform .12s}
 .stepper button:active{transform:scale(.82)}
@@ -170,7 +172,7 @@ body.giorno .hero{box-shadow:0 10px 30px -18px rgba(40,30,20,.45)}
 .chip.fl{font-size:13.5px;padding:8px 14px}
 .chip.fl[aria-pressed="true"]{background:linear-gradient(96deg,var(--mint),var(--acqua));border-color:transparent;color:#04281C;font-weight:700}
 .chip.clr{color:var(--tomato);border-color:var(--line-2)}
-.updrow{display:flex;justify-content:flex-end;margin-top:12px}
+.updrow{display:flex;justify-content:center;margin:16px 0}
 .updmini{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--saffron);
   background:var(--surf);border:1px solid var(--line-2);border-radius:999px;padding:9px 15px;transition:transform .12s}
 .updmini:active{transform:scale(.95)}
@@ -593,11 +595,6 @@ footer{padding:28px 0 6px;font-size:12px;color:var(--muted);line-height:1.65}
 <header><div class="wrap"><div class="hrow">
   <div class="logo"><img class="logomk" src="logo.png" alt="Mamboconvert" width="128" height="128"><span>Mambo<em>convert</em></span></div>
   <button class="themeb" id="tema" aria-label="Cambia tema">🌙</button>
-  <div class="stepper">
-    <button id="pMinus" aria-label="Meno persone">−</button>
-    <div class="n" id="pNum">4 pers.</div>
-    <button id="pPlus" aria-label="Più persone">+</button>
-  </div>
 </div></div></header>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -2524,9 +2521,8 @@ function applyTema(){
   document.documentElement.style.backgroundColor=S.tema==='giorno'?'#F1F0EE':'#120D0B';
 }
 function applyPorz(){
-  document.getElementById('pNum').textContent=S.porz+' pers.';
-  document.getElementById('pMinus').disabled=S.porz<=1;
-  document.getElementById('pPlus').disabled=S.porz>=12;
+  const n=document.getElementById('pNum');
+  if(n)n.textContent=S.porz+' '+(S.porz===1?'persona':'persone');
 }
 function render(){
   applyPorz();
@@ -2564,10 +2560,11 @@ function vRic(){
         <button data-cols="2" aria-pressed="${S.cols===2}" aria-label="Due per riga"><svg viewBox="0 0 16 16"><rect x="1" y="2" width="6" height="6" rx="1.5"/><rect x="9" y="2" width="6" height="6" rx="1.5"/><rect x="1" y="10" width="6" height="4" rx="1.5"/><rect x="9" y="10" width="6" height="4" rx="1.5"/></svg></button>
       </div></div>
     <div class="chips filtri">${FILTRI.map(fl=>`<button class="chip fl" data-filtro="${fl.id}" aria-pressed="${S.filtri.includes(fl.id)}">${esc(fl.lab)}</button>`).join('')}${S.filtri.length?`<button class="chip clr" data-clrfiltri>Azzera ✕</button>`:''}</div>
-    <div class="updrow"><button class="updmini" id="updBtnHome"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-.6 4"/><path d="M20 4v6h-6"/></svg>Controlla aggiornamenti</button></div>
     ${f.length?`<div class="grid" data-cols="${S.cols}">${f.map((r,i)=>tile(r).replace('class="tile"',`class="tile" style="animation-delay:${Math.min(i*32,320)}ms"`)).join('')}</div>`
       :`<div class="empty">Nessun piatto con questi filtri${q?` per “${esc(S.q)}”`:''}.<br>Togli un filtro o cambia categoria.</div>`}
-    <footer>${f.length} di ${RICETTE.length} ricette. Classici italiani con i parametri convertiti per Mambo Touch. Apri una ricetta per “Cucina passo-passo” col timer, le foto e le tue note.<br><br>${CREDITO}</footer></div>`;
+    <footer>${f.length} di ${RICETTE.length} ricette. Classici italiani con i parametri convertiti per Mambo Touch. Apri una ricetta per “Cucina passo-passo” col timer, le foto e le tue note.
+      <div class="updrow"><button class="updmini" id="updBtnHome"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-.6 4"/><path d="M20 4v6h-6"/></svg>Controlla aggiornamenti</button></div>
+      ${CREDITO}</footer></div>`;
   const i=document.getElementById('q');
   i.oninput=e=>{S.q=e.target.value;const p=e.target.selectionStart;vRic();
     const n=document.getElementById('q');n.focus();n.setSelectionRange(p,p);};
@@ -2706,7 +2703,12 @@ function vDett(){
       <div class="row"><div class="k">In caraffa</div><div class="v">circa ${Math.round(vol/50)*50} ml su 2300 utili</div></div>
     </div>
     ${w?`<div class="warn">${w}</div>`:''}
-    <div class="card pad"><h3 class="sec2">Ingredienti <span>per ${S.porz} ${S.porz===1?'persona':'persone'}</span></h3>
+    <div class="card pad"><div class="inghead"><h3 class="sec2" style="margin:0">Ingredienti</h3>
+      <div class="stepper det" role="group" aria-label="Persone">
+        <button data-porz="-1" aria-label="Meno persone" ${S.porz<=1?'disabled':''}>−</button>
+        <div class="n" id="pNum">${S.porz} ${S.porz===1?'persona':'persone'}</div>
+        <button data-porz="1" aria-label="Più persone" ${S.porz>=12?'disabled':''}>+</button>
+      </div></div>
     <ul class="ing">${r.ing.map(i=>`<li>
       <span class="n">${esc(i.n)}${i.s==='s'?'<i>non scala in proporzione</i>':i.s==='f'?'<i>quantità fissa</i>':''}</span>
       <span class="q">${fmtQ(scala(i,r.porz,S.porz))} ${esc(i.u)}</span></li>`).join('')}</ul></div>
@@ -3056,10 +3058,10 @@ function vConv(){
 document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;S.open=null;render();});
 document.getElementById('tema').onclick=()=>{
   S.tema=S.tema==='giorno'?'notte':'giorno'; save('mambo:tema',S.tema); applyTema(); };
-function bumpN(){const n=document.getElementById('pNum');n.classList.remove('bump');void n.offsetWidth;n.classList.add('bump');}
-document.getElementById('pMinus').onclick=()=>{if(S.porz>1){S.porz--;save('mambo:porz',S.porz);applyPorz();if(S.open)vDett();bumpN();}};
-document.getElementById('pPlus').onclick=()=>{if(S.porz<12){S.porz++;save('mambo:porz',S.porz);applyPorz();if(S.open)vDett();bumpN();}};
+function bumpN(){const n=document.getElementById('pNum');if(!n)return;n.classList.remove('bump');void n.offsetWidth;n.classList.add('bump');}
 document.addEventListener('click',e=>{
+  const dp=e.target.closest('[data-porz]');
+  if(dp){ const nx=S.porz+(+dp.dataset.porz); if(nx>=1&&nx<=12){S.porz=nx;save('mambo:porz',S.porz);if(S.open)vDett();bumpN();} return; }
   const pf=e.target.closest('[data-picfoto]'); if(pf){ chiediFile({tipo:'ric',id:pf.dataset.picfoto}); return; }
   const rf=e.target.closest('[data-rmfoto]'); if(rf){ delFoto({tipo:'ric',id:rf.dataset.rmfoto}); render(); return; }
   const ps=e.target.closest('[data-picstep]'); if(ps){ chiediFile({tipo:'step',id:ps.dataset.picstep,i:+ps.dataset.i}); return; }
