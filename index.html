@@ -130,7 +130,7 @@ header{
 /* ---------- tab bar ---------- */
 nav.tabs{
   position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;
-  background:#17110E;transform:translateZ(0);
+  background:#17110E;
   border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)
 }
 nav.tabs button{flex:1;padding:14px 4px 7px;display:flex;flex-direction:column;align-items:center;gap:4px;
@@ -3127,8 +3127,10 @@ if('serviceWorker' in navigator){
         nw.addEventListener('statechange',()=>{
           if(nw.state==='installed'&&navigator.serviceWorker.controller)mostraAggiorna(reg); }); });
     }).catch(()=>{});
-    let reloaded=false;
-    navigator.serviceWorker.addEventListener('controllerchange',()=>{ if(reloaded)return; reloaded=true; location.reload(); });
+    navigator.serviceWorker.addEventListener('controllerchange',()=>{
+      try{ if(sessionStorage.getItem('swReloaded'))return; sessionStorage.setItem('swReloaded','1'); }catch(e){}
+      location.reload();
+    });
   });
 }
 
