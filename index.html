@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#120D0B">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Cucina Mambo">
+<meta name="mobile-web-app-capable" content="yes">
 <title>Cucina Mambo — ricette Bimby convertite per Cecotec Mambo Touch</title>
 <style>
 :root{
@@ -440,6 +447,21 @@ body.bimby-on .bimby{display:block}
   border-bottom:1px solid var(--line);font-size:clamp(16px,4vw,20px)}
 .slide ul.singred li .sq{color:var(--saffron);font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
 .slide .sdials{margin-top:12px}
+.timer{margin-top:18px;display:flex;align-items:center;gap:16px;background:var(--surf);
+  border:1px solid var(--line);border-radius:18px;padding:14px 18px}
+.timer .tdisp{font-size:clamp(30px,9vw,46px);font-weight:800;font-variant-numeric:tabular-nums;
+  letter-spacing:-.02em;color:var(--cream);min-width:2.6em}
+.timer .tbtn{margin-left:auto;display:inline-flex;align-items:center;gap:8px;border-radius:12px;
+  padding:13px 20px;font-size:15px;font-weight:700;color:#241108;
+  background:linear-gradient(96deg,var(--saffron),var(--tomato));white-space:nowrap;transition:transform .14s}
+.timer .tbtn:active{transform:scale(.95)}
+.timer .tbtn svg{width:16px;height:16px;fill:currentColor}
+.timer.run{border-color:var(--acqua);box-shadow:0 0 0 3px rgba(46,208,240,.16)}
+.timer.run .tdisp{color:var(--acqua)}
+.timer.run .tbtn{background:var(--surf2);color:var(--cream)}
+.timer.done{border-color:var(--mint);box-shadow:0 0 0 3px rgba(63,224,168,.22);animation:done .5s var(--ease)}
+.timer.done .tdisp{color:var(--mint)}
+@keyframes done{0%,100%{transform:none}30%{transform:scale(1.03)}}
 .deckbar{position:absolute;top:0;left:0;right:0;z-index:2;display:flex;align-items:center;gap:12px;
   padding:calc(14px + env(safe-area-inset-top)) 18px 14px;
   background:linear-gradient(to bottom,rgba(0,0,0,.34),transparent)}
@@ -501,7 +523,28 @@ body.giorno .deckctl{background:linear-gradient(to top,rgba(255,255,255,.55),tra
   padding:11px;font-size:14.5px}
 .cout{margin-top:14px;border-radius:11px;overflow:hidden;border:1px solid var(--line)}
 .cnote{font-size:14px;color:var(--cream);padding:11px 13px;background:var(--surf2)}
+.bimbyta{width:100%;min-height:120px;background:var(--surf2);border:1px solid var(--line);border-radius:12px;
+  padding:12px 13px;font-size:15px;line-height:1.5;resize:vertical;color:var(--cream);font-family:var(--sans)}
+.bimbyta:focus{outline:none;border-color:var(--saffron)}
+.brow{display:flex;gap:12px;background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:13px 14px;margin-top:10px}
+.brow .bnum{flex:none;width:24px;height:24px;border-radius:999px;border:1px solid var(--line-2);color:var(--saffron);
+  font-size:12.5px;font-weight:700;display:grid;place-items:center;font-variant-numeric:tabular-nums}
+.brow .bbody{flex:1;min-width:0}
+.brow .borig{font-size:14.5px;color:var(--muted);margin-bottom:9px;line-height:1.4}
+.bparams{display:flex;flex-wrap:wrap;gap:7px}
+.bp{display:inline-flex;align-items:center;gap:5px;background:var(--surf2);border:1px solid var(--line);
+  border-radius:9px;padding:6px 10px;font-size:13px;color:var(--muted)}
+.bp b{color:var(--cream);font-weight:700}
+.bp svg,.bp .ico{width:16px;height:16px}
+.bp.t b{color:var(--mint)} .bp.v b{color:var(--acqua)} .bp.g b{color:var(--tomato)} .bp.p b{color:var(--saffron)}
+.bp.a b{color:var(--grape)}
 footer{padding:28px 0 6px;font-size:12px;color:var(--muted);line-height:1.65}
+.updbar{position:fixed;left:50%;transform:translateX(-50%);
+  bottom:calc(84px + env(safe-area-inset-bottom));z-index:60;display:flex;align-items:center;gap:12px;
+  background:var(--surf);border:1px solid var(--line-2);border-radius:999px;padding:9px 9px 9px 18px;
+  box-shadow:0 10px 30px -10px rgba(0,0,0,.6);font-size:14px;color:var(--cream);animation:pop .3s var(--ease)}
+.updbar button{background:linear-gradient(96deg,var(--saffron),var(--tomato));color:#241108;font-weight:700;
+  border-radius:999px;padding:9px 16px;font-size:13.5px}
 
 @media (min-width:560px){ .grid{grid-template-columns:1fr 1fr} .hero{height:340px} .hero h2{font-size:40px} }
 @media (min-width:900px){ .grid[data-cols="2"]{grid-template-columns:repeat(3,1fr)} }
@@ -2116,7 +2159,7 @@ function vDett(){
       </div>`;}).join('')})()}</div>
     ${r.note&&r.note.length?`<h3 class="sec">Note di conversione</h3>${r.note.map(n=>`<div class="note">${esc(n)}</div>`).join('')}`:''}
     <div class="acts">
-      <button class="btn play" data-deck="${r.id}"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Presentazione</button>
+      <button class="btn play" data-deck="${r.id}"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Cucina passo-passo</button>
       <button class="btn ${inSp?'on':''}" data-spesa="${r.id}">${inSp?'✓ Nella spesa':'Aggiungi alla spesa'}</button>
       <button class="btn ghost" data-back>Chiudi</button></div>
     <button class="toggle" data-bimby aria-pressed="${S.bimby}"><span class="sw"></span>Mostra i parametri Bimby originali</button>
@@ -2147,6 +2190,7 @@ function slideMediaStep(r,idx){
 }
 function buildDeck(){
   const r=RICETTE.find(x=>x.id===deckId); if(!r)return;
+  clearTimers();
   document.getElementById('deckTitle').textContent=r.nome;
   const slides=[];
   /* copertina */
@@ -2171,6 +2215,7 @@ function buildDeck(){
       <div class="stext">${esc(s.x)}${s.a&&s.a!=='—'?` <span class="accpill">${accIco(s.a)}${esc(s.a)}</span>`:''}</div>
       ${dosiHTML(add[idx],r)}
       ${has?`<div class="sdials">${quadri(s)}</div>`:''}
+      ${secDi(s.t)?`<div class="timer" data-sec="${secDi(s.t)}"><div class="tdisp">${fmtClock(secDi(s.t))}</div><button class="tbtn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Avvia timer</button></div>`:''}
       ${s.b&&s.b!=='—'?`<div class="sbimby">Sul Bimby: <b>${esc(s.b)}</b></div>`:''}
     </div></section>`);
   });
@@ -2197,8 +2242,38 @@ function applyDeck(){
   if(cur){cur.scrollTop=0;const inner=cur.querySelector('.inner');if(inner){inner.style.animation='none';void inner.offsetWidth;inner.style.animation='';}}
 }
 function gotoSlide(n){ deckN=Math.max(0,Math.min(deckTotal-1,n)); applyDeck(); }
-function openDeck(id){ deckId=id; deckN=0; deck.classList.add('open'); document.body.style.overflow='hidden'; buildDeck(); }
-function closeDeck(){ deck.classList.remove('open'); document.body.style.overflow=''; }
+function openDeck(id){ deckId=id; deckN=0; deck.classList.add('open'); document.body.style.overflow='hidden'; buildDeck(); reqWake(); }
+function closeDeck(){ deck.classList.remove('open'); document.body.style.overflow=''; clearTimers(); relWake(); }
+
+/* ---- modalità cottura: timer, avviso, schermo acceso ---- */
+function fmtClock(s){const m=Math.floor(s/60),ss=Math.round(s%60);return m+':'+String(ss).padStart(2,'0');}
+let wakeLock=null;
+async function reqWake(){ try{ if('wakeLock' in navigator){ wakeLock=await navigator.wakeLock.request('screen'); } }catch(e){} }
+function relWake(){ try{ wakeLock&&wakeLock.release(); }catch(e){} wakeLock=null; }
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&deck.classList.contains('open'))reqWake(); });
+let activeTimers=[];
+function clearTimers(){ activeTimers.forEach(id=>clearInterval(id)); activeTimers=[]; }
+function beep(){ try{const A=window.AudioContext||window.webkitAudioContext; if(!A)return; const a=new A();
+  const o=a.createOscillator(),g=a.createGain(); o.connect(g); g.connect(a.destination);
+  g.gain.value=.25; o.type='sine'; o.start(); let n=0;
+  const iv=setInterval(()=>{ o.frequency.value=n%2?988:660; if(++n>7){clearInterval(iv);o.stop();a.close();} },170);
+ }catch(e){} }
+function buzz(){ try{ navigator.vibrate&&navigator.vibrate([250,120,250,120,250]); }catch(e){} }
+const timerState=new WeakMap();
+document.addEventListener('click',e=>{
+  const btn=e.target.closest('.tbtn'); if(!btn)return;
+  const box=btn.closest('.timer'), disp=box.querySelector('.tdisp');
+  let st=timerState.get(box); if(!st){ st={rem:+box.dataset.sec, id:null}; timerState.set(box,st); }
+  if(st.id){ clearInterval(st.id); st.id=null; box.classList.remove('run'); btn.lastChild.textContent='Riprendi'; return; }
+  if(st.rem<=0){ st.rem=+box.dataset.sec; box.classList.remove('done'); }
+  box.classList.add('run'); btn.lastChild.textContent='Pausa';
+  st.id=setInterval(()=>{
+    st.rem--; disp.textContent=fmtClock(st.rem);
+    if(st.rem<=0){ clearInterval(st.id); st.id=null; box.classList.remove('run'); box.classList.add('done');
+      btn.lastChild.textContent='Ripeti'; disp.textContent='Fatto!'; beep(); buzz(); }
+  },1000);
+  activeTimers.push(st.id);
+});
 document.getElementById('deckClose').onclick=closeDeck;
 document.getElementById('deckPrev').onclick=()=>gotoSlide(deckN-1);
 document.getElementById('deckNext').onclick=()=>gotoSlide(deckN+1);
@@ -2305,6 +2380,46 @@ const PREP={
  vapore:{lab:'Cottura al vapore',T:120,P:10,acc:'Vaporiera',n:'700-900 ml d’acqua in caraffa. La velocità non serve.'},
  freddo:{lab:'Nessuna cottura',T:0,P:0,acc:'Lame',n:'Campo gradi e potenza spenti.'}};
 const VELMAP={'0':'0 – 1',soft:'0 – 1',anti:'0 – 1 + MamboMix',spiga:'2 – 3 + MamboMix','1':'1 – 2','2':'2 – 3','3':'3 – 4','4':'4 – 5','5':'5 – 6','6':'6 – 7','7':'7 – 8','8':'8','9':'9','10':'10',turbo:'Turbo'};
+/* ---- importa e converti una ricetta Bimby (testo libero) ---- */
+function convBimby(txt){
+  return txt.split(/\n+/).map(l=>l.trim()).filter(Boolean).map(line=>{
+    const low=line.toLowerCase();
+    const times=[...low.matchAll(/(\d+(?:[.,]\d+)?)\s*(sec(?:ondi)?|min(?:uti)?|or[ae]|h)\b/g)];
+    const tstr=times.map(m=>{const u=m[2][0]==='h'||m[2].slice(0,2)==='or'?'ore':m[2].slice(0,3)==='min'?'min':'sec';return m[1].replace('.',',')+' '+u;}).join(' ');
+    const varoma=/varoma/.test(low);
+    const tempM=low.match(/(\d{2,3})\s*°\s*c?/)||low.match(/(\d{2,3})\s*c\b/)||low.match(/(\d{2,3})\s*gradi/);
+    const hasSpeed=/turbo|spiga|antiorario|vel(?:ocit[àa]|\.)?\s*[0-9]/.test(low);
+    // Varoma = vaporiera solo se si cuoce al vapore (o senza velocità); altrimenti è solo la temperatura ~120°C
+    const steam=/vapore|vaporiera|al vapore/.test(low)||(varoma&&!hasSpeed);
+    const g=varoma?120:(tempM?+tempM[1]:0);
+    const temp=steam?'120°C (vaporiera)':(varoma?'120°C':(tempM?tempM[1]+'°C':''));
+    let vel='';
+    if(steam)vel='—';
+    else if(/turbo/.test(low))vel='Turbo';
+    else if(/spiga/.test(low))vel='2-3 + MamboMix';
+    else if(/antiorario/.test(low))vel='0-1 + MamboMix';
+    else{const vm=low.match(/vel(?:ocit[àa]|\.)?\s*([0-9]+(?:[.,][0-9]+)?)/);
+      if(vm){const n=Math.round(parseFloat(vm[1].replace(',','.')));vel=VELMAP[String(n)]||String(n);}}
+    let acc='';
+    if(steam)acc='Vaporiera';
+    else if(/farfalla/.test(low))acc='Farfalla';
+    else if(/cestello/.test(low))acc='Cestello';
+    else if(/spiga|antiorario/.test(low))acc='MamboMix';
+    else if(/turbo/.test(low))acc='Lame';
+    let pot='';
+    if(steam)pot='10';
+    else if(!g)pot='';
+    else if(/rosol|soffri|imbiond|sfum/.test(low)||g>=118)pot='9-10';
+    else if(g>=100)pot=(/pasta|bollo|bollire|acqua|lessa/.test(low)?'9':'5-6');
+    else if(g>=88)pot='4';
+    else if(g>=78)pot='3';
+    else if(g>=55)pot='2';
+    else pot='1';
+    if(!acc){const vn=parseInt(vel);acc=(vn>=5||/trita|frulla|polverizza/.test(low))?'Lame':(g?'MamboMix':'Lame');}
+    const isStep=!!(tstr||temp||(vel&&vel!=='—'));
+    return {orig:line,t:tstr||'—',v:vel||'—',T:temp||'—',P:pot||'—',a:acc,isStep};
+  });
+}
 function vConv(){
   const plain=t=>String(t).replace(/<[^>]+>/g,'');
   const rigaVel=([bi,ma,de])=>`<div class="crow">
@@ -2323,8 +2438,21 @@ function vConv(){
     <div class="cap"><b>${bi} → ${ma}</b><span>${de}</span></div></div>`;
 
   view.innerHTML=`<div class="panel">
-    <h2 class="sec" style="margin-top:6px">Convertitore rapido</h2>
-    <p class="muted" style="font-size:14px;margin:8px 0 0">Per le ricette Bimby che non sono in elenco: traduci il singolo passaggio.</p>
+    <h2 class="sec" style="margin-top:6px">Converti una ricetta Bimby</h2>
+    <p class="muted" style="font-size:14px;margin:8px 0 0">Incolla i passaggi di una ricetta Bimby (uno per riga). L’app riconosce tempo, temperatura, velocità e accessorio e propone i parametri Mambo, potenza inclusa.</p>
+    <div class="conv">
+      <textarea id="bimbyIn" class="bimbyta" placeholder="Es.
+5 sec vel 5
+5 min Varoma vel 1 antiorario
+20 min 100°C vel 1 antiorario
+2 min vel 8"></textarea>
+      <div class="acts" style="margin-top:10px"><button class="btn" id="bimbyGo">Converti</button>
+        <button class="btn ghost" id="bimbyClr">Pulisci</button></div>
+      <div id="bimbyOut"></div>
+    </div>
+
+    <h2 class="sec">Convertitore rapido</h2>
+    <p class="muted" style="font-size:14px;margin:8px 0 0">Se preferisci, traduci un singolo passaggio scegliendo dai menu.</p>
     <div class="conv"><div class="r2">
       <div><label for="cv">Velocità Bimby</label><select id="cv">${Object.keys(VELMAP).map(k=>
         `<option value="${k}">${k==='anti'?'Antiorario':k==='spiga'?'Spiga':k==='soft'?'Soft':k==='turbo'?'Turbo':'Velocità '+k}</option>`).join('')}</select></div>
@@ -2378,6 +2506,23 @@ function vConv(){
       <div style="text-align:center;margin-top:12px"><span class="accpill">${p.acc}</span></div>
       <div class="cnote" style="margin-top:12px;border-radius:12px">${p.n}</div>`;};
   cv.onchange=upd;cp2.onchange=upd;upd();
+
+  const bin=document.getElementById('bimbyIn'),bout=document.getElementById('bimbyOut');
+  const parametro=(lab,val,cls)=>val&&val!=='—'?`<span class="bp ${cls}">${lab} <b>${esc(val)}</b></span>`:'';
+  const conv=()=>{
+    const txt=bin.value.trim();
+    if(!txt){bout.innerHTML='';return;}
+    const steps=convBimby(txt);
+    bout.innerHTML=`<div class="cnote" style="border-radius:12px;margin-top:14px">Parametri Mambo suggeriti — la potenza calorifica è dedotta, regolala secondo la tua caraffa.</div>`+
+      steps.map((s,i)=>`<div class="brow">
+        <div class="bnum">${i+1}</div>
+        <div class="bbody"><div class="borig">${esc(s.orig)}</div>
+          ${s.isStep?`<div class="bparams">${parametro('⏱',s.t,'t')}${parametro('vel',s.v,'v')}${parametro('',s.T,'g')}${parametro('P',s.P,'p')}${s.a?`<span class="bp a">${accIco(s.a)}<b>${esc(s.a)}</b></span>`:''}</div>`
+            :`<div class="bparams"><span class="bp">nessun parametro macchina — passaggio manuale</span></div>`}
+        </div></div>`).join('');
+  };
+  document.getElementById('bimbyGo').onclick=conv;
+  document.getElementById('bimbyClr').onclick=()=>{bin.value='';bout.innerHTML='';bin.focus();};
 }
 
 /* ---------- EVENTI ---------- */
@@ -2420,6 +2565,27 @@ document.addEventListener('click',e=>{
   for(const n of aix){const d=await load('mambo:accfoto:'+n,null); if(d)S.accfoto[n]=d;}
   render();
 })();
+
+/* ---- PWA: installabile, offline, e sempre aggiornata (network-first) ---- */
+function mostraAggiorna(reg){
+  if(document.getElementById('updBar'))return;
+  const bar=document.createElement('div'); bar.id='updBar'; bar.className='updbar';
+  bar.innerHTML='<span>Nuove ricette disponibili</span>';
+  const btn=document.createElement('button'); btn.textContent='Aggiorna';
+  btn.onclick=()=>{ if(reg&&reg.waiting)reg.waiting.postMessage({type:'SKIP_WAITING'}); btn.textContent='Aggiorno…'; };
+  bar.appendChild(btn); document.body.appendChild(bar);
+}
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').then(reg=>{
+      reg.addEventListener('updatefound',()=>{ const nw=reg.installing; if(!nw)return;
+        nw.addEventListener('statechange',()=>{
+          if(nw.state==='installed'&&navigator.serviceWorker.controller)mostraAggiorna(reg); }); });
+    }).catch(()=>{});
+    let reloaded=false;
+    navigator.serviceWorker.addEventListener('controllerchange',()=>{ if(reloaded)return; reloaded=true; location.reload(); });
+  });
+}
 </script>
 </body>
 </html>
