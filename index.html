@@ -1,0 +1,1800 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#120D0B">
+<title>Cucina Mambo — ricette Bimby convertite per Cecotec Mambo Touch</title>
+<style>
+:root{
+  --bg:#120D0B;
+  --surf:#241A16;
+  --surf2:#31231D;
+  --line:rgba(255,236,214,.13);
+  --line-2:rgba(255,236,214,.26);
+  --cream:#FFF3E4;
+  --muted:#B39B87;
+  --saffron:#FFB424;
+  --tomato:#FF5B36;
+  --mint:#3FE0A8;
+  --acqua:#2ED0F0;
+  --grape:#C46BFF;
+  --surfrgb:36,26,22;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --ease:cubic-bezier(.22,.85,.3,1);
+}
+body.giorno{
+  --bg:#F1F0EE;
+  --surf:#FFFFFF;
+  --surfrgb:255,255,255;
+  --surf2:#EBE9E5;
+  --line:rgba(40,34,28,.10);
+  --line-2:rgba(40,34,28,.22);
+  --cream:#2B2B2B;
+  --muted:#6E675F;
+  --saffron:#D08307;
+  --tomato:#D8471F;
+  --mint:#0E9E74;
+  --acqua:#0E93BE;
+  --grape:#7E30C9;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg)}
+body::before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(circle at 12% -8%, rgba(255,180,36,.20), transparent 46%),
+    radial-gradient(circle at 92% 4%, rgba(255,91,54,.16), transparent 42%),
+    radial-gradient(circle at 50% 108%, rgba(46,208,240,.11), transparent 52%);
+}
+body.giorno::before{background:none}
+body{
+  color:var(--cream);font-family:var(--sans);font-size:16px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;padding-bottom:calc(74px + env(safe-area-inset-bottom));
+  overflow-x:hidden;
+}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+input,select{font:inherit;color:inherit}
+h1,h2,h3{margin:0;font-weight:500;line-height:1.15}
+.wrap{max-width:820px;margin:0 auto;padding:0 16px}
+.muted{color:var(--muted)}
+:focus-visible{outline:2px solid var(--saffron);outline-offset:2px;border-radius:6px}
+
+/* ---------- header ---------- */
+body.giorno header{background:rgba(241,240,238,.92)}
+body.giorno nav.tabs{background:rgba(255,255,255,.97)}
+body.giorno .dials{background:radial-gradient(120% 100% at 50% 0%,rgba(222,124,5,.10),rgba(74,45,28,.06))}
+body.giorno .trk{stroke:rgba(74,45,28,.13)}
+body.giorno .strip{background:#F3EADF}
+body.giorno .accpill{background:rgba(139,52,214,.10)}
+body.giorno .bimby{background:rgba(222,124,5,.09)}
+body.giorno .sw{background:#D8C7B6}
+body.giorno .btn{color:#FFF6EC}
+body.giorno .li .box{color:#fff}
+body.giorno .warn{background:rgba(222,58,22,.09);color:#A82E12}
+body.giorno .head,body.giorno .tbl th{background:rgba(74,45,28,.04)}
+body.giorno .card,body.giorno ul.ing,body.giorno .step,body.giorno .crow,body.giorno .conv,body.giorno .tile{
+  box-shadow:0 1px 2px rgba(74,45,28,.06),0 8px 24px -18px rgba(74,45,28,.5)}
+.themeb{
+  width:40px;height:40px;border-radius:999px;flex:none;display:grid;place-items:center;
+  background:var(--surf2);font-size:17px;transition:transform .5s var(--ease),background .2s
+}
+.themeb:active{transform:rotate(-40deg) scale(.9)}
+header{
+  position:sticky;top:0;z-index:40;background:rgba(18,13,11,.9);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+  padding:11px 0 11px;padding-top:calc(11px + env(safe-area-inset-top));
+}
+.hrow{display:flex;align-items:center;gap:12px}
+.logo{
+  font-family:var(--serif);font-size:19px;letter-spacing:-.015em;flex:1;min-width:0;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.logo em{font-style:normal;background:linear-gradient(96deg,var(--saffron),var(--tomato));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.stepper{display:flex;align-items:center;background:var(--surf2);border-radius:999px;padding:3px;flex:none}
+.stepper button{width:32px;height:30px;border-radius:999px;font-size:18px;display:grid;place-items:center;color:var(--cream);transition:transform .12s}
+.stepper button:active{transform:scale(.82)}
+.stepper button:disabled{opacity:.28}
+.stepper .n{
+  min-width:56px;text-align:center;font-variant-numeric:tabular-nums;font-size:13.5px;
+  font-weight:600;letter-spacing:.01em;transition:transform .18s var(--ease)
+}
+.stepper .n.bump{transform:scale(1.18)}
+
+/* ---------- tab bar ---------- */
+nav.tabs{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;
+  background:rgba(18,13,11,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)
+}
+nav.tabs button{flex:1;padding:9px 4px 11px;display:flex;flex-direction:column;align-items:center;gap:4px;
+  font-size:11px;color:var(--muted);position:relative;transition:color .2s}
+nav.tabs button svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--ease)}
+nav.tabs button:active svg{transform:scale(.85)}
+nav.tabs button[aria-selected="true"]{color:var(--saffron)}
+nav.tabs button[aria-selected="true"] svg{
+  background:linear-gradient(150deg,var(--saffron),var(--tomato));
+  color:#fff;stroke:#fff;border-radius:999px;padding:8px;width:40px;height:40px;
+  margin:-13px 0 -4px;box-shadow:0 6px 14px -5px rgba(208,131,7,.75);animation:pop .34s var(--ease)}
+@keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+nav.tabs button{padding-top:12px}
+.badge{
+  position:absolute;top:5px;left:50%;margin-left:5px;background:var(--tomato);color:#fff;
+  font-size:10px;font-weight:700;min-width:16px;height:16px;border-radius:999px;
+  display:grid;place-items:center;padding:0 4px;animation:pop .3s var(--ease)
+}
+
+/* ---------- griglia ricette ---------- */
+.panel{padding:16px 0 34px;animation:panelIn .34s var(--ease)}
+@keyframes panelIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+body.giorno .hero{box-shadow:0 10px 30px -18px rgba(40,30,20,.45)}
+.search{
+  display:flex;align-items:center;gap:9px;background:var(--surf);border:1px solid var(--line);
+  border-radius:12px;padding:0 13px;margin-bottom:2px;transition:border-color .2s,box-shadow .2s
+}
+.search:focus-within{border-color:var(--line-2);box-shadow:0 0 0 3px rgba(255,180,36,.14)}
+.search svg{width:17px;height:17px;stroke:var(--muted);fill:none;stroke-width:1.7;flex:none}
+.search input{flex:1;background:none;border:0;padding:16px 0;font-size:16.5px;min-width:0}
+.search input:focus{outline:none}
+.search input::placeholder{color:var(--muted)}
+.chips{display:flex;gap:7px;overflow-x:auto;padding:13px 0 3px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  white-space:nowrap;border:1px solid var(--line-2);border-radius:999px;padding:9px 17px;
+  font-size:14.5px;color:var(--muted);transition:transform .12s,background .2s,color .2s
+}
+.chip:active{transform:scale(.94)}
+.chip[aria-pressed="true"]{background:linear-gradient(96deg,var(--saffron),var(--tomato));
+  border-color:transparent;color:#241108;font-weight:700}
+.chip.fv[aria-pressed="true"]{background:linear-gradient(96deg,#FF3D6E,var(--tomato));color:#fff}
+
+.grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:18px}
+.grid[data-cols="2"]{grid-template-columns:1fr 1fr;gap:12px}
+.grid[data-cols="2"] .nm{font-size:16px}
+.grid[data-cols="2"] .mt{font-size:11.5px;gap:9px}
+.grid[data-cols="2"] .lay{padding:36px 12px 12px}
+.grid[data-cols="2"] .art{aspect-ratio:1/1}
+.toolrow{display:flex;gap:9px;align-items:center;margin-top:13px}
+.toolrow .chips{flex:1;min-width:0;padding-top:0;padding-bottom:0}
+.cols{display:flex;gap:3px;background:var(--surf2);border-radius:11px;padding:3px;flex:none}
+.cols button{width:34px;height:30px;border-radius:9px;display:grid;place-items:center;color:var(--muted);transition:transform .12s}
+.cols button:active{transform:scale(.9)}
+.cols button[aria-pressed="true"]{background:var(--surf);color:var(--saffron)}
+.cols svg{width:15px;height:15px;fill:currentColor}
+/* accessori illustrati */
+.accgrid{display:flex;gap:9px;flex-wrap:wrap;margin-top:2px}
+.accitem{
+  display:flex;align-items:center;gap:9px;background:var(--surf2);border:1px solid var(--line);
+  border-radius:13px;padding:9px 13px 9px 10px;font-size:14.5px;font-weight:600
+}
+.accitem .ico{width:30px;height:30px;flex:none;color:var(--saffron)}
+.accitem small{display:block;font-weight:400;font-size:11.5px;color:var(--muted);margin-top:1px}
+.accpill{display:inline-flex;align-items:center;gap:6px}
+.accpill .ico{width:17px;height:17px;color:var(--grape)}
+.crow .ico{width:44px;height:44px;flex:none;color:var(--saffron)}
+.tile{
+  position:relative;border-radius:20px;overflow:hidden;background:var(--surf);
+  border:1px solid var(--line);text-align:left;display:block;width:100%;padding:0;
+  transition:transform .2s var(--ease),box-shadow .2s;animation:tileIn .4s var(--ease) both
+}
+@keyframes tileIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.tile:active{transform:scale(.97)}
+@media(hover:hover){.tile:hover{transform:translateY(-3px);box-shadow:0 16px 34px -20px rgba(0,0,0,.7)}
+  .tile:hover .art,.tile:hover .art img{transform:scale(1.05)}}
+.tile .art{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;transition:transform .45s var(--ease)}
+.tile .art svg{display:block;width:100%;height:100%}
+.tile .art img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .45s var(--ease)}
+.tile .lay{
+  position:absolute;left:0;right:0;bottom:0;padding:46px 18px 16px;
+  background:linear-gradient(to top,rgba(14,9,7,.96) 34%,rgba(14,9,7,0));
+}
+.tile .nm{font-family:var(--serif);font-size:22px;line-height:1.15;letter-spacing:-.015em;display:block;color:#FFF3E4}
+.tile .mt{font-size:13px;color:rgba(255,243,228,.72);margin-top:6px;display:flex;gap:14px}
+.tile .pct{
+  position:absolute;top:12px;left:12px;background:rgba(11,14,8,.78);border-radius:9px;
+  padding:6px 11px;font-size:13px;font-weight:700;color:#7CE8BE;backdrop-filter:blur(5px);
+  font-variant-numeric:tabular-nums
+}
+.tile .camtag{
+  position:absolute;top:11px;right:11px;width:26px;height:26px;border-radius:999px;
+  background:rgba(11,14,8,.6);backdrop-filter:blur(5px);display:grid;place-items:center;font-size:12px
+}
+.empty{
+  border:1px dashed var(--line-2);border-radius:16px;padding:30px 20px;text-align:center;
+  color:var(--muted);font-size:14px;margin-top:16px;line-height:1.6
+}
+
+/* ---------- dettaglio ---------- */
+.hero{
+  position:relative;margin:16px 0 0;height:312px;overflow:hidden;border-radius:28px;
+  background:var(--surf);border:1px solid var(--line)
+}
+.hero .art,.hero .art svg,.hero img{width:100%;height:222px;object-fit:cover;display:block}
+.hero .shade{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(20,24,15,1) 4%,rgba(20,24,15,.35) 46%,rgba(20,24,15,.55) 100%)
+}
+.hero .htxt{position:absolute;left:20px;right:20px;bottom:24px;text-align:center;animation:heroTxt .5s .06s var(--ease) both}
+@keyframes heroTxt{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.hero h2{font-family:var(--serif);font-size:31px;letter-spacing:-.02em;line-height:1.1;color:var(--cream)}
+.hero .sub{font-size:15px;color:var(--muted);margin-top:9px;letter-spacing:.01em}
+.fab{
+  position:absolute;top:14px;left:14px;width:44px;height:44px;border-radius:999px;
+  background:rgba(11,14,8,.62);backdrop-filter:blur(6px);display:grid;place-items:center;font-size:17px;
+  color:#FFF3E4;transition:transform .14s
+}
+.fab:active{transform:scale(.86)}
+.fab.cam{left:auto;right:12px;font-size:15px}
+
+.card{background:var(--surf);border:1px solid var(--line);border-radius:20px;overflow:hidden;margin-top:14px}
+.card.pad{padding:18px 20px 20px}
+.sec2{
+  font-family:var(--sans);font-size:23px;font-weight:600;color:var(--cream);
+  letter-spacing:-.01em;display:flex;align-items:baseline;gap:9px
+}
+.sec2 span{font-size:13px;font-weight:400;color:var(--muted)}
+.row{display:flex;gap:14px;padding:15px 16px;border-bottom:1px solid var(--line);font-size:15.5px}
+.row:last-child{border-bottom:0}
+.row .k{width:98px;flex:none;color:var(--muted);font-size:14px}
+.row .v{flex:1}
+.warn{
+  background:rgba(216,88,61,.13);border:1px solid rgba(216,88,61,.35);border-radius:14px;
+  padding:14px 16px;margin-top:14px;font-size:14.5px;line-height:1.45;color:#FFB9A6
+}
+.sec{
+  font-family:var(--sans);font-size:23px;font-weight:600;margin:30px 0 4px;display:flex;
+  align-items:baseline;gap:10px;letter-spacing:-.01em;color:var(--cream)
+}
+.sec span{font-size:13px;color:var(--muted);font-weight:400}
+
+ul.ing{list-style:none;margin:6px 0 0;padding:0}
+ul.ing li{display:flex;gap:16px;padding:11px 0;align-items:baseline}
+ul.ing .q{
+  font-variant-numeric:tabular-nums;font-weight:600;flex:none;text-align:right;
+  font-size:16px;color:var(--saffron)
+}
+ul.ing .n{flex:1;font-size:16.5px}
+ul.ing .n i{font-style:normal;color:var(--muted);font-size:11.5px;margin-left:6px}
+
+.steps{counter-reset:s;display:flex;flex-direction:column;gap:11px;margin-top:12px}
+.step{background:var(--surf);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.step .txt{padding:16px 16px 14px;display:flex;gap:13px;font-size:16px;line-height:1.45}
+.step .n{
+  counter-increment:s;flex:none;width:26px;height:26px;border-radius:999px;
+  border:1px solid var(--line-2);color:var(--saffron);font-size:13px;font-weight:700;
+  display:grid;place-items:center;margin-top:2px;font-variant-numeric:tabular-nums
+}
+.step .stepmedia{display:block;width:100%;height:170px;object-fit:cover;border-bottom:1px solid var(--line)}
+.step .stepcam{
+  display:flex;align-items:center;gap:7px;margin:0 16px 14px;font-size:12.5px;color:var(--muted);
+  border:1px dashed var(--line-2);border-radius:11px;padding:9px 12px;width:calc(100% - 32px);transition:border-color .2s
+}
+.step .stepcam:active{border-color:var(--saffron)}
+.step .stepcam svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.7}
+.accpill{
+  display:inline-block;margin-top:10px;padding:5px 13px;border-radius:999px;font-size:12.5px;
+  font-weight:600;color:var(--grape);background:rgba(196,107,255,.14);
+  border:1px solid rgba(196,107,255,.4)
+}
+.step .n::before{content:counter(s)}
+/* quadranti — ispirati alla manopola della macchina */
+.dials{
+  display:flex;gap:4px;padding:18px 8px 16px;border-top:1px solid var(--line);
+  background:transparent
+}
+.dial{flex:1;min-width:0;text-align:center}
+.dial svg{display:block;width:100%;max-width:92px;margin:0 auto}
+.dial.t .prog{filter:drop-shadow(0 0 4px rgba(63,224,168,.75))}
+.dial.v .prog{filter:drop-shadow(0 0 4px rgba(46,208,240,.75))}
+.dial.g .prog{filter:drop-shadow(0 0 4px rgba(255,91,54,.7))}
+.dial.p .prog{filter:drop-shadow(0 0 4px rgba(255,180,36,.75))}
+.dial .un{font-size:15px;font-weight:600;fill:var(--muted)}
+.dials{margin:4px 0 2px}
+.dial .lb{font-size:13px;color:var(--muted);margin-top:6px}
+.dial text{font-family:var(--sans);font-weight:800;fill:var(--cream);letter-spacing:-.02em}
+.trk{stroke:rgba(255,236,214,.10)}
+.prog{animation:fill .85s var(--ease) both}
+@keyframes fill{from{stroke-dasharray:0 400}}
+body.giorno .trk{stroke:rgba(80,50,30,.11)}
+.dial.off text{fill:var(--muted);opacity:.45}
+
+.fav{
+  position:absolute;top:12px;right:12px;width:42px;height:42px;border-radius:999px;
+  background:rgba(14,9,7,.62);backdrop-filter:blur(6px);display:grid;place-items:center;
+  font-size:19px;color:rgba(255,243,228,.55);line-height:1;transition:transform .16s var(--ease)
+}
+.fav:active{transform:scale(.8)}
+.fav[aria-pressed="true"]{color:#FF3D6E;animation:beat .4s var(--ease)}
+@keyframes beat{0%{transform:scale(1)}35%{transform:scale(1.35)}70%{transform:scale(.92)}100%{transform:scale(1)}}
+.fab.fav2{left:auto;right:70px}
+.fab.fav2[aria-pressed="true"]{color:#FF3D6E}
+
+/* tabelle conversione */
+.crow{
+  background:var(--surf);border:1px solid var(--line);border-radius:18px;padding:15px;
+  margin-top:10px;display:flex;gap:14px;align-items:center
+}
+.crow .mini{display:flex;align-items:center;gap:9px;flex:none}
+.crow .mini svg{width:52px;height:52px;display:block}
+.crow .arw{color:var(--saffron);font-size:17px}
+.crow .cap{flex:1;min-width:0;font-size:14.5px;line-height:1.45}
+.crow .cap b{color:var(--cream);font-weight:700;display:block;font-size:15.5px;margin-bottom:3px}
+.crow .cap span{color:var(--muted)}
+.meter{display:flex;gap:3px;flex:none;width:104px}
+.meter i{flex:1;height:26px;border-radius:3px;background:rgba(255,236,214,.10)}
+.meter i.on{background:linear-gradient(180deg,var(--saffron),var(--tomato))}
+.thermo{flex:none;width:104px;height:10px;border-radius:999px;background:rgba(255,236,214,.10);overflow:hidden}
+.thermo i{display:block;height:100%;border-radius:999px;
+  background:linear-gradient(90deg,var(--acqua),var(--saffron),var(--tomato))}
+.strip{display:flex;background:#0D0907;border-top:1px solid var(--line)}
+.cell{flex:1;padding:13px 6px 12px;text-align:center;border-left:1px solid rgba(240,238,222,.07);min-width:0}
+.cell:first-child{border-left:0}
+.cell .v{font-size:19px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cell .k{font-size:10.5px;color:var(--muted);margin-top:4px}
+.cell.t .v{color:var(--mint)} .cell.v_ .v{color:var(--acqua)}
+.cell.g .v{color:var(--tomato)} .cell.p .v{color:var(--saffron)}
+.cell.a .v{color:var(--grape);font-size:12px;font-weight:600}
+.bimby{display:none;padding:9px 14px;font-size:12px;color:var(--muted);
+  border-top:1px solid var(--line);background:rgba(255,180,36,.07)}
+body.bimby-on .bimby{display:block}
+.bimby b{color:var(--mint);font-weight:600}
+.note{
+  border-left:3px solid var(--tomato);background:var(--surf);border-radius:0 14px 14px 0;
+  padding:14px 16px;font-size:15px;line-height:1.5;margin-top:10px;color:var(--cream)
+}
+.acts{display:flex;gap:9px;margin-top:20px;flex-wrap:wrap}
+.btn{
+  flex:1;min-width:150px;text-align:center;border-radius:14px;padding:15px 16px;
+  font-size:15.5px;font-weight:700;color:#2B1206;
+  background:linear-gradient(96deg,var(--saffron),var(--tomato));
+  box-shadow:0 6px 18px -8px rgba(255,91,54,.8);transition:transform .14s
+}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--surf);color:var(--cream);border:1px solid var(--line-2);font-weight:500}
+.btn.on{background:linear-gradient(96deg,var(--mint),#17B98A);color:#04281C;box-shadow:none}
+.btn.play{background:linear-gradient(96deg,var(--acqua),var(--grape));color:#08131F;
+  display:flex;align-items:center;justify-content:center;gap:8px}
+.btn.play svg{width:18px;height:18px;fill:currentColor}
+.toggle{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--muted);margin-top:18px}
+.sw{width:42px;height:25px;border-radius:999px;background:#4A342A;position:relative;flex:none;transition:background .2s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:19px;height:19px;border-radius:999px;
+  background:var(--cream);transition:transform .2s var(--ease)}
+.toggle[aria-pressed="true"] .sw{background:linear-gradient(96deg,var(--saffron),var(--tomato))}
+.toggle[aria-pressed="true"] .sw::after{transform:translateX(17px)}
+
+/* ---------- foto: pannello di gestione ---------- */
+.photobar{
+  display:flex;gap:8px;align-items:center;margin-top:12px;background:var(--surf);
+  border:1px solid var(--line);border-radius:14px;padding:9px 10px 9px 13px;flex-wrap:wrap
+}
+.photobar .plab{font-size:12.5px;color:var(--muted);flex:none;display:flex;align-items:center;gap:7px}
+.photobar .plab svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.7}
+.photobar input.url{flex:1;min-width:150px;background:var(--surf2);border:1px solid var(--line);
+  border-radius:10px;padding:10px 12px;font-size:14px}
+.photobar .pbtn{background:var(--surf2);border:1px solid var(--line);border-radius:10px;
+  padding:10px 13px;font-size:13.5px;font-weight:600;flex:none;display:flex;align-items:center;gap:6px}
+.photobar .pbtn svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.7}
+.photobar .pbtn.rm{color:var(--tomato)}
+
+/* ---------- MODALITÀ PRESENTAZIONE / SLIDE ---------- */
+.deck{position:fixed;inset:0;z-index:80;background:var(--bg);display:none}
+.deck.open{display:block}
+.deck .track{display:flex;height:100%;transition:transform .45s var(--ease);will-change:transform}
+.slide{
+  flex:0 0 100%;height:100%;overflow-y:auto;overflow-x:hidden;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:calc(70px + env(safe-area-inset-top)) 24px calc(96px + env(safe-area-inset-bottom));
+  scroll-snap-align:start
+}
+.slide .inner{max-width:640px;margin:0 auto;width:100%;animation:slideUp .5s var(--ease) both}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.slide.cover{text-align:center}
+.slide.cover .sph{width:100%;height:min(46vh,340px);border-radius:26px;overflow:hidden;
+  border:1px solid var(--line);margin-bottom:26px;background:var(--surf)}
+.slide.cover .sph img,.slide.cover .sph svg{width:100%;height:100%;object-fit:cover;display:block}
+.slide.cover .eyebrow{font-size:13px;letter-spacing:.28em;text-transform:uppercase;color:var(--saffron);font-weight:700}
+.slide.cover h2{font-family:var(--serif);font-size:clamp(30px,8vw,52px);letter-spacing:-.02em;margin:12px 0 14px;color:var(--cream)}
+.slide.cover .csub{color:var(--muted);font-size:16px}
+.slide .kicker{font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--saffron);font-weight:700;margin-bottom:14px}
+.slide .stitle{font-family:var(--serif);font-size:clamp(24px,6vw,38px);line-height:1.14;letter-spacing:-.01em;color:var(--cream)}
+.slide .sph2{width:100%;height:min(34vh,260px);border-radius:22px;overflow:hidden;border:1px solid var(--line);
+  margin:20px 0;background:var(--surf)}
+.slide .sph2 img,.slide .sph2 svg{width:100%;height:100%;object-fit:cover;display:block}
+.slide .stext{font-size:clamp(18px,4.6vw,24px);line-height:1.5;color:var(--cream);margin-top:6px}
+.slide .sbimby{margin-top:18px;font-size:14.5px;color:var(--muted);border-left:3px solid var(--mint);
+  padding:6px 0 6px 14px}
+.slide .sbimby b{color:var(--mint);font-weight:600}
+.slide ul.singred{list-style:none;padding:0;margin:14px 0 0}
+.slide ul.singred li{display:flex;justify-content:space-between;gap:16px;padding:12px 2px;
+  border-bottom:1px solid var(--line);font-size:clamp(16px,4vw,20px)}
+.slide ul.singred li .sq{color:var(--saffron);font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.slide .sdials{margin-top:12px}
+.deckbar{position:absolute;top:0;left:0;right:0;z-index:2;display:flex;align-items:center;gap:12px;
+  padding:calc(14px + env(safe-area-inset-top)) 18px 14px;
+  background:linear-gradient(to bottom,rgba(0,0,0,.34),transparent)}
+body.giorno .deckbar{background:linear-gradient(to bottom,rgba(255,255,255,.5),transparent)}
+.deckbar .dtitle{flex:1;min-width:0;font-size:14px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.deckbar button{width:40px;height:40px;border-radius:999px;background:var(--surf2);display:grid;place-items:center;font-size:16px;flex:none}
+.deckbar .pdf{width:auto;padding:0 15px;font-size:13.5px;font-weight:600;gap:7px;display:flex;align-items:center}
+.deckbar .pdf svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8}
+.deckctl{position:absolute;bottom:0;left:0;right:0;z-index:2;display:flex;align-items:center;gap:14px;
+  padding:16px 20px calc(20px + env(safe-area-inset-bottom));
+  background:linear-gradient(to top,rgba(0,0,0,.4),transparent)}
+body.giorno .deckctl{background:linear-gradient(to top,rgba(255,255,255,.55),transparent)}
+.deckctl button.nav{width:52px;height:52px;border-radius:999px;flex:none;display:grid;place-items:center;
+  background:linear-gradient(150deg,var(--saffron),var(--tomato));color:#241108;font-size:22px;
+  box-shadow:0 8px 20px -8px rgba(255,91,54,.7);transition:transform .14s}
+.deckctl button.nav:active{transform:scale(.9)}
+.deckctl button.nav:disabled{opacity:.32;box-shadow:none}
+.dots{flex:1;display:flex;gap:6px;align-items:center;justify-content:center;flex-wrap:wrap}
+.dots i{width:7px;height:7px;border-radius:999px;background:var(--line-2);transition:all .3s var(--ease)}
+.dots i.on{width:22px;background:var(--saffron)}
+.progline{position:absolute;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--saffron),var(--tomato));
+  z-index:3;transition:width .45s var(--ease)}
+
+/* ---------- frigo / spesa ---------- */
+.inrow{display:flex;gap:9px;margin-top:12px}
+.inrow input{flex:1;background:var(--surf);border:1px solid var(--line);border-radius:12px;
+  padding:13px;min-width:0}
+.inrow button{background:var(--saffron);color:#191A0F;border-radius:12px;padding:0 18px;font-weight:600;transition:transform .12s}
+.inrow button:active{transform:scale(.94)}
+.mine{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
+.mine .chip{background:var(--surf2);border-color:transparent;color:var(--cream);animation:pop .28s var(--ease)}
+.mine .chip button{margin-left:8px;color:var(--muted);font-size:15px;line-height:1}
+.li{display:flex;gap:14px;padding:15px 16px;border-bottom:1px solid var(--line);align-items:center}
+.li:last-child{border-bottom:0}
+.li .box{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--line-2);flex:none;
+  display:grid;place-items:center;font-size:12px;color:#191A0F;transition:all .2s var(--ease)}
+.li[data-done="1"] .box{background:var(--mint);border-color:var(--mint);transform:scale(1.05)}
+.li[data-done="1"] .lbl{text-decoration:line-through;color:var(--muted)}
+.li .lbl{flex:1;font-size:16px}
+.li .lbl small{display:block;color:var(--muted);font-size:11.5px;margin-top:2px}
+.li .qty{font-variant-numeric:tabular-nums;font-size:15px;color:var(--saffron);flex:none;font-weight:700}
+.head{padding:11px 14px;border-bottom:1px solid var(--line);font-size:12.5px;color:var(--muted);
+  display:flex;justify-content:space-between;align-items:center;gap:10px;background:rgba(255,255,255,.02)}
+
+/* ---------- tabelle ---------- */
+.tbl{width:100%;border-collapse:collapse;background:var(--surf);border:1px solid var(--line);
+  border-radius:14px;overflow:hidden;margin-top:14px;font-size:15px}
+.tbl th{text-align:left;padding:11px 13px;font-size:11.5px;color:var(--muted);font-weight:600;
+  border-bottom:1px solid var(--line);background:rgba(255,255,255,.02)}
+.tbl td{padding:14px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl tr:last-child td{border-bottom:0}
+.tbl td:first-child{color:var(--muted)}
+.tbl b{color:var(--saffron);font-weight:600}
+.conv{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px}
+.conv label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+.conv .r2{display:flex;gap:10px;flex-wrap:wrap}
+.conv .r2>div{flex:1;min-width:140px}
+.conv select{width:100%;background:var(--surf2);border:1px solid var(--line);border-radius:10px;
+  padding:11px;font-size:14.5px}
+.cout{margin-top:14px;border-radius:11px;overflow:hidden;border:1px solid var(--line)}
+.cnote{font-size:14px;color:var(--cream);padding:11px 13px;background:var(--surf2)}
+footer{padding:28px 0 6px;font-size:12px;color:var(--muted);line-height:1.65}
+
+@media (min-width:560px){ .grid{grid-template-columns:1fr 1fr} .hero{height:340px} .hero h2{font-size:40px} }
+@media (min-width:900px){ .grid[data-cols="2"]{grid-template-columns:repeat(3,1fr)} }
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}
+  .deck .track{transition:none!important}}
+
+/* ---------- stampa: le slide diventano pagine PDF ---------- */
+@media print{
+  @page{margin:14mm}
+  header,nav.tabs,.deckbar,.deckctl,.progline,main{display:none!important}
+  body{padding:0;background:#fff;color:#111}
+  .deck{position:static;display:block!important;background:#fff}
+  .deck .track{display:block;transform:none!important}
+  .slide{height:auto;min-height:auto;page-break-after:always;break-after:page;display:block;
+    padding:0 0 8mm;color:#111}
+  .slide .inner{animation:none;max-width:100%}
+  .slide .stitle,.slide.cover h2,.slide .stext,.slide.cover .csub,.slide ul.singred li{color:#111}
+  .slide .sph,.slide .sph2{height:70mm}
+  .slide.cover .sph{height:90mm}
+  .dial text{fill:#111}
+  .slide .kicker,.slide.cover .eyebrow{color:#c26a12}
+}
+</style>
+</head>
+<body>
+<header><div class="wrap"><div class="hrow">
+  <div class="logo">Cucina <em>Mambo</em></div>
+  <button class="themeb" id="tema" aria-label="Cambia tema">🌙</button>
+  <div class="stepper">
+    <button id="pMinus" aria-label="Meno persone">−</button>
+    <div class="n" id="pNum">4 pers.</div>
+    <button id="pPlus" aria-label="Più persone">+</button>
+  </div>
+</div></div></header>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="gT" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7CFFD2"/><stop offset="1" stop-color="#21C58F"/></linearGradient>
+  <linearGradient id="gV" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6BE8FF"/><stop offset="1" stop-color="#1BA8D8"/></linearGradient>
+  <linearGradient id="gG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFC24D"/><stop offset="1" stop-color="#FF3D2E"/></linearGradient>
+  <linearGradient id="gP" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFE066"/><stop offset="1" stop-color="#FF8A00"/></linearGradient>
+</defs></svg>
+<main class="wrap" id="view"></main>
+
+<nav class="tabs" role="tablist">
+  <button role="tab" data-tab="ricette" aria-selected="true"><svg viewBox="0 0 24 24"><path d="M4 13h16a8 8 0 0 1-16 0Z"/><path d="M3 20h18"/><path d="M12 4v3"/></svg>Ricette</button>
+  <button role="tab" data-tab="frigo" aria-selected="false"><svg viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="2.5"/><path d="M6 11h12M9 7v1.5M9 14v2"/></svg>Frigo</button>
+  <button role="tab" data-tab="spesa" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M5 8h14l-1.2 11a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>Spesa<span class="badge" id="spBadge" hidden>0</span></button>
+  <button role="tab" data-tab="pref" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-9.3A3.9 3.9 0 0 1 12 8a3.9 3.9 0 0 1 7 2.7C19 15.6 12 20 12 20Z"/></svg>Preferiti<span class="badge" id="prBadge" hidden>0</span></button>
+  <button role="tab" data-tab="conv" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M4 7h11M4 17h11"/><path d="m17 4 3 3-3 3M17 14l3 3-3 3"/></svg>Conversioni</button>
+</nav>
+
+<!-- modalità presentazione / slide -->
+<div class="deck" id="deck" role="dialog" aria-modal="true" aria-label="Presentazione ricetta">
+  <div class="progline" id="progline"></div>
+  <div class="deckbar">
+    <button id="deckClose" aria-label="Chiudi presentazione">✕</button>
+    <div class="dtitle" id="deckTitle"></div>
+    <button class="pdf" id="deckPdf"><svg viewBox="0 0 24 24"><path d="M12 3v11m0 0 4-4m-4 4-4-4"/><path d="M5 20h14"/></svg>PDF</button>
+  </div>
+  <div class="track" id="deckTrack"></div>
+  <div class="deckctl">
+    <button class="nav" id="deckPrev" aria-label="Precedente">←</button>
+    <div class="dots" id="deckDots"></div>
+    <button class="nav" id="deckNext" aria-label="Successivo">→</button>
+  </div>
+</div>
+<input type="file" id="globalCam" accept="image/*" capture="environment" hidden>
+<script>
+/* ============================================================
+   DATI RICETTE — 30 ricette (blocco 1)
+   Ogni step riporta i parametri Mambo Touch e, in "b",
+   il parametro Bimby di partenza da cui è stato convertito.
+   Scala ingredienti: s='sublineare' (sale, spezie, aromi, lievito),
+   f='fisso' (acqua vaporiera). Default = lineare.
+   b:1 = dispensa (non conta nel match "cosa ho in frigo").
+   ============================================================ */
+const RICETTE = [
+
+/* ---------------- BASI E SALSE ---------------- */
+{id:'soffritto', nome:'Soffritto base', cat:'Basi e salse', tempo:10, porz:4, vol:280,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['veloce','base'],
+ ing:[{q:100,u:'g',n:'cipolla'},{q:80,u:'g',n:'carota'},{q:80,u:'g',n:'sedano'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1}],
+ steps:[
+  {x:'Metti cipolla, carota e sedano a pezzi grossi nella caraffa e trita.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Riunisci con la spatola, aggiungi l’olio e rosola. Coperchio con tappo inserito.', t:'6 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'5 min · Varoma · vel 1 antiorario'}],
+ note:['La velocità 1 del Mambo con le lame taglia più del senso antiorario del Bimby: monta sempre il MamboMix quando devi solo rimestare.','Potenza 8 e non 10: sopra questa soglia la cipolla brucia sul fondo in acciaio prima di appassire.']},
+
+{id:'besciamella', nome:'Besciamella', cat:'Basi e salse', tempo:15, porz:4, vol:700,
+ caraffa:'Habana', acc:['Lame'], tag:['base','senza glutine no'],
+ ing:[{q:500,u:'ml',n:'latte intero'},{q:50,u:'g',n:'burro'},{q:50,u:'g',n:'farina 00',b:1},{q:4,u:'g',n:'sale',s:'s',b:1},{q:1,u:'pizzico',n:'noce moscata',s:'s',b:1}],
+ steps:[
+  {x:'Sciogli il burro nella caraffa.', t:'2 min', v:'1', T:'90°C', P:'4', a:'Lame', b:'2 min · 90°C · vel 1'},
+  {x:'Unisci la farina e tosta il roux, così la salsa non sa di crudo.', t:'1 min 30 sec', v:'3', T:'90°C', P:'3', a:'Lame', b:'1 min · 90°C · vel 3'},
+  {x:'Versa il latte freddo dal foro, aggiungi sale e noce moscata.', t:'8 min', v:'3', T:'95°C', P:'4', a:'Lame', b:'7 min · 90°C · vel 4'},
+  {x:'Se la vuoi più densa, prosegui senza coperchio dosatore per far evaporare.', t:'2 min', v:'3', T:'95°C', P:'4', a:'Lame', b:'2 min · 100°C · vel 4'}],
+ note:['Qui la potenza bassa (3-4) fa tutto il lavoro: con P8 il latte si attacca al fondo anche a 90°C.','La caraffa Habana è la scelta giusta per tutto ciò che contiene latte, uova o zucchero.']},
+
+{id:'sugo-pomodoro', nome:'Sugo di pomodoro semplice', cat:'Basi e salse', tempo:35, porz:4, vol:1000,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','base'],
+ ing:[{q:700,u:'g',n:'passata di pomodoro'},{q:80,u:'g',n:'cipolla'},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:6,u:'g',n:'sale',s:'s',b:1},{q:1,u:'cucchiaino',n:'zucchero',s:'s',b:1},{q:6,u:'foglie',n:'basilico',s:'s'}],
+ steps:[
+  {x:'Trita la cipolla.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Aggiungi l’olio e imbiondisci.', t:'5 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'4 min · Varoma · vel 1'},
+  {x:'Versa la passata, sale e zucchero. Metti il cestello capovolto sul coperchio al posto del dosatore: fa da antischizzo e lascia evaporare.', t:'22 min', v:'1', T:'100°C', P:'5', a:'MamboMix', b:'20 min · 100°C · vel 1 antiorario'},
+  {x:'Unisci il basilico spezzato a mano e amalgama a macchina spenta.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Sui sughi lunghi il Mambo chiede 2-3 minuti in più del Bimby a parità di risultato: la potenza calorifica media mantiene un sobbollire più gentile.']},
+
+{id:'ragu', nome:'Ragù alla bolognese', cat:'Basi e salse', tempo:80, porz:4, vol:1500,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['carne','lento'],
+ ing:[{q:100,u:'g',n:'cipolla'},{q:80,u:'g',n:'carota'},{q:80,u:'g',n:'sedano'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:300,u:'g',n:'macinato di manzo'},{q:150,u:'g',n:'salsiccia o macinato di maiale'},{q:100,u:'ml',n:'vino rosso',s:'s'},{q:500,u:'g',n:'passata di pomodoro'},{q:30,u:'g',n:'concentrato di pomodoro'},{q:7,u:'g',n:'sale',s:'s',b:1},{q:100,u:'ml',n:'latte',s:'s'}],
+ steps:[
+  {x:'Trita cipolla, carota e sedano.', t:'6 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Aggiungi l’olio e fai il soffritto.', t:'7 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'6 min · Varoma · vel 1'},
+  {x:'Unisci la carne sbriciolata e rosolala bene: deve perdere il colore rosso.', t:'8 min', v:'1', T:'120°C', P:'9', a:'MamboMix', b:'7 min · Varoma · vel 1 antiorario'},
+  {x:'Sfuma con il vino, senza dosatore così l’alcol evapora.', t:'5 min', v:'1', T:'120°C', P:'9', a:'MamboMix', b:'5 min · Varoma · vel 1 antiorario'},
+  {x:'Aggiungi passata, concentrato e sale. Cestello capovolto sul coperchio.', t:'45 min', v:'1', T:'100°C', P:'4', a:'MamboMix', b:'40 min · 100°C · vel 1 antiorario'},
+  {x:'Versa il latte e finisci la cottura: smorza l’acidità e rende il ragù vellutato.', t:'10 min', v:'1', T:'95°C', P:'3', a:'MamboMix', b:'10 min · 100°C · vel 1 antiorario'}],
+ note:['Un ragù così lungo è il caso perfetto per SlowMambo: se il tuo menu lo prevede, imposta l’ultima fase a 95°C con movimento lento invece della velocità 1.','Non superare 1,8 L in caraffa: il ragù borbotta e schizza sul coperchio.']},
+
+{id:'pesto', nome:'Pesto alla genovese', cat:'Basi e salse', tempo:5, porz:4, vol:350,
+ caraffa:'Acciaio', acc:['Lame'], tag:['veloce','vegetariano','a freddo'],
+ ing:[{q:60,u:'g',n:'basilico fresco'},{q:70,u:'g',n:'parmigiano grattugiato'},{q:25,u:'g',n:'pecorino grattugiato'},{q:20,u:'g',n:'pinoli'},{q:1,u:'spicchio',n:'aglio',s:'s'},{q:120,u:'ml',n:'olio extravergine',s:'s',b:1},{q:3,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Metti in caraffa fredda e asciutta aglio, pinoli e formaggi. Trita.', t:'10 sec', v:'8', T:'—', P:'—', a:'Lame', b:'10 sec · vel 7'},
+  {x:'Aggiungi basilico e sale, poi l’olio a filo dal foro del coperchio mentre gira.', t:'25 sec', v:'6', T:'—', P:'—', a:'Lame', b:'20 sec · vel 6'},
+  {x:'Riunisci con la spatola e dai un ultimo giro breve.', t:'10 sec', v:'6', T:'—', P:'—', a:'Lame', b:'10 sec · vel 6'}],
+ note:['Caraffa e lame vanno fredde: metti la caraffa in freezer 10 minuti prima. Le lame del Mambo scaldano un po’ più di quelle del Bimby e il basilico annerisce.','Mai temperatura: qui il campo gradi resta spento.']},
+
+{id:'maionese', nome:'Maionese', cat:'Basi e salse', tempo:4, porz:4, vol:350,
+ caraffa:'Acciaio', acc:['Farfalla'], tag:['veloce','a freddo'],
+ ing:[{q:1,u:'pz',n:'uovo intero',s:'s'},{q:250,u:'ml',n:'olio di semi',s:'s',b:1},{q:15,u:'ml',n:'succo di limone',s:'s'},{q:3,u:'g',n:'sale',s:'s',b:1},{q:1,u:'cucchiaino',n:'senape',s:'s'}],
+ steps:[
+  {x:'Monta la farfalla. Inserisci uovo, limone, sale e senape, tutto a temperatura ambiente.', t:'—', v:'—', T:'—', P:'—', a:'Farfalla', b:'—'},
+  {x:'Avvia e versa l’olio a filo lentissimo dal foro del coperchio: devono servirti tutti e 3 i minuti.', t:'3 min', v:'4', T:'—', P:'—', a:'Farfalla', b:'3 min · vel 4'}],
+ note:['Se impazzisce: svuota, monta un tuorlo nuovo e reincorpora la maionese impazzita a filo alla stessa velocità.']},
+
+/* ---------------- PRIMI ---------------- */
+{id:'risotto-funghi', nome:'Risotto ai funghi porcini', cat:'Primi', tempo:30, porz:4, vol:1400,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano'],
+ ing:[{q:320,u:'g',n:'riso Carnaroli'},{q:250,u:'g',n:'funghi porcini (o misto bosco)'},{q:80,u:'g',n:'cipolla'},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:60,u:'ml',n:'vino bianco',s:'s'},{q:800,u:'ml',n:'brodo vegetale caldo'},{q:40,u:'g',n:'burro'},{q:50,u:'g',n:'parmigiano grattugiato'},{q:4,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita la cipolla, unisci l’olio e soffriggi.', t:'5 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'4 min · Varoma · vel 1'},
+  {x:'Aggiungi i funghi a fette e insaporisci.', t:'5 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'5 min · Varoma · vel 1 antiorario'},
+  {x:'Unisci il riso e tostalo.', t:'3 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'3 min · 120°C · vel 1 antiorario'},
+  {x:'Sfuma con il vino senza dosatore.', t:'2 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'2 min · Varoma · vel 1 antiorario'},
+  {x:'Versa il brodo caldo e il sale, cuoci con il cestello capovolto sul coperchio.', t:'15 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'14 min · 100°C · vel 1 antiorario'},
+  {x:'Spegni, aggiungi burro e parmigiano e manteca a macchina ferma per un minuto.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Il brodo deve essere caldo: il Mambo recupera la temperatura più lentamente del Bimby e il riso si spappolerebbe fuori.','Il MamboMix è obbligatorio, le lame romperebbero i chicchi.']},
+
+{id:'risotto-milanese', nome:'Risotto alla milanese', cat:'Primi', tempo:28, porz:4, vol:1400,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano'],
+ ing:[{q:320,u:'g',n:'riso Carnaroli'},{q:70,u:'g',n:'cipolla'},{q:40,u:'g',n:'burro'},{q:60,u:'ml',n:'vino bianco',s:'s'},{q:850,u:'ml',n:'brodo di carne caldo'},{q:1,u:'bustina',n:'zafferano',s:'s'},{q:60,u:'g',n:'parmigiano grattugiato'},{q:30,u:'g',n:'burro per mantecare'},{q:4,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita la cipolla.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Unisci il burro e fai appassire dolcemente, senza colorire.', t:'5 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'4 min · 100°C · vel 1'},
+  {x:'Aggiungi il riso e tosta.', t:'3 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'3 min · 120°C · vel 1 antiorario'},
+  {x:'Sfuma con il vino senza dosatore.', t:'2 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'2 min · Varoma · vel 1 antiorario'},
+  {x:'Versa brodo caldo, zafferano e sale.', t:'15 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'14 min · 100°C · vel 1 antiorario'},
+  {x:'Manteca fuori dal robot con burro freddo e parmigiano.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Con il burro non salire oltre P6 in appassimento: brucia molto prima dell’olio.']},
+
+{id:'minestrone', nome:'Minestrone di verdure', cat:'Primi', tempo:40, porz:4, vol:1900,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','leggero'],
+ ing:[{q:150,u:'g',n:'patate'},{q:120,u:'g',n:'carote'},{q:100,u:'g',n:'zucchine'},{q:100,u:'g',n:'fagiolini'},{q:80,u:'g',n:'sedano'},{q:80,u:'g',n:'cipolla'},{q:100,u:'g',n:'pomodori pelati'},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:900,u:'ml',n:'acqua o brodo vegetale'},{q:8,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Metti cipolla e sedano a pezzi e trita.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Aggiungi l’olio e soffriggi.', t:'5 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'4 min · Varoma · vel 1'},
+  {x:'Unisci tutte le altre verdure a cubetti, i pelati, l’acqua e il sale.', t:'30 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'28 min · 100°C · vel 1 antiorario'},
+  {x:'Se lo vuoi cremoso, togli il MamboMix, rimetti le lame e frulla.', t:'30 sec', v:'7', T:'—', P:'—', a:'Lame', b:'30 sec · vel 7'}],
+ note:['Occhio al livello: con più di 6 persone superi la capacità utile di 2,3 L. Meglio due giri.']},
+
+{id:'vellutata-zucca', nome:'Vellutata di zucca', cat:'Primi', tempo:30, porz:4, vol:1500,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','veloce','leggero'],
+ ing:[{q:700,u:'g',n:'zucca pulita'},{q:150,u:'g',n:'patate'},{q:70,u:'g',n:'cipolla'},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:500,u:'ml',n:'brodo vegetale'},{q:6,u:'g',n:'sale',s:'s',b:1},{q:1,u:'pizzico',n:'noce moscata',s:'s',b:1}],
+ steps:[
+  {x:'Trita la cipolla, unisci l’olio e fai appassire.', t:'5 min', v:'1', T:'120°C', P:'7', a:'MamboMix', b:'4 min · Varoma · vel 1'},
+  {x:'Aggiungi zucca e patate a cubi, brodo e sale.', t:'20 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'20 min · 100°C · vel 1 antiorario'},
+  {x:'Monta le lame e frulla fino a crema liscia.', t:'1 min', v:'8', T:'—', P:'—', a:'Lame', b:'1 min · vel 8'}],
+ note:['Frulla sempre a caraffa scoperchiata dal solo dosatore, con il cestello sopra: il vapore in pressione fa saltare il coperchio.']},
+
+{id:'lenticchie', nome:'Zuppa di lenticchie', cat:'Primi', tempo:45, porz:4, vol:1700,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','legumi'],
+ ing:[{q:300,u:'g',n:'lenticchie secche'},{q:80,u:'g',n:'cipolla'},{q:70,u:'g',n:'carota'},{q:70,u:'g',n:'sedano'},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:150,u:'g',n:'passata di pomodoro'},{q:900,u:'ml',n:'acqua'},{q:7,u:'g',n:'sale',s:'s',b:1},{q:1,u:'rametto',n:'rosmarino',s:'s'}],
+ steps:[
+  {x:'Trita cipolla, carota e sedano.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Unisci l’olio e soffriggi.', t:'5 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'5 min · Varoma · vel 1'},
+  {x:'Aggiungi lenticchie sciacquate, passata, acqua e rosmarino. Sala solo a fine cottura.', t:'35 min', v:'1', T:'100°C', P:'5', a:'MamboMix', b:'32 min · 100°C · vel 1 antiorario'}],
+ note:['Il sale a inizio cottura indurisce la buccia dei legumi: mettilo negli ultimi 5 minuti.']},
+
+{id:'pasta-patate', nome:'Pasta e patate', cat:'Primi', tempo:35, porz:4, vol:1800,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['comfort'],
+ ing:[{q:500,u:'g',n:'patate'},{q:280,u:'g',n:'pasta mista corta'},{q:70,u:'g',n:'cipolla'},{q:60,u:'g',n:'sedano'},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:60,u:'g',n:'pancetta a cubetti'},{q:900,u:'ml',n:'acqua bollente'},{q:7,u:'g',n:'sale',s:'s',b:1},{q:40,u:'g',n:'parmigiano grattugiato'}],
+ steps:[
+  {x:'Trita cipolla e sedano, aggiungi olio e pancetta e rosola.', t:'6 min', v:'1', T:'120°C', P:'9', a:'MamboMix', b:'5 min · Varoma · vel 1'},
+  {x:'Unisci le patate a cubetti piccoli, l’acqua bollente e il sale.', t:'12 min', v:'1', T:'100°C', P:'8', a:'MamboMix', b:'12 min · 100°C · vel 1 antiorario'},
+  {x:'Butta la pasta e cuoci per il tempo indicato sulla confezione più 1 minuto.', t:'12 min', v:'1', T:'100°C', P:'9', a:'MamboMix', b:'11 min · 100°C · vel 1 antiorario'},
+  {x:'Spegni, aggiungi il parmigiano e lascia riposare 3 minuti a coperchio chiuso.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Con la pasta serve potenza alta (9): è l’unico modo per tenere il bollore che scuoce in modo uniforme.']},
+
+{id:'gnocchi', nome:'Impasto per gnocchi di patate', cat:'Primi', tempo:20, porz:4, vol:900,
+ caraffa:'Acciaio', acc:['MamboMix','Vaporiera'], tag:['impasto','vegetariano'],
+ ing:[{q:800,u:'g',n:'patate a pasta gialla'},{q:200,u:'g',n:'farina 00',b:1},{q:1,u:'pz',n:'uovo',s:'s'},{q:6,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Metti 700 ml d’acqua in caraffa e le patate a pezzi nella vaporiera. Cuoci al vapore finché la forchetta entra senza resistenza.', t:'30 min', v:'—', T:'120°C', P:'10', a:'Vaporiera', b:'30 min · Varoma · vel 1'},
+  {x:'Svuota la caraffa, schiaccia le patate e lasciale intiepidire. Rimettile in caraffa con farina, uovo e sale.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Impasta brevemente: appena si compatta, fermati.', t:'40 sec', v:'3', T:'—', P:'—', a:'MamboMix', b:'40 sec · vel spiga'}],
+ note:['Il Varoma del Bimby si traduce nella vaporiera a due livelli + caraffa a 120°C con potenza 10: è il vapore a cuocere, non i gradi della caraffa.','Impastare troppo sviluppa glutine e rende gli gnocchi gommosi.']},
+
+{id:'pizza', nome:'Impasto per pizza', cat:'Primi', tempo:15, porz:4, vol:1100,
+ caraffa:'Acciaio', acc:['MamboMix'], tag:['impasto','lievitato','vegetariano'],
+ ing:[{q:500,u:'g',n:'farina 0',b:1},{q:320,u:'ml',n:'acqua tiepida'},{q:5,u:'g',n:'lievito di birra secco',s:'s'},{q:10,u:'g',n:'sale',s:'s',b:1},{q:20,u:'ml',n:'olio extravergine',s:'s',b:1},{q:5,u:'g',n:'zucchero',s:'s',b:1}],
+ steps:[
+  {x:'Monta il MamboMix. Scalda l’acqua con zucchero e lievito per attivarlo.', t:'1 min', v:'2', T:'37°C', P:'2', a:'MamboMix', b:'1 min · 37°C · vel 2'},
+  {x:'Aggiungi la farina e impasta.', t:'3 min', v:'3', T:'—', P:'—', a:'MamboMix', b:'3 min · vel spiga'},
+  {x:'Unisci sale e olio e finisci di impastare.', t:'3 min', v:'3', T:'—', P:'—', a:'MamboMix', b:'3 min · vel spiga'},
+  {x:'Lascia lievitare in caraffa con il coperchio chiuso, funzione fermentazione.', t:'60 min', v:'0', T:'37°C', P:'1', a:'MamboMix', b:'60 min in caraffa, macchina spenta'}],
+ steps_note:'',
+ note:['Il tasto spiga del Bimby non esiste: si traduce sempre in MamboMix a velocità 2-3, mai lame.','La lievitazione in caraffa a 37°C con potenza 1 è un vantaggio del Mambo: dimezza i tempi in inverno.','Non superare 600 g di farina totale: oltre, il motore fatica.']},
+
+/* ---------------- SECONDI ---------------- */
+{id:'polpette', nome:'Polpette al sugo', cat:'Secondi', tempo:45, porz:4, vol:1600,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['carne','comfort'],
+ ing:[{q:500,u:'g',n:'macinato di manzo'},{q:80,u:'g',n:'pane raffermo'},{q:80,u:'ml',n:'latte',s:'s'},{q:1,u:'pz',n:'uovo',s:'s'},{q:50,u:'g',n:'parmigiano grattugiato'},{q:600,u:'g',n:'passata di pomodoro'},{q:70,u:'g',n:'cipolla'},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:6,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita il pane con il parmigiano.', t:'10 sec', v:'8', T:'—', P:'—', a:'Lame', b:'10 sec · vel 7'},
+  {x:'Aggiungi carne, uovo, latte e sale e amalgama. Togli l’impasto e forma le polpette.', t:'20 sec', v:'4', T:'—', P:'—', a:'Lame', b:'20 sec · vel 4 antiorario'},
+  {x:'Nella caraffa pulita trita la cipolla, unisci l’olio e soffriggi.', t:'5 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'4 min · Varoma · vel 1'},
+  {x:'Versa la passata e il sale, poi cala le polpette una a una.', t:'25 min', v:'0', T:'100°C', P:'5', a:'MamboMix', b:'25 min · 100°C · vel 1 antiorario'}],
+ note:['Qui la velocità 0 del Mambo è meglio della velocità 1: le polpette restano intere e il sugo non le sbriciola. Scuoti la caraffa a metà cottura invece di mescolare.']},
+
+{id:'spezzatino', nome:'Spezzatino di manzo con patate', cat:'Secondi', tempo:90, porz:4, vol:1800,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['carne','lento'],
+ ing:[{q:700,u:'g',n:'polpa di manzo a cubi'},{q:500,u:'g',n:'patate'},{q:100,u:'g',n:'cipolla'},{q:80,u:'g',n:'carota'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:100,u:'ml',n:'vino rosso',s:'s'},{q:200,u:'g',n:'passata di pomodoro'},{q:300,u:'ml',n:'brodo di carne'},{q:7,u:'g',n:'sale',s:'s',b:1},{q:1,u:'rametto',n:'rosmarino',s:'s'}],
+ steps:[
+  {x:'Trita cipolla e carota, unisci l’olio e soffriggi.', t:'6 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'5 min · Varoma · vel 1'},
+  {x:'Aggiungi la carne e rosolala a coperchio aperto, per far evaporare l’acqua.', t:'10 min', v:'1', T:'120°C', P:'10', a:'MamboMix', b:'10 min · Varoma · vel 1 antiorario'},
+  {x:'Sfuma con il vino.', t:'5 min', v:'1', T:'120°C', P:'9', a:'MamboMix', b:'5 min · Varoma · vel 1 antiorario'},
+  {x:'Unisci passata, brodo, rosmarino e sale.', t:'45 min', v:'0', T:'98°C', P:'4', a:'MamboMix', b:'45 min · 100°C · vel 1 antiorario'},
+  {x:'Aggiungi le patate a cubi grossi e completa.', t:'20 min', v:'0', T:'98°C', P:'5', a:'MamboMix', b:'20 min · 100°C · vel 1 antiorario'}],
+ note:['La rosolatura a coperchio aperto con potenza 10 è ciò che sul Bimby TM6 faresti con la funzione Sear: il Mambo si ferma a 120°C, quindi serve più tempo e nessun liquido in caraffa.']},
+
+{id:'salmone-vapore', nome:'Salmone al vapore con patate', cat:'Secondi', tempo:35, porz:4, vol:800,
+ caraffa:'Acciaio', acc:['Vaporiera'], tag:['pesce','leggero','vapore'],
+ ing:[{q:600,u:'g',n:'filetto di salmone'},{q:500,u:'g',n:'patate novelle'},{q:900,u:'ml',n:'acqua',s:'f',b:1},{q:1,u:'pz',n:'limone',s:'s'},{q:5,u:'g',n:'sale',s:'s',b:1},{q:2,u:'rametti',n:'aneto o prezzemolo',s:'s'},{q:20,u:'ml',n:'olio extravergine',s:'s',b:1}],
+ steps:[
+  {x:'Versa l’acqua in caraffa. Disponi le patate a fette nel piano inferiore della vaporiera.', t:'15 min', v:'—', T:'120°C', P:'10', a:'Vaporiera', b:'15 min · Varoma · vel 1'},
+  {x:'Aggiungi il salmone salato e profumato con limone nel piano superiore e completa.', t:'15 min', v:'—', T:'120°C', P:'10', a:'Vaporiera', b:'15 min · Varoma · vel 2'},
+  {x:'Condisci con olio a crudo e le erbe.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Per il vapore la velocità non conta: quello che serve è potenza 10 sull’acqua. Se metti velocità con la vaporiera montata sprechi solo motore.','Controlla il livello dell’acqua a metà: sotto i 500 ml il vapore cala.']},
+
+{id:'pollo-limone', nome:'Pollo al limone', cat:'Secondi', tempo:30, porz:4, vol:1200,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['carne','veloce'],
+ ing:[{q:600,u:'g',n:'petto di pollo a straccetti'},{q:1,u:'pz',n:'limone',s:'s'},{q:30,u:'g',n:'farina 00',b:1},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:150,u:'ml',n:'brodo vegetale'},{q:5,u:'g',n:'sale',s:'s',b:1},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'}],
+ steps:[
+  {x:'Infarina il pollo fuori dal robot. Scalda l’olio in caraffa.', t:'3 min', v:'0', T:'120°C', P:'10', a:'—', b:'3 min · Varoma · vel 1'},
+  {x:'Aggiungi il pollo e rosola a coperchio aperto.', t:'8 min', v:'1', T:'120°C', P:'10', a:'MamboMix', b:'8 min · Varoma · vel 1 antiorario'},
+  {x:'Versa succo di limone e brodo, sala e completa: il fondo si lega da solo.', t:'10 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'10 min · 100°C · vel 1 antiorario'},
+  {x:'Prezzemolo tritato a fine cottura, a macchina spenta.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:[]},
+
+{id:'baccala', nome:'Baccalà mantecato', cat:'Secondi', tempo:35, porz:4, vol:900,
+ caraffa:'Acciaio', acc:['Farfalla','MamboMix'], tag:['pesce','antipasto'],
+ ing:[{q:500,u:'g',n:'baccalà già ammollato'},{q:500,u:'ml',n:'latte',s:'f'},{q:1,u:'spicchio',n:'aglio',s:'s'},{q:150,u:'ml',n:'olio extravergine',s:'s',b:1},{q:1,u:'foglia',n:'alloro',s:'s'},{q:3,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Metti baccalà, latte, aglio e alloro in caraffa e cuoci dolcemente.', t:'20 min', v:'0', T:'90°C', P:'4', a:'MamboMix', b:'20 min · 90°C · vel 1 antiorario'},
+  {x:'Scola, elimina aglio e alloro, rimetti il pesce in caraffa con la farfalla.', t:'—', v:'—', T:'—', P:'—', a:'Farfalla', b:'—'},
+  {x:'Manteca versando l’olio a filo dal foro, come per una maionese.', t:'4 min', v:'4', T:'—', P:'—', a:'Farfalla', b:'4 min · vel 3'}],
+ note:['La farfalla del Mambo ha il rinforzo in silicone: monta meglio del Bimby ma non forzarla sopra velocità 4.']},
+
+/* ---------------- CONTORNI ---------------- */
+{id:'pure', nome:'Purè di patate', cat:'Contorni', tempo:30, porz:4, vol:1300,
+ caraffa:'Habana', acc:['Lame','Farfalla'], tag:['vegetariano','comfort'],
+ ing:[{q:800,u:'g',n:'patate'},{q:250,u:'ml',n:'latte'},{q:60,u:'g',n:'burro'},{q:50,u:'g',n:'parmigiano grattugiato'},{q:6,u:'g',n:'sale',s:'s',b:1},{q:1,u:'pizzico',n:'noce moscata',s:'s',b:1}],
+ steps:[
+  {x:'Metti le patate a cubi in caraffa coperte d’acqua e lessale.', t:'22 min', v:'0', T:'100°C', P:'9', a:'—', b:'22 min · 100°C · vel 1'},
+  {x:'Scola tutta l’acqua, rimetti le patate con latte, burro, sale e noce moscata.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Monta la farfalla e monta il purè.', t:'2 min', v:'4', T:'80°C', P:'3', a:'Farfalla', b:'2 min · 80°C · vel 4'},
+  {x:'Aggiungi il parmigiano e dai un ultimo giro.', t:'30 sec', v:'3', T:'—', P:'—', a:'Farfalla', b:'30 sec · vel 3'}],
+ note:['Non frullare con le lame ad alta velocità: l’amido si slega e il purè diventa colloso. È il classico errore di chi passa dal Bimby.']},
+
+{id:'peperonata', nome:'Peperonata', cat:'Contorni', tempo:35, porz:4, vol:1400,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','estivo'],
+ ing:[{q:700,u:'g',n:'peperoni misti'},{q:150,u:'g',n:'cipolla'},{q:200,u:'g',n:'pomodori pelati'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:5,u:'g',n:'sale',s:'s',b:1},{q:1,u:'cucchiaio',n:'aceto di vino',s:'s',b:1}],
+ steps:[
+  {x:'Affetta la cipolla, unisci l’olio e falla appassire.', t:'6 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'5 min · Varoma · vel 1'},
+  {x:'Aggiungi i peperoni a falde, i pelati e il sale.', t:'25 min', v:'0', T:'100°C', P:'5', a:'MamboMix', b:'25 min · 100°C · vel 1 antiorario'},
+  {x:'Versa l’aceto e fallo evaporare senza dosatore.', t:'3 min', v:'0', T:'120°C', P:'8', a:'MamboMix', b:'3 min · Varoma · vel 1 antiorario'}],
+ note:['Velocità 0 tiene le falde intere: è la funzione che il Bimby non ha e che qui conviene sfruttare.']},
+
+{id:'verdure-vapore', nome:'Verdure miste al vapore', cat:'Contorni', tempo:25, porz:4, vol:600,
+ caraffa:'Acciaio', acc:['Vaporiera','Cestello'], tag:['vegetariano','leggero','vapore'],
+ ing:[{q:300,u:'g',n:'broccoli'},{q:250,u:'g',n:'carote'},{q:250,u:'g',n:'patate'},{q:200,u:'g',n:'zucchine'},{q:900,u:'ml',n:'acqua',s:'f',b:1},{q:5,u:'g',n:'sale',s:'s',b:1},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1}],
+ steps:[
+  {x:'Acqua in caraffa. Patate e carote nel piano inferiore della vaporiera, le più dure vicino al vapore.', t:'12 min', v:'—', T:'120°C', P:'10', a:'Vaporiera', b:'12 min · Varoma · vel 1'},
+  {x:'Aggiungi broccoli e zucchine nel piano superiore e completa.', t:'10 min', v:'—', T:'120°C', P:'10', a:'Vaporiera', b:'10 min · Varoma · vel 1'},
+  {x:'Condisci con olio e sale a crudo.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Puoi usare l’acqua della caraffa per cuocere contemporaneamente la pasta nel cestello: due portate in una.']},
+
+/* ---------------- DOLCI ---------------- */
+{id:'crema-pasticcera', nome:'Crema pasticcera', cat:'Dolci', tempo:12, porz:4, vol:800,
+ caraffa:'Habana', acc:['Lame'], tag:['base','dolce'],
+ ing:[{q:500,u:'ml',n:'latte intero'},{q:4,u:'pz',n:'tuorli'},{q:130,u:'g',n:'zucchero',b:1},{q:45,u:'g',n:'amido di mais',b:1},{q:1,u:'pz',n:'scorza di limone',s:'s'}],
+ steps:[
+  {x:'Metti tutti gli ingredienti in caraffa e mescola a freddo per sciogliere l’amido.', t:'20 sec', v:'5', T:'—', P:'—', a:'Lame', b:'20 sec · vel 5'},
+  {x:'Cuoci: la crema si addensa negli ultimi due minuti.', t:'8 min', v:'4', T:'90°C', P:'4', a:'Lame', b:'7 min · 90°C · vel 4'},
+  {x:'Se la vuoi più soda, prosegui alzando solo la temperatura, mai la potenza.', t:'1 min', v:'4', T:'95°C', P:'4', a:'Lame', b:'1 min · 90°C · vel 4'}],
+ note:['Questa è la ricetta che spiega meglio la potenza calorifica: 90°C con P4 fa una crema liscia, 90°C con P9 te la brucia sul fondo pur mostrando la stessa temperatura sul display.','Caraffa Habana obbligatoria se non vuoi grattare il fondo.']},
+
+{id:'tiramisu', nome:'Crema al mascarpone per tiramisù', cat:'Dolci', tempo:15, porz:4, vol:900,
+ caraffa:'Acciaio', acc:['Farfalla','Lame'], tag:['dolce','a freddo'],
+ ing:[{q:400,u:'g',n:'mascarpone'},{q:3,u:'pz',n:'uova'},{q:100,u:'g',n:'zucchero',b:1},{q:300,u:'g',n:'savoiardi'},{q:300,u:'ml',n:'caffè freddo'},{q:10,u:'g',n:'cacao amaro',s:'s'}],
+ steps:[
+  {x:'Con la farfalla monta gli albumi a neve ferma in caraffa pulitissima. Mettili da parte.', t:'4 min', v:'4', T:'—', P:'—', a:'Farfalla', b:'4 min · vel 3,5'},
+  {x:'Sempre con la farfalla monta tuorli e zucchero fino a spuma chiara.', t:'3 min', v:'4', T:'—', P:'—', a:'Farfalla', b:'3 min · vel 3'},
+  {x:'Unisci il mascarpone e amalgama pochi secondi.', t:'40 sec', v:'3', T:'—', P:'—', a:'Farfalla', b:'40 sec · vel 3'},
+  {x:'Incorpora gli albumi a mano dal basso verso l’alto, poi componi a strati con i savoiardi inzuppati.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Per gli albumi la farfalla del Mambo lavora bene a velocità 4: sopra, l’aria si rompe.','Se preferisci evitare le uova crude, pastorizza tuorli e zucchero con 80 ml di acqua a 85°C, P3, vel 4 per 4 minuti.']},
+
+{id:'torta-yogurt', nome:'Torta allo yogurt', cat:'Dolci', tempo:15, porz:8, vol:1200,
+ caraffa:'Acciaio', acc:['Lame'], tag:['dolce','forno','veloce'],
+ ing:[{q:125,u:'g',n:'yogurt bianco'},{q:3,u:'pz',n:'uova'},{q:200,u:'g',n:'zucchero',b:1},{q:250,u:'g',n:'farina 00',b:1},{q:100,u:'ml',n:'olio di semi',s:'s',b:1},{q:16,u:'g',n:'lievito per dolci',s:'s'},{q:1,u:'pz',n:'scorza di limone',s:'s'}],
+ steps:[
+  {x:'Monta uova e zucchero.', t:'2 min', v:'5', T:'—', P:'—', a:'Lame', b:'2 min · vel 4'},
+  {x:'Aggiungi yogurt, olio e scorza.', t:'20 sec', v:'4', T:'—', P:'—', a:'Lame', b:'20 sec · vel 4'},
+  {x:'Unisci farina e lievito e amalgama senza insistere.', t:'30 sec', v:'4', T:'—', P:'—', a:'Lame', b:'30 sec · vel 4'},
+  {x:'Versa in stampo da 22 cm e inforna a 175°C statico per 40 minuti.', t:'40 min', v:'—', T:'forno 175°C', P:'—', a:'—', b:'forno 180°C · 40 min'}],
+ note:['Le ricette da forno partono da 8 porzioni: se scali, ricordati che il tempo di cottura in forno non scala in proporzione.']},
+
+{id:'panna-cotta', nome:'Panna cotta', cat:'Dolci', tempo:12, porz:4, vol:700,
+ caraffa:'Habana', acc:['Lame'], tag:['dolce','a freddo'],
+ ing:[{q:500,u:'ml',n:'panna fresca'},{q:90,u:'g',n:'zucchero',b:1},{q:8,u:'g',n:'gelatina in fogli',s:'s'},{q:1,u:'pz',n:'bacca di vaniglia',s:'s'}],
+ steps:[
+  {x:'Ammolla la gelatina in acqua fredda per 10 minuti.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Scalda panna, zucchero e vaniglia senza far bollire.', t:'7 min', v:'2', T:'85°C', P:'3', a:'Lame', b:'7 min · 90°C · vel 2'},
+  {x:'Aggiungi la gelatina strizzata e scioglila.', t:'1 min', v:'3', T:'80°C', P:'2', a:'Lame', b:'1 min · 80°C · vel 3'},
+  {x:'Versa negli stampi e lascia in frigo almeno 5 ore.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Oltre gli 85°C la panna stracciona: qui la potenza 3 serve proprio a non superare il set point per inerzia.']},
+
+{id:'marmellata', nome:'Marmellata di fragole', cat:'Dolci', tempo:45, porz:4, vol:1300,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['conserva','vegetariano'],
+ ing:[{q:800,u:'g',n:'fragole'},{q:350,u:'g',n:'zucchero',b:1},{q:1,u:'pz',n:'succo di limone',s:'s'}],
+ steps:[
+  {x:'Frulla brevemente le fragole, lasciando qualche pezzo.', t:'5 sec', v:'5', T:'—', P:'—', a:'Lame', b:'5 sec · vel 4'},
+  {x:'Aggiungi zucchero e limone e cuoci con il cestello capovolto al posto del dosatore, per far evaporare.', t:'35 min', v:'1', T:'110°C', P:'6', a:'MamboMix', b:'30 min · Varoma · vel 1 antiorario'},
+  {x:'Prova del piattino: una goccia su un piatto freddo non deve colare. Se cola, altri 5 minuti.', t:'5 min', v:'1', T:'110°C', P:'6', a:'MamboMix', b:'5 min · Varoma · vel 1'}],
+ note:['110°C è il massimo utile: il Mambo arriva a 120°C ma sopra i 112 lo zucchero comincia a caramellare.','Non riempire oltre 1,5 L: la marmellata sale molto in cottura.']},
+
+{id:'cioccolata', nome:'Cioccolata calda densa', cat:'Dolci', tempo:10, porz:4, vol:700,
+ caraffa:'Habana', acc:['Lame'], tag:['dolce','veloce','bevanda'],
+ ing:[{q:500,u:'ml',n:'latte'},{q:100,u:'g',n:'cioccolato fondente'},{q:20,u:'g',n:'cacao amaro',b:1},{q:20,u:'g',n:'amido di mais',b:1},{q:40,u:'g',n:'zucchero',s:'s',b:1}],
+ steps:[
+  {x:'Trita il cioccolato.', t:'10 sec', v:'8', T:'—', P:'—', a:'Lame', b:'10 sec · vel 7'},
+  {x:'Aggiungi tutto il resto e mescola a freddo.', t:'15 sec', v:'5', T:'—', P:'—', a:'Lame', b:'15 sec · vel 5'},
+  {x:'Cuoci fino a densità.', t:'7 min', v:'3', T:'90°C', P:'4', a:'Lame', b:'7 min · 90°C · vel 3'}],
+ note:[]},
+
+/* ---------------- COLAZIONE E BEVANDE ---------------- */
+{id:'yogurt', nome:'Yogurt fatto in casa', cat:'Colazione', tempo:495, porz:4, vol:1100,
+ caraffa:'Acciaio', acc:['Lame'], tag:['fermentazione','lento'],
+ ing:[{q:1000,u:'ml',n:'latte intero'},{q:125,u:'g',n:'yogurt bianco con fermenti vivi',s:'s'}],
+ steps:[
+  {x:'Scalda il latte per pastorizzarlo.', t:'10 min', v:'2', T:'90°C', P:'5', a:'Lame', b:'10 min · 90°C · vel 2'},
+  {x:'Fai raffreddare a 40°C: è il passaggio che non puoi saltare, sopra i 45°C i fermenti muoiono.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Unisci lo yogurt e mescola.', t:'20 sec', v:'3', T:'—', P:'—', a:'Lame', b:'20 sec · vel 3'},
+  {x:'Fermenta con la funzione yogurt, coperchio chiuso.', t:'8 ore', v:'0', T:'37°C', P:'1', a:'—', b:'8 ore in vasetti, fuori dal Bimby'}],
+ note:['Qui il Mambo batte il Bimby: il timer arriva a 12 ore e la temperatura è regolabile grado per grado, quindi fermenti direttamente in caraffa.']},
+
+{id:'latte-mandorla', nome:'Latte di mandorla', cat:'Colazione', tempo:10, porz:4, vol:1200,
+ caraffa:'Acciaio', acc:['Lame'], tag:['vegano','a freddo','bevanda'],
+ ing:[{q:200,u:'g',n:'mandorle pelate'},{q:1000,u:'ml',n:'acqua fredda',b:1},{q:30,u:'g',n:'zucchero',s:'s',b:1},{q:1,u:'pizzico',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Lascia le mandorle in ammollo 8 ore, poi scolale.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Polverizza le mandorle.', t:'20 sec', v:'10', T:'—', P:'—', a:'Lame', b:'20 sec · vel 9'},
+  {x:'Aggiungi acqua, zucchero e sale e frulla.', t:'2 min', v:'8', T:'—', P:'—', a:'Lame', b:'2 min · vel 8'},
+  {x:'Filtra con un telo a maglia fitta, strizzando bene.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Non riempire oltre 1,5 L a freddo per frullare: sopra quel livello il vortice spinge il liquido contro il coperchio.']}
+];
+
+/* ============================================================
+   BLOCCO 2 — 20 PRIMI
+   ============================================================ */
+const PRIMI2 = [
+{id:'pasta-zucchine-gamberetti', nome:'Pasta zucchine e gamberetti', cat:'Primi', tempo:25, porz:4, vol:1600,
+ caraffa:'Acciaio', acc:['Lame','MamboMix','Cestello'], tag:['pesce','veloce'],
+ ing:[{q:320,u:'g',n:'spaghetti o linguine'},{q:300,u:'g',n:'zucchine'},{q:250,u:'g',n:'gamberetti sgusciati'},{q:2,u:'spicchi',n:'aglio',s:'s'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:60,u:'ml',n:'vino bianco',s:'s'},{q:6,u:'g',n:'sale',s:'s',b:1},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'},{q:1,u:'pizzico',n:'peperoncino',s:'s',b:1}],
+ steps:[
+  {x:'Metti aglio e olio in caraffa e trita.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Monta il MamboMix e imbiondisci l’aglio con il peperoncino.', t:'3 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'3 min · Varoma · vel 1'},
+  {x:'Aggiungi le zucchine a rondelle sottili e saltale: devono restare sode.', t:'6 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'6 min · Varoma · vel 1 antiorario'},
+  {x:'Unisci i gamberetti e sfuma con il vino, senza dosatore.', t:'4 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'4 min · Varoma · vel 1 antiorario'},
+  {x:'Cuoci la pasta a parte molto al dente, scolala tenendo un mestolo d’acqua e mantecala nella caraffa con il MamboMix.', t:'2 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'2 min · 100°C · vel 1 antiorario'},
+  {x:'Prezzemolo tritato a macchina spenta.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['I gamberetti cuociono in 3-4 minuti: oltre diventano gomma. È il motivo per cui entrano dopo le zucchine e non insieme.','Se vuoi tutto in caraffa, cuoci la pasta nel cestello con 1 L d’acqua bollente e sposta il condimento in una ciotola nel frattempo.']},
+
+{id:'risotto-zucchine-gamberetti', nome:'Risotto zucchine e gamberetti', cat:'Primi', tempo:32, porz:4, vol:1500,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['pesce'],
+ ing:[{q:320,u:'g',n:'riso Carnaroli'},{q:280,u:'g',n:'zucchine'},{q:250,u:'g',n:'gamberetti sgusciati'},{q:70,u:'g',n:'scalogno'},{q:35,u:'ml',n:'olio extravergine',s:'s',b:1},{q:70,u:'ml',n:'vino bianco',s:'s'},{q:800,u:'ml',n:'brodo vegetale caldo'},{q:30,u:'g',n:'burro'},{q:5,u:'g',n:'sale',s:'s',b:1},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'}],
+ steps:[
+  {x:'Trita lo scalogno.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 5'},
+  {x:'Unisci l’olio e fai appassire con il MamboMix.', t:'4 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'4 min · Varoma · vel 1'},
+  {x:'Aggiungi le zucchine a cubetti e insaporisci.', t:'5 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'5 min · Varoma · vel 1 antiorario'},
+  {x:'Unisci il riso e tostalo.', t:'3 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'3 min · 120°C · vel 1 antiorario'},
+  {x:'Sfuma con il vino senza dosatore.', t:'2 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'2 min · Varoma · vel 1 antiorario'},
+  {x:'Versa il brodo caldo e il sale.', t:'13 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'13 min · 100°C · vel 1 antiorario'},
+  {x:'Aggiungi i gamberetti e finisci la cottura.', t:'4 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'4 min · 100°C · vel 1 antiorario'},
+  {x:'Manteca a macchina spenta con burro freddo e prezzemolo.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Niente parmigiano: con il pesce copre tutto. La cremosità la dà il burro freddo a fuoco spento.']},
+
+{id:'carbonara', nome:'Spaghetti alla carbonara', cat:'Primi', tempo:20, porz:4, vol:900,
+ caraffa:'Habana', acc:['Lame','Farfalla','Cestello'], tag:['carne','veloce','romana'],
+ ing:[{q:320,u:'g',n:'spaghetti'},{q:150,u:'g',n:'guanciale'},{q:4,u:'pz',n:'tuorli'},{q:1,u:'pz',n:'uovo intero',s:'s'},{q:80,u:'g',n:'pecorino romano grattugiato'},{q:2,u:'g',n:'pepe nero',s:'s',b:1}],
+ steps:[
+  {x:'Rosola il guanciale a listarelle, senza aggiungere grassi. Toglilo e tieni il fondo.', t:'8 min', v:'0', T:'120°C', P:'9', a:'—', b:'8 min · Varoma · vel 1 antiorario'},
+  {x:'Cuoci gli spaghetti a parte. Nella caraffa pulita monta tuorli, uovo, pecorino e pepe.', t:'30 sec', v:'4', T:'—', P:'—', a:'Farfalla', b:'30 sec · vel 4'},
+  {x:'Scalda la crema dolcissima con due cucchiai di acqua di cottura: deve restare fluida, non cuocere.', t:'3 min', v:'3', T:'62°C', P:'2', a:'Farfalla', b:'non previsto sul Bimby classico'},
+  {x:'Manteca fuori dalla caraffa con pasta e guanciale.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Qui il Mambo vince: potendo impostare 62°C grado per grado con potenza 2, la crema si stabilizza senza mai stracciarsi. Sopra i 68°C l’uovo diventa frittata.','Caraffa Habana obbligatoria.']},
+
+{id:'amatriciana', nome:'Bucatini all’amatriciana', cat:'Primi', tempo:30, porz:4, vol:1200,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['carne','romana'],
+ ing:[{q:320,u:'g',n:'bucatini'},{q:150,u:'g',n:'guanciale'},{q:500,u:'g',n:'pelati'},{q:60,u:'ml',n:'vino bianco',s:'s'},{q:70,u:'g',n:'pecorino romano grattugiato'},{q:1,u:'pizzico',n:'peperoncino',s:'s',b:1},{q:4,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Rosola il guanciale a listarelle senza grassi aggiunti, finché è croccante. Mettine da parte metà.', t:'8 min', v:'0', T:'120°C', P:'9', a:'—', b:'8 min · Varoma · vel 1 antiorario'},
+  {x:'Sfuma con il vino senza dosatore.', t:'3 min', v:'1', T:'120°C', P:'9', a:'MamboMix', b:'3 min · Varoma · vel 1 antiorario'},
+  {x:'Aggiungi i pelati schiacciati, peperoncino e sale.', t:'18 min', v:'1', T:'100°C', P:'5', a:'MamboMix', b:'16 min · 100°C · vel 1 antiorario'},
+  {x:'Condisci la pasta, poi il guanciale croccante e il pecorino a crudo.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Il guanciale va rosolato a velocità 0: qualsiasi rotazione lo sbriciola.']},
+
+{id:'arrabbiata', nome:'Penne all’arrabbiata', cat:'Primi', tempo:25, porz:4, vol:1100,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','veloce','piccante'],
+ ing:[{q:320,u:'g',n:'penne rigate'},{q:600,u:'g',n:'pelati'},{q:2,u:'spicchi',n:'aglio',s:'s'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:2,u:'pz',n:'peperoncino fresco',s:'s'},{q:5,u:'g',n:'sale',s:'s',b:1},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'}],
+ steps:[
+  {x:'Trita aglio e peperoncino.', t:'5 sec', v:'7', T:'—', P:'—', a:'Lame', b:'5 sec · vel 6'},
+  {x:'Aggiungi l’olio e soffriggi con il MamboMix.', t:'3 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'3 min · Varoma · vel 1'},
+  {x:'Unisci i pelati e il sale.', t:'15 min', v:'1', T:'100°C', P:'5', a:'MamboMix', b:'15 min · 100°C · vel 1 antiorario'},
+  {x:'Prezzemolo a crudo e pasta molto al dente.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:[]},
+
+{id:'aglio-olio', nome:'Spaghetti aglio, olio e peperoncino', cat:'Primi', tempo:15, porz:4, vol:700,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','veloce','economico'],
+ ing:[{q:320,u:'g',n:'spaghetti'},{q:4,u:'spicchi',n:'aglio',s:'s'},{q:80,u:'ml',n:'olio extravergine',s:'s',b:1},{q:2,u:'pz',n:'peperoncino secco',s:'s'},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'},{q:4,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Affetta l’aglio a mano, non tritarlo: nel soffritto deve dorare, non bruciare.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Metti olio, aglio e peperoncino e scalda dolcemente.', t:'6 min', v:'0', T:'100°C', P:'5', a:'MamboMix', b:'6 min · 100°C · vel 1 antiorario'},
+  {x:'Unisci due mestoli di acqua di cottura ed emulsiona.', t:'1 min', v:'2', T:'100°C', P:'7', a:'MamboMix', b:'1 min · 100°C · vel 1 antiorario'},
+  {x:'Manteca la pasta nella caraffa con il prezzemolo.', t:'1 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'1 min · 100°C · vel 1 antiorario'}],
+ note:['Potenza 5 e non 10: l’olio a 120°C con l’aglio dentro diventa amaro in meno di un minuto.']},
+
+{id:'norma', nome:'Pasta alla Norma', cat:'Primi', tempo:40, porz:4, vol:1400,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','siciliana'],
+ ing:[{q:320,u:'g',n:'maccheroni'},{q:500,u:'g',n:'melanzane'},{q:600,u:'g',n:'passata di pomodoro'},{q:1,u:'spicchio',n:'aglio',s:'s'},{q:50,u:'ml',n:'olio extravergine',s:'s',b:1},{q:100,u:'g',n:'ricotta salata'},{q:8,u:'foglie',n:'basilico',s:'s'},{q:6,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Friggi o cuoci le melanzane a cubi separatamente, in padella o in forno: nella caraffa si spappolerebbero.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Trita l’aglio, aggiungi l’olio e soffriggi.', t:'3 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'3 min · Varoma · vel 1'},
+  {x:'Versa la passata e il sale.', t:'20 min', v:'1', T:'100°C', P:'5', a:'MamboMix', b:'18 min · 100°C · vel 1 antiorario'},
+  {x:'Unisci le melanzane e il basilico, mescola dolcemente.', t:'2 min', v:'0', T:'90°C', P:'4', a:'MamboMix', b:'2 min · 90°C · vel 1 antiorario'},
+  {x:'Ricotta salata grattugiata sul piatto.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:[]},
+
+{id:'cacio-pepe', nome:'Spaghetti cacio e pepe', cat:'Primi', tempo:15, porz:4, vol:600,
+ caraffa:'Habana', acc:['Lame','Farfalla'], tag:['vegetariano','veloce','romana'],
+ ing:[{q:320,u:'g',n:'spaghetti'},{q:200,u:'g',n:'pecorino romano'},{q:4,u:'g',n:'pepe nero in grani',s:'s',b:1}],
+ steps:[
+  {x:'Polverizza il pecorino a pezzi con i grani di pepe.', t:'20 sec', v:'9', T:'—', P:'—', a:'Lame', b:'20 sec · vel 8'},
+  {x:'Aggiungi 150 ml di acqua di cottura bollente e monta la crema con la farfalla.', t:'2 min', v:'4', T:'60°C', P:'2', a:'Farfalla', b:'2 min · vel 4'},
+  {x:'Manteca fuori dal robot con la pasta scolata al dente.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['60°C con potenza 2 è la temperatura in cui il pecorino si scioglie senza filare. È la differenza tra una crema e una palla di formaggio.']},
+
+{id:'vongole', nome:'Spaghetti alle vongole', cat:'Primi', tempo:30, porz:4, vol:1200,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['pesce'],
+ ing:[{q:320,u:'g',n:'spaghetti'},{q:1000,u:'g',n:'vongole veraci'},{q:3,u:'spicchi',n:'aglio',s:'s'},{q:60,u:'ml',n:'olio extravergine',s:'s',b:1},{q:80,u:'ml',n:'vino bianco',s:'s'},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'},{q:1,u:'pizzico',n:'peperoncino',s:'s',b:1}],
+ steps:[
+  {x:'Spurga le vongole in acqua salata per 2 ore, cambiando l’acqua.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Metti olio, aglio a fette e peperoncino e imbiondisci.', t:'4 min', v:'0', T:'110°C', P:'7', a:'MamboMix', b:'4 min · 120°C · vel 1'},
+  {x:'Aggiungi le vongole e il vino, coperchio chiuso. Si aprono in pochi minuti.', t:'6 min', v:'0', T:'120°C', P:'9', a:'MamboMix', b:'6 min · Varoma · vel 1 antiorario'},
+  {x:'Filtra il fondo di cottura, rimettilo in caraffa ed emulsiona con un mestolo di acqua di cottura.', t:'2 min', v:'2', T:'100°C', P:'7', a:'MamboMix', b:'2 min · 100°C · vel 1 antiorario'},
+  {x:'Salta la pasta nella caraffa con le vongole e il prezzemolo.', t:'1 min', v:'0', T:'100°C', P:'6', a:'MamboMix', b:'1 min · 100°C · vel 1 antiorario'}],
+ note:['Velocità 0 sempre: i gusci a velocità 1 si rompono e finisci con la sabbia nel piatto.','1 kg di vongole con i gusci riempie la caraffa: sopra 6 persone fai due giri.']},
+
+{id:'puttanesca', nome:'Pasta alla puttanesca', cat:'Primi', tempo:25, porz:4, vol:1200,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['pesce','veloce','napoletana'],
+ ing:[{q:320,u:'g',n:'spaghetti'},{q:600,u:'g',n:'pelati'},{q:100,u:'g',n:'olive nere di Gaeta'},{q:30,u:'g',n:'capperi sotto sale'},{q:4,u:'pz',n:'filetti di acciuga',s:'s'},{q:2,u:'spicchi',n:'aglio',s:'s'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:1,u:'pizzico',n:'peperoncino',s:'s',b:1}],
+ steps:[
+  {x:'Metti olio, aglio, acciughe e peperoncino e falli sciogliere.', t:'4 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'4 min · 100°C · vel 1'},
+  {x:'Aggiungi olive, capperi dissalati e pelati.', t:'15 min', v:'1', T:'100°C', P:'5', a:'MamboMix', b:'15 min · 100°C · vel 1 antiorario'},
+  {x:'Assaggia prima di salare: acciughe, capperi e olive salano già.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:[]},
+
+{id:'pasta-tonno', nome:'Pasta al tonno e pomodoro', cat:'Primi', tempo:22, porz:4, vol:1100,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['pesce','veloce','economico'],
+ ing:[{q:320,u:'g',n:'pasta corta'},{q:200,u:'g',n:'tonno sott’olio sgocciolato'},{q:500,u:'g',n:'passata di pomodoro'},{q:60,u:'g',n:'cipolla'},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:20,u:'g',n:'capperi',s:'s'},{q:5,u:'g',n:'sale',s:'s',b:1},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'}],
+ steps:[
+  {x:'Trita la cipolla, unisci l’olio e soffriggi.', t:'4 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'4 min · Varoma · vel 1'},
+  {x:'Aggiungi passata, capperi e sale.', t:'12 min', v:'1', T:'100°C', P:'5', a:'MamboMix', b:'12 min · 100°C · vel 1 antiorario'},
+  {x:'Unisci il tonno sbriciolato e scalda senza cuocerlo oltre.', t:'3 min', v:'0', T:'90°C', P:'4', a:'MamboMix', b:'3 min · 90°C · vel 1 antiorario'}],
+ note:[]},
+
+{id:'pasta-ceci', nome:'Pasta e ceci', cat:'Primi', tempo:35, porz:4, vol:1800,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','legumi','comfort'],
+ ing:[{q:250,u:'g',n:'pasta mista corta'},{q:400,u:'g',n:'ceci lessati'},{q:70,u:'g',n:'cipolla'},{q:1,u:'spicchio',n:'aglio',s:'s'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:150,u:'g',n:'passata di pomodoro'},{q:800,u:'ml',n:'brodo vegetale'},{q:1,u:'rametto',n:'rosmarino',s:'s'},{q:6,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita cipolla e aglio, aggiungi l’olio e soffriggi.', t:'5 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'4 min · Varoma · vel 1'},
+  {x:'Unisci metà dei ceci, la passata e il brodo, poi frulla con le lame per dare cremosità.', t:'20 sec', v:'7', T:'—', P:'—', a:'Lame', b:'20 sec · vel 7'},
+  {x:'Rimetti il MamboMix, aggiungi i ceci interi e il rosmarino e porta a bollore.', t:'8 min', v:'1', T:'100°C', P:'8', a:'MamboMix', b:'8 min · 100°C · vel 1 antiorario'},
+  {x:'Butta la pasta e cuoci il tempo indicato più 1 minuto.', t:'12 min', v:'1', T:'100°C', P:'9', a:'MamboMix', b:'11 min · 100°C · vel 1 antiorario'}],
+ note:['Frullare metà legumi è il trucco per la cremosità senza panna: vale anche per pasta e fagioli e per le lenticchie.']},
+
+{id:'gnocchi-sorrentina', nome:'Gnocchi alla sorrentina', cat:'Primi', tempo:35, porz:4, vol:1500,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','napoletana','forno'],
+ ing:[{q:800,u:'g',n:'gnocchi di patate'},{q:700,u:'g',n:'passata di pomodoro'},{q:250,u:'g',n:'mozzarella'},{q:60,u:'g',n:'parmigiano grattugiato'},{q:70,u:'g',n:'cipolla'},{q:35,u:'ml',n:'olio extravergine',s:'s',b:1},{q:8,u:'foglie',n:'basilico',s:'s'},{q:6,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita la cipolla, unisci l’olio e soffriggi.', t:'4 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'4 min · Varoma · vel 1'},
+  {x:'Versa la passata e il sale.', t:'20 min', v:'1', T:'100°C', P:'5', a:'MamboMix', b:'20 min · 100°C · vel 1 antiorario'},
+  {x:'Lessa gli gnocchi, condiscili con sugo, mozzarella a cubi e basilico in una pirofila.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Gratina in forno con il parmigiano in superficie.', t:'12 min', v:'—', T:'forno 220°C', P:'—', a:'—', b:'forno 220°C · 12 min'}],
+ note:['Asciuga la mozzarella un’ora prima o l’acqua slega tutto in forno.']},
+
+{id:'lasagne', nome:'Lasagne alla bolognese', cat:'Primi', tempo:110, porz:6, vol:1900,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['carne','forno','festivo'],
+ ing:[{q:300,u:'g',n:'sfoglie per lasagne'},{q:900,u:'g',n:'ragù alla bolognese'},{q:800,u:'ml',n:'besciamella'},{q:150,u:'g',n:'parmigiano grattugiato'},{q:20,u:'g',n:'burro',s:'s'}],
+ steps:[
+  {x:'Prepara il ragù seguendo la ricetta dedicata.', t:'80 min', v:'1', T:'100°C', P:'4', a:'MamboMix', b:'vedi ragù'},
+  {x:'Lava la caraffa e prepara la besciamella nella Habana.', t:'12 min', v:'3', T:'95°C', P:'4', a:'Lame', b:'vedi besciamella'},
+  {x:'Alterna sfoglie, ragù, besciamella e parmigiano. Finisci con besciamella e fiocchi di burro.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Cuoci in forno statico, poi 5 minuti di grill per la crosta.', t:'40 min', v:'—', T:'forno 180°C', P:'—', a:'—', b:'forno 180°C · 40 min'}],
+ note:['Dosi calcolate su 6 porzioni, non su 4 come le altre: la teglia standard è quella.']},
+
+{id:'risotto-frutti-mare', nome:'Risotto ai frutti di mare', cat:'Primi', tempo:35, porz:4, vol:1600,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['pesce','festivo'],
+ ing:[{q:320,u:'g',n:'riso Carnaroli'},{q:400,u:'g',n:'misto di frutti di mare'},{q:200,u:'g',n:'cozze'},{q:2,u:'spicchi',n:'aglio',s:'s'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:80,u:'ml',n:'vino bianco',s:'s'},{q:800,u:'ml',n:'fumetto di pesce caldo'},{q:150,u:'g',n:'pomodorini'},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'},{q:4,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Apri le cozze in caraffa con un dito di vino, coperchio chiuso. Sgusciale e filtra il liquido.', t:'6 min', v:'0', T:'120°C', P:'9', a:'MamboMix', b:'6 min · Varoma · vel 1 antiorario'},
+  {x:'Nella caraffa pulita metti olio e aglio a fette e imbiondisci.', t:'3 min', v:'0', T:'110°C', P:'7', a:'MamboMix', b:'3 min · 120°C · vel 1'},
+  {x:'Aggiungi i pomodorini a metà e il riso, e tosta.', t:'3 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'3 min · 120°C · vel 1 antiorario'},
+  {x:'Sfuma con il vino senza dosatore.', t:'2 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'2 min · Varoma · vel 1 antiorario'},
+  {x:'Versa fumetto e liquido delle cozze filtrato.', t:'13 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'13 min · 100°C · vel 1 antiorario'},
+  {x:'Unisci tutti i frutti di mare e completa.', t:'4 min', v:'0', T:'100°C', P:'6', a:'MamboMix', b:'4 min · 100°C · vel 1 antiorario'},
+  {x:'Manteca con olio a crudo e prezzemolo, mai burro né formaggio.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:[]},
+
+{id:'risotto-radicchio', nome:'Risotto radicchio e taleggio', cat:'Primi', tempo:30, porz:4, vol:1400,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','invernale'],
+ ing:[{q:320,u:'g',n:'riso Carnaroli'},{q:250,u:'g',n:'radicchio di Treviso'},{q:120,u:'g',n:'taleggio'},{q:70,u:'g',n:'scalogno'},{q:30,u:'g',n:'burro'},{q:80,u:'ml',n:'vino rosso',s:'s'},{q:800,u:'ml',n:'brodo vegetale caldo'},{q:40,u:'g',n:'parmigiano grattugiato'},{q:4,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita lo scalogno, unisci il burro e fai appassire dolcemente.', t:'4 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'4 min · 100°C · vel 1'},
+  {x:'Aggiungi il radicchio a striscioline e falla stufare.', t:'5 min', v:'1', T:'110°C', P:'7', a:'MamboMix', b:'5 min · Varoma · vel 1 antiorario'},
+  {x:'Unisci il riso e tosta, poi sfuma con il vino rosso.', t:'5 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'5 min · 120°C · vel 1 antiorario'},
+  {x:'Versa il brodo caldo e il sale.', t:'15 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'15 min · 100°C · vel 1 antiorario'},
+  {x:'Manteca a fuoco spento con taleggio a cubetti e parmigiano.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:[]},
+
+{id:'risotto-salsiccia', nome:'Risotto zafferano e salsiccia', cat:'Primi', tempo:32, porz:4, vol:1500,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['carne'],
+ ing:[{q:320,u:'g',n:'riso Carnaroli'},{q:250,u:'g',n:'salsiccia'},{q:70,u:'g',n:'cipolla'},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:80,u:'ml',n:'vino bianco',s:'s'},{q:850,u:'ml',n:'brodo di carne caldo'},{q:1,u:'bustina',n:'zafferano',s:'s'},{q:50,u:'g',n:'parmigiano grattugiato'},{q:30,u:'g',n:'burro'}],
+ steps:[
+  {x:'Trita la cipolla, unisci l’olio e soffriggi.', t:'4 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'4 min · Varoma · vel 1'},
+  {x:'Aggiungi la salsiccia sbriciolata e rosolala bene.', t:'7 min', v:'1', T:'120°C', P:'9', a:'MamboMix', b:'6 min · Varoma · vel 1 antiorario'},
+  {x:'Unisci il riso e tosta, poi sfuma con il vino.', t:'5 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'5 min · 120°C · vel 1 antiorario'},
+  {x:'Versa brodo caldo e zafferano.', t:'15 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'15 min · 100°C · vel 1 antiorario'},
+  {x:'Manteca fuori dal fuoco con burro e parmigiano.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['La salsiccia rilascia molto grasso: riduci l’olio a 15 ml se la vuoi più leggera.']},
+
+{id:'risotto-limone', nome:'Risotto al limone', cat:'Primi', tempo:28, porz:4, vol:1400,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano','estivo','veloce'],
+ ing:[{q:320,u:'g',n:'riso Carnaroli'},{q:2,u:'pz',n:'limoni non trattati',s:'s'},{q:60,u:'g',n:'scalogno'},{q:40,u:'g',n:'burro'},{q:60,u:'ml',n:'vino bianco',s:'s'},{q:800,u:'ml',n:'brodo vegetale caldo'},{q:60,u:'g',n:'parmigiano grattugiato'},{q:4,u:'g',n:'sale',s:'s',b:1},{q:6,u:'foglie',n:'basilico',s:'s'}],
+ steps:[
+  {x:'Metti nella caraffa asciutta la scorza grattugiata dei limoni e lo scalogno, e trita.', t:'6 sec', v:'6', T:'—', P:'—', a:'Lame', b:'6 sec · vel 5'},
+  {x:'Unisci metà del burro e fai appassire.', t:'4 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'4 min · 100°C · vel 1'},
+  {x:'Aggiungi il riso, tosta e sfuma con il vino.', t:'5 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'5 min · 120°C · vel 1 antiorario'},
+  {x:'Versa il brodo caldo e il sale.', t:'15 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'15 min · 100°C · vel 1 antiorario'},
+  {x:'Manteca a fuoco spento con burro freddo, parmigiano, succo di mezzo limone e basilico.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Il succo va solo alla fine: se cuoce, l’acidità blocca il rilascio dell’amido e il risotto non lega.']},
+
+{id:'risi-bisi', nome:'Risi e bisi', cat:'Primi', tempo:35, porz:4, vol:1700,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['veneta','primavera'],
+ ing:[{q:280,u:'g',n:'riso Vialone Nano'},{q:400,u:'g',n:'piselli freschi o surgelati'},{q:80,u:'g',n:'pancetta'},{q:70,u:'g',n:'cipolla'},{q:30,u:'g',n:'burro'},{q:1000,u:'ml',n:'brodo vegetale caldo'},{q:50,u:'g',n:'parmigiano grattugiato'},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'},{q:5,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Trita cipolla e pancetta, aggiungi il burro e rosola.', t:'5 min', v:'1', T:'110°C', P:'7', a:'MamboMix', b:'5 min · Varoma · vel 1'},
+  {x:'Unisci i piselli e insaporisci.', t:'4 min', v:'1', T:'110°C', P:'7', a:'MamboMix', b:'4 min · Varoma · vel 1 antiorario'},
+  {x:'Aggiungi riso, brodo e sale: deve restare più brodoso di un risotto.', t:'16 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'16 min · 100°C · vel 1 antiorario'},
+  {x:'Manteca con parmigiano e prezzemolo.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Va servito col cucchiaio: è una minestra, non un risotto. Se si asciuga troppo aggiungi brodo caldo.']},
+
+{id:'pasta-fresca', nome:'Impasto per pasta fresca all’uovo', cat:'Primi', tempo:12, porz:4, vol:800,
+ caraffa:'Acciaio', acc:['MamboMix'], tag:['impasto','base','vegetariano'],
+ ing:[{q:400,u:'g',n:'farina 00',b:1},{q:4,u:'pz',n:'uova'},{q:1,u:'pizzico',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Monta il MamboMix. Metti farina, uova e sale in caraffa.', t:'—', v:'—', T:'—', P:'—', a:'MamboMix', b:'—'},
+  {x:'Impasta finché si forma una palla compatta.', t:'3 min', v:'3', T:'—', P:'—', a:'MamboMix', b:'3 min · vel spiga'},
+  {x:'Avvolgi nella pellicola e fai riposare 30 minuti a temperatura ambiente prima di stendere.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Regola aurea: 100 g di farina per ogni uovo. Se l’impasto resta briciolo, un cucchiaio d’acqua; se si attacca, un cucchiaio di farina.','Mai le lame: taglierebbero il glutine che serve a tenere la sfoglia.']}
+];
+RICETTE.push(...PRIMI2);
+
+/* ============================================================
+   ILLUSTRAZIONI — generate dagli ingredienti reali della ricetta
+   Usate come SEGNAPOSTO finché non c'è una foto reale.
+   ============================================================ */
+const COLORI = [
+ [/pomodor|pelati|passata|concentrato/,'#C8442E'], [/zucchin/,'#7FA85A'], [/zucca/,'#E08B2A'],
+ [/fungh|porcin/,'#8A6A45'], [/zafferano/,'#E7B22B'], [/radicchio/,'#8E4569'],
+ [/pisell/,'#6FA24B'], [/gamber/,'#E08165'], [/salmone/,'#E38A6A'],
+ [/vongol|cozz|frutti di mare/,'#C6B294'], [/basilico|prezzemolo|pesto|aneto|rosmarino/,'#4F8A4A'],
+ [/cioccolat|cacao/,'#5B3A28'], [/fragol/,'#CE3A55'], [/limon/,'#E8C13C'],
+ [/latte|panna|mascarpone|ricotta|besciamella|mozzarell|yogurt/,'#EDE5D4'],
+ [/pecorino|parmigian|taleggio|formagg/,'#E4C87E'],
+ [/manzo|macinat|salsicci|guancial|pancett|carne|pollo/,'#9B4B33'],
+ [/patat/,'#DFC994'], [/lenticch/,'#7A6242'], [/ceci/,'#D3B36E'], [/melanzan/,'#6B4C7A'],
+ [/peperon(?!cino)/,'#D8622C'], [/oliv/,'#4E5A31'], [/caff/,'#6B4A34'], [/mandorl/,'#DCC49B'],
+ [/uov|tuorl/,'#EFBE4A'], [/spinac|broccol|fagiolin/,'#55803F'], [/carot/,'#DD8A2E'],
+ [/riso|carnaroli|vialone/,'#EFE3C4'], [/vino/,'#7A2E3F'], [/tonno|acciug|baccal|merluzz/,'#B0785E'],
+ [/cipoll|scalogno|aglio/,'#E6DCC0'], [/capper/,'#5E6B3A'], [/pepe/,'#3E3A32'], [/burro/,'#F0D98A'],
+ [/sedano/,'#8FA85F'], [/pane|savoiard|farina|pasta|spaghett|penne|bucatin|gnocchi|sfogli/,'#EBD5A4']
+];
+const RIEMPITIVI=/^(latte|pasta|spaghett|penne|bucatin|maccheron|linguin|tagliatell|sfogli|gnocchi|savoiard|pane|farina|riso |carnaroli|vialone|patat|cipoll|scalogno|aglio|acqua|brodo)/;
+function coloriDi(r){
+  const forti=[],deboli=[];
+  r.ing.forEach(i=>{const n=i.n.toLowerCase();
+    for(const [re,c] of COLORI){ if(re.test(n)){
+      const dest=RIEMPITIVI.test(n)?deboli:forti;
+      if(!forti.includes(c)&&!deboli.includes(c)) dest.push(c);
+      break; } }});
+  const out=[...forti,...deboli];
+  if(!out.length) out.push('#D9C79A');
+  while(out.length<3) out.push(mix(out[0],out.length===1?'#3B2E1C':'#FFF3DA',.34));
+  return out;
+}
+function stileDi(r){
+  const n=r.nome.toLowerCase(), c=r.cat;
+  if(/impasto|pasta fresca/.test(n)) return 'impasto';
+  if(/latte di|cioccolata calda|yogurt fatto/.test(n)) return 'bicchiere';
+  if(/risotto|risi e bisi/.test(n)) return 'risotto';
+  if(/spaghett|linguin|bucatin|tagliatell/.test(n)) return 'lunga';
+  if(/pasta |penne|maccheron|gnocchi|lasagn|norma/.test(n)) return 'corta';
+  if(/zuppa|minestron|vellutata|crema di|besciamella|maionese|pesto|sugo|rag|marmellata|soffritto|pur/.test(n)) return 'crema';
+  if(c==='Dolci') return 'dolce';
+  return 'pezzi';
+}
+function mkRnd(seed){ let s=seed>>>0||7; return ()=>{ s=(s*1664525+1013904223)>>>0; return s/4294967296; }; }
+function hash(str){ let h=2166136261; for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619);} return h>>>0; }
+function mix(hex,to,amt){
+  const p=h=>[1,3,5].map(i=>parseInt(h.substr(i,2),16));
+  const [r1,g1,b1]=p(hex),[r2,g2,b2]=p(to);
+  const f=(a,b)=>Math.round(a+(b-a)*amt).toString(16).padStart(2,'0');
+  return '#'+f(r1,r2)+f(g1,g2)+f(b1,b2);
+}
+function art(r){
+  const [c1,c2,c3]=coloriDi(r), st=stileDi(r), R=mkRnd(hash(r.id)), id=r.id;
+  let food='';
+  const dot=(x,y,rr,c,o)=>`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${rr.toFixed(1)}" fill="${c}"${o?` opacity="${o}"`:''}/>`;
+  const scatter=(n,rad,minR,maxR,c,cy)=>{let s='';for(let i=0;i<n;i++){
+    const a=R()*6.283,d=Math.sqrt(R())*rad; s+=dot(100+Math.cos(a)*d,(cy||104)+Math.sin(a)*d*.9,minR+R()*(maxR-minR),c);} return s;};
+
+  if(st==='lunga'){
+    food=`<ellipse cx="100" cy="105" rx="46" ry="40" fill="${c1}" opacity=".55"/>`;
+    for(let i=0;i<9;i++){
+      const y=70+i*8+R()*3, sw=1+R()*.5;
+      food+=`<path d="M46 ${y.toFixed(1)} q27 ${(-10-R()*13).toFixed(1)} 54 0 t54 ${(R()*4-2).toFixed(1)}" fill="none" stroke="${mix('#F0DCA8',c1,.14+R()*.3)}" stroke-width="${(5*sw).toFixed(1)}" stroke-linecap="round"/>`;
+    }
+    food+=scatter(10,38,3,7,c1)+scatter(9,34,1.8,3.4,c2)+scatter(6,30,1.5,2.8,c3);
+  } else if(st==='corta'){
+    food=`<ellipse cx="100" cy="105" rx="45" ry="39" fill="${c1}" opacity=".5"/>`;
+    for(let i=0;i<14;i++){
+      const a=R()*6.283,d=Math.sqrt(R())*36,x=100+Math.cos(a)*d,y=103+Math.sin(a)*d*.86,rot=R()*180;
+      food+=`<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${rot.toFixed(0)})"><rect x="-10" y="-6" width="20" height="12" rx="6" fill="${mix('#F0DCA8',c1,.10+R()*.24)}"/></g>`;
+    }
+    food+=scatter(9,34,2.6,5.4,c2)+scatter(7,30,1.7,3.2,c3);
+  } else if(st==='risotto'){
+    food=`<circle cx="100" cy="103" r="48" fill="${mix('#EFE3C4',c1,.4)}"/>
+      <circle cx="100" cy="103" r="48" fill="url(#sh${id})"/>`+scatter(52,42,1.4,2.8,mix('#FFF6DE',c1,.16))+scatter(13,36,2.8,5.4,c2)+scatter(8,32,1.8,3.4,c3);
+  } else if(st==='crema'){
+    food=`<circle cx="100" cy="103" r="49" fill="${c1}"/><circle cx="100" cy="103" r="49" fill="url(#sh${id})"/>`
+      +scatter(9,35,2.4,5,mix(c1,'#000',.18))+scatter(8,30,1.9,3.6,c2)+scatter(6,26,1.5,2.8,c3);
+  } else if(st==='pezzi'){
+    for(let i=0;i<5;i++){
+      const a=(i/5)*6.283+R()*.5,d=15+R()*21,x=100+Math.cos(a)*d,y=104+Math.sin(a)*d*.82;
+      const w=21+R()*13,h=15+R()*8;
+      food+=`<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${(R()*140-70).toFixed(0)})"><rect x="${(-w/2).toFixed(1)}" y="${(-h/2).toFixed(1)}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="${(h/2.4).toFixed(1)}" fill="${mix(c1,'#3A2A1E',R()*.28)}"/></g>`;
+    }
+    food+=scatter(9,34,2,4,c2)+scatter(6,30,1.5,2.8,c3);
+  } else if(st==='dolce'){
+    food=`<path d="M55 116 q45 -58 90 0 z" fill="${mix(c1,'#F4E9D2',.5)}"/>
+      <path d="M67 96 q33 -26 66 0 q-33 16 -66 0 z" fill="${mix(c1,'#E9D7B0',.2)}"/>
+      <path d="M55 116 h90 a5 5 0 0 1 -5 10 h-80 a5 5 0 0 1 -5 -10 z" fill="${mix(c1,'#C6A469',.34)}"/>
+      <path d="M64 106 q36 -32 72 0" fill="none" stroke="${c2}" stroke-width="5" stroke-linecap="round" opacity=".8"/>`
+      +scatter(9,26,1.8,3.4,c3,92);
+  } else if(st==='impasto'){
+    food=`<ellipse cx="100" cy="110" rx="50" ry="39" fill="${mix('#EFDFB8','#C9A96A',.22)}"/>
+      <ellipse cx="85" cy="96" rx="17" ry="12" fill="#FBF0D6" opacity=".5"/>`+scatter(14,52,1.1,2.3,'#FBF3E0',110);
+  } else { /* bicchiere */
+    food=`<ellipse cx="100" cy="152" rx="44" ry="11" fill="#000" opacity=".3"/><path d="M70 50 h60 l-7 84 a11 11 0 0 1 -11 10 h-24 a11 11 0 0 1 -11 -10 z" fill="${mix(c1,'#F4EBD8',.35)}"/>
+      <path d="M74 68 h52 l-6 66 a10 10 0 0 1 -10 9 h-20 a10 10 0 0 1 -10 -9 z" fill="${c1}"/>
+      <ellipse cx="100" cy="68" rx="26" ry="7" fill="${mix(c1,'#FFFFFF',.3)}"/>`;
+  }
+  const piatto = (st==='impasto'||st==='bicchiere') ? '' :
+    `<ellipse cx="100" cy="110" rx="68" ry="63" fill="#000" opacity=".26"/>
+     <circle cx="100" cy="103" r="65" fill="#F0EBDD"/>
+     <circle cx="100" cy="103" r="65" fill="url(#pl${id})"/>
+     <circle cx="100" cy="103" r="52" fill="none" stroke="#000" stroke-opacity=".06" stroke-width="1.5"/>`;
+  const tavolo = st==='impasto'
+    ? `<rect width="200" height="200" fill="#2E1F14"/><rect x="14" y="30" width="172" height="150" rx="8" fill="#563E26"/>`
+    : `<rect width="200" height="200" fill="url(#bg${id})"/>`;
+  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${r.nome}">
+    <defs>
+      <radialGradient id="bg${id}" cx="50%" cy="38%" r="78%">
+        <stop offset="0" stop-color="${mix(c1,'#2A1B14',.5)}"/><stop offset="1" stop-color="#160F0C"/>
+      </radialGradient>
+      <radialGradient id="pl${id}" cx="36%" cy="30%" r="80%">
+        <stop offset="0" stop-color="#FFFFFF" stop-opacity=".55"/><stop offset="1" stop-color="#B9B2A0" stop-opacity=".45"/>
+      </radialGradient>
+      <radialGradient id="sh${id}" cx="36%" cy="30%" r="76%">
+        <stop offset="0" stop-color="#FFFFFF" stop-opacity=".22"/><stop offset="1" stop-color="#000000" stop-opacity=".16"/>
+      </radialGradient>
+    </defs>
+    ${tavolo}${piatto}${food}</svg>`;
+}
+
+/* ============================================================
+   TABELLE DI CONVERSIONE
+   ============================================================ */
+const T_VEL=[
+ ['Soft / vel 0','0 – 1','Il Mambo ha la velocità 0 vera, lame ferme. Per stufati e cibi che devono restare interi.'],
+ ['Antiorario','0 – 1 <b>con MamboMix</b>','Il senso inverso non esiste. Il MamboMix a bassa velocità rimesta senza tagliare.'],
+ ['Spiga','2 – 3 <b>con MamboMix</b>','Mai le lame sugli impasti.'],
+ ['1','1 – 2','Mescolare in cottura.'],['2','2 – 3','Amalgamare, sciogliere.'],
+ ['3','3 – 4','Creme e salse in cottura.'],['4','4 – 5','Montare con farfalla, emulsionare.'],
+ ['5','5 – 6','Tritare grossolanamente.'],['6','6 – 7','Tritare fine.'],['7','7 – 8','Frullare.'],
+ ['8 – 10','8 – 10','Frullare fine, polverizzare.'],['Turbo','Turbo','Colpi di 1-2 secondi, identici.']];
+const T_TEMP=[
+ ['37°C','37°C · P1-2','Lievitazione, yogurt. Il Mambo tiene il grado esatto fino a 12 ore.'],
+ ['50 – 90°C','stessa temperatura','Cambia solo la potenza, secondo cosa cuoci.'],
+ ['100°C','100°C · P5-9','Bollore. Potenza alta solo con molto liquido.'],
+ ['120°C','120°C · P8-10','Rosolature e soffritti. È il massimo del Mambo.'],
+ ['Varoma','<b>vaporiera</b> + caraffa 120°C · P10','Il Varoma non è una temperatura, è vapore: 700-900 ml d’acqua in caraffa e cibo nella vaporiera.'],
+ ['Sear 160°C (TM6)','non disponibile','Il Mambo si ferma a 120°C. Rosola più a lungo, coperchio aperto, senza liquidi.']];
+const T_POT=[
+ ['Rosolare, soffriggere','9 – 10','120°C'],['Bollire acqua, cuocere pasta','9 – 10','100°C'],
+ ['Sughi e zuppe a sobbollire','4 – 6','98 – 100°C'],['Risotti','5 – 6','100°C'],
+ ['Stufati e brasati lunghi','3 – 5','95 – 98°C'],['Creme con latte, uova, amido','3 – 4','85 – 95°C'],
+ ['Crema di formaggio (cacio e pepe, carbonara)','2','60 – 62°C'],
+ ['Sciogliere burro o cioccolato','2 – 3','50 – 60°C'],['Lievitazione, yogurt','1 – 2','37 – 40°C'],
+ ['Cottura al vapore','10','120°C']];
+const T_ACC=[
+ ['Lame','Lame','Tritare, frullare, impasti liquidi.'],
+ ['Farfalla','Farfalla','Montare albumi e panna, mantecare. Max velocità 4.'],
+ ['Cestello','Cestello','Cuocere in immersione, scolare, o capovolto sul coperchio come antischizzo.'],
+ ['Varoma','Vaporiera a due livelli','Si monta senza il coperchio della caraffa.'],
+ ['— non esiste','MamboMix','Rimestare senza tagliare e impastare. Sostituisce il senso antiorario.'],
+ ['— non esiste','Caraffa Habana','Antiaderente: latte, uova, zucchero, formaggio.']];
+
+/* ============================================================
+   ACCESSORI — disegnati sulla forma reale dei pezzi Mambo
+   ============================================================ */
+const ICONE={
+ Lame:`<svg class="ico" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round">
+   <path d="M16 5v22"/>
+   <path d="M15 11 5.5 7.5 8 13l7 1.6Z" fill="currentColor" fill-opacity=".22"/>
+   <path d="M17 11l9.5-3.5L24 13l-7 1.6Z" fill="currentColor" fill-opacity=".22"/>
+   <path d="M15 17 6 21.5 9 25l6-4.4Z" fill="currentColor" fill-opacity=".22"/>
+   <path d="M17 17l9 4.5-3 3.5-6-4.4Z" fill="currentColor" fill-opacity=".22"/>
+   <circle cx="16" cy="27" r="2.6" fill="currentColor" fill-opacity=".3"/></svg>`,
+ MamboMix:`<svg class="ico" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+   <path d="M16 4v13"/>
+   <path d="M16 17c0 5-2 6-6.5 7.5"/>
+   <path d="M6 22.5c-1.6.6-2 2-.8 3.2 1.2 1.2 3.4 1 5.6-.2 2-1.1 3-2.4 2.4-3.4-.6-1-2.6-1.1-4.6-.4Z" fill="currentColor" fill-opacity=".28"/>
+   <path d="M16 17c0 4 1.6 5.4 5 6.6" opacity=".55"/>
+   <circle cx="16" cy="4.5" r="2" fill="currentColor" fill-opacity=".3"/></svg>`,
+ Farfalla:`<svg class="ico" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round">
+   <path d="M16 6v20"/>
+   <path d="M15 12c-4-4-8-3.4-8.6.6-.5 3.6 3.4 6.4 8.6 6.4Z" fill="currentColor" fill-opacity=".22"/>
+   <path d="M17 12c4-4 8-3.4 8.6.6.5 3.6-3.4 6.4-8.6 6.4Z" fill="currentColor" fill-opacity=".22"/>
+   <path d="M11 22h10" stroke-linecap="round" opacity=".6"/></svg>`,
+ Cestello:`<svg class="ico" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round">
+   <path d="M8.5 12h15l-1.7 11.6a3 3 0 0 1-3 2.4h-5.6a3 3 0 0 1-3-2.4Z" fill="currentColor" fill-opacity=".14"/>
+   <path d="M11 12c0-5.5 10-5.5 10 0" stroke-linecap="round"/>
+   <path d="M7.5 12h17" stroke-linecap="round"/>
+   <circle cx="13" cy="17" r="1" fill="currentColor" stroke="none"/><circle cx="16" cy="19.5" r="1" fill="currentColor" stroke="none"/>
+   <circle cx="19" cy="17" r="1" fill="currentColor" stroke="none"/><circle cx="16" cy="15" r="1" fill="currentColor" stroke="none"/>
+   <circle cx="13.5" cy="21.5" r="1" fill="currentColor" stroke="none"/><circle cx="18.5" cy="21.5" r="1" fill="currentColor" stroke="none"/></svg>`,
+ Vaporiera:`<svg class="ico" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round">
+   <path d="M6 15h20l-1.5 5h-17Z" fill="currentColor" fill-opacity=".18"/>
+   <path d="M6.5 21h19l-1.5 5h-16Z" fill="currentColor" fill-opacity=".18"/>
+   <path d="M8 12.5c2-1.5 14-1.5 16 0" stroke-linecap="round"/>
+   <path d="M12 8.5c1.6-1.4-1.6-2.6 0-4M16 7.5c1.6-1.4-1.6-2.6 0-4M20 8.5c1.6-1.4-1.6-2.6 0-4" stroke-linecap="round" opacity=".65"/></svg>`,
+ Caraffa:`<svg class="ico" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round">
+   <path d="M8 9h16l-1.6 17H9.6Z" fill="currentColor" fill-opacity=".15"/>
+   <path d="M24 12.5c2.6.4 3.6 2 3.4 3.8-.2 1.8-1.6 2.9-3.9 3" stroke-linecap="round"/>
+   <path d="M7 9h18" stroke-linecap="round"/></svg>`};
+function icoAcc(n){
+  const k=Object.keys(ICONE).find(k=>String(n).toLowerCase().includes(k.toLowerCase()));
+  return k?ICONE[k]:'';
+}
+const USO={Lame:'trita e frulla',MamboMix:'rimesta e impasta',Farfalla:'monta ed emulsiona',
+  Cestello:'cuoce in immersione',Vaporiera:'cottura al vapore',
+  Acciaio:'caraffa standard',Habana:'caraffa antiaderente'};
+
+/* ============================================================
+   QUADRANTI — ogni parametro come manopola con il numero dentro
+   ============================================================ */
+function secDi(t){
+  if(!t||t==='—')return null;
+  const h=/([\d,.]+)\s*or[ae]/.exec(t), m=/(\d+)\s*min/.exec(t), sc=/(\d+)\s*sec/.exec(t);
+  let v=0; if(h)v+=parseFloat(h[1].replace(',','.'))*3600; if(m)v+=+m[1]*60; if(sc)v+=+sc[1];
+  return v||null;
+}
+function dTempo(t){
+  const v=secDi(t); if(v===null)return {d:'—',f:0,off:1};
+  const o = v<60?{d:String(v),u:'sec'} : v<3600?{d:String(v%60?Math.round(v/60):v/60),u:'min'}
+            : {d:String(v/3600).replace('.',','),u:v/3600===1?'ora':'ore'};
+  return {...o, f:Math.min(1,v/2700), off:0};
+}
+function dVel(v){
+  if(!v||v==='—')return {d:'—',f:0,off:1};
+  if(/turbo/i.test(v))return {d:'Turbo',f:1,off:0};
+  const n=v.match(/\d+/g); if(!n)return {d:v,f:0,off:1};
+  const hi=+n[n.length-1];
+  return {d:n.length>1?n[0]+'-'+n[1]:n[0], f:hi/10, off:0};
+}
+function dTemp(T){
+  if(!T||T==='—')return {d:'—',f:0,off:1};
+  const n=/(\d+)/.exec(T); if(!n)return {d:'—',f:0,off:1};
+  const g=+n[1];
+  if(/forno/i.test(T))return {d:g+'°',u:'forno',f:1,off:0};
+  return {d:g+'°', f:Math.max(.06,(g-30)/90), off:0};
+}
+function dPot(P){
+  if(!P||P==='—')return {d:'—',f:0,off:1};
+  const n=P.match(/\d+/g); if(!n)return {d:'—',f:0,off:1};
+  const hi=+n[n.length-1];
+  return {d:n.length>1?n[0]+'-'+n[1]:n[0], f:hi/10, off:0};
+}
+const C=2*Math.PI*40, ARC=C*0.75;
+function quad(o,grad,lab,cls){
+  const d=o.d, u=o.u||'';
+  const fs = d.length<=2?31:d.length===3?26:d.length===4?21:17;
+  const dy = u? '-.08em' : '.34em';
+  return `<div class="dial ${cls}${o.off?' off':''}">
+    <svg viewBox="0 0 100 100" role="img" aria-label="${lab} ${d} ${u}">
+      <circle class="trk" cx="50" cy="50" r="40" fill="none" stroke-width="9" stroke-linecap="round"
+        transform="rotate(135 50 50)" stroke-dasharray="${ARC.toFixed(1)} 400"/>
+      ${o.f>0?`<circle class="prog" cx="50" cy="50" r="40" fill="none" stroke="url(#${grad})"
+        stroke-width="9" stroke-linecap="round" transform="rotate(135 50 50)"
+        stroke-dasharray="${(o.f*ARC).toFixed(1)} 400"/>`:''}
+      <text x="50" y="50" dy="${dy}" text-anchor="middle" font-size="${fs}">${d}</text>
+      ${u?`<text class="un" x="50" y="50" dy="1.5em" text-anchor="middle">${u}</text>`:''}
+    </svg><div class="lb">${lab}</div></div>`;
+}
+function quadri(s){
+  return `<div class="dials">
+    ${quad(dTempo(s.t),'gT','tempo','t')}${quad(dVel(s.v),'gV','velocità','v')}
+    ${quad(dTemp(s.T),'gG','gradi','g')}${quad(dPot(s.P),'gP','potenza','p')}</div>`;
+}
+function mini(o,grad){
+  const fs=o.d.length<=2?36:o.d.length===3?28:22;
+  return `<svg viewBox="0 0 100 100" aria-hidden="true">
+    <circle class="trk" cx="50" cy="50" r="40" fill="none" stroke-width="10"/>
+    ${o.f>0?`<circle cx="50" cy="50" r="40" fill="none" stroke="url(#${grad})" stroke-width="10"
+      stroke-linecap="round" transform="rotate(-90 50 50)" stroke-dasharray="${(o.f*C).toFixed(1)} 400"/>`:''}
+    <text x="50" y="50" dy=".34em" text-anchor="middle" font-size="${fs}"
+      font-family="system-ui" font-weight="800" fill="#FFF3E4">${o.d}</text></svg>`;
+}
+
+/* ============================================================
+   STATO
+   foto     : foto reale del piatto  (id -> url|dataURL)
+   stepfoto : foto reale del passaggio (id#indice -> url|dataURL)
+   ============================================================ */
+const S={porz:4,tab:'ricette',q:'',cat:'Tutte',open:null,frigo:[],spesa:[],bimby:false,
+  foto:{},stepfoto:{},pref:[],cols:1,tema:'giorno'};
+const mem={};
+async function load(k,d){
+  // 1) storage host (ambiente sandbox)  2) localStorage (webapp normale)  3) memoria
+  try{ if(window.storage&&window.storage.get){const r=await window.storage.get(k);if(r)return JSON.parse(r.value);} }catch(e){}
+  try{ const r=localStorage.getItem(k); if(r!==null)return JSON.parse(r); }catch(e){}
+  return (k in mem)?mem[k]:d;
+}
+async function save(k,v){
+  mem[k]=v;
+  try{ if(window.storage&&window.storage.set)await window.storage.set(k,JSON.stringify(v)); }catch(e){}
+  try{ if(v===null)localStorage.removeItem(k); else localStorage.setItem(k,JSON.stringify(v)); }catch(e){}
+}
+
+function scala(i,base,porz){ const f=porz/base;
+  if(i.s==='f')return i.q; if(i.s==='s')return i.q*Math.pow(f,.6); return i.q*f; }
+function fmtQ(q){
+  if(q>=200)return String(Math.round(q/10)*10);
+  if(q>=50) return String(Math.round(q/5)*5);
+  if(q>=10) return String(Math.round(q));
+  if(q>=1)  return String(Math.round(q*2)/2).replace('.',',');
+  return String(Math.round(q*10)/10).replace('.',','); }
+const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\(.*?\)/g,'').replace(/[^a-z\s]/g,' ').trim();
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const durata=m=>m<60?m+' min':(m/60).toFixed(1).replace('.0','').replace('.',',')+' h';
+const view=document.getElementById('view');
+
+/* chiave foto passaggio */
+const stepKey=(id,i)=>id+'#'+i;
+/* media di una ricetta: foto reale se c'è, altrimenti illustrazione segnaposto */
+function heroMedia(r){
+  return S.foto[r.id]?`<img src="${esc(S.foto[r.id])}" alt="${esc(r.nome)}">`:`<div class="art">${art(r)}</div>`;
+}
+function tileMedia(r){
+  return S.foto[r.id]?`<img class="art" src="${esc(S.foto[r.id])}" alt="${esc(r.nome)}">`:`<div class="art">${art(r)}</div>`;
+}
+
+function render(){
+  document.getElementById('pNum').textContent=S.porz+' pers.';
+  document.getElementById('pMinus').disabled=S.porz<=1;
+  document.getElementById('pPlus').disabled=S.porz>=12;
+  document.body.classList.toggle('bimby-on',S.bimby);
+  const b=document.getElementById('spBadge'); b.hidden=!S.spesa.length; b.textContent=S.spesa.length;
+  const pb=document.getElementById('prBadge'); pb.hidden=!S.pref.length; pb.textContent=S.pref.length;
+  document.body.classList.toggle('giorno',S.tema==='giorno');
+  document.getElementById('tema').textContent=S.tema==='giorno'?'☀️':'🌙';
+  document.querySelector('meta[name=theme-color]').setAttribute('content',S.tema==='giorno'?'#FAF4EC':'#120D0B');
+  document.querySelectorAll('nav.tabs button').forEach(t=>t.setAttribute('aria-selected',t.dataset.tab===S.tab));
+  if(S.open){vDett();}else{({ricette:vRic,frigo:vFrigo,spesa:vSpesa,conv:vConv,pref:vPref})[S.tab]();window.scrollTo(0,0);}
+}
+function tile(r,badge){
+  const hab=r.caraffa==='Habana';
+  const cam=S.foto[r.id]?'':'<span class="camtag" aria-hidden="true">📷</span>';
+  return `<button class="tile" data-open="${r.id}">${tileMedia(r)}${badge||''}${cam}
+    <span class="fav" data-fav="${r.id}" role="button" aria-pressed="${S.pref.includes(r.id)}" aria-label="Preferito">${S.pref.includes(r.id)?'♥':'♡'}</span>
+    <span class="lay"><span class="nm">${esc(r.nome)}</span>
+    <span class="mt"><span>${durata(r.tempo)}</span><span>${esc(r.cat)}</span>${hab?'<span>caraffa Habana</span>':''}</span></span></button>`;
+}
+
+/* ---------- RICETTE ---------- */
+function vRic(){
+  const cats=['Tutte',...new Set(RICETTE.map(r=>r.cat))], q=norm(S.q);
+  const f=RICETTE.filter(r=>(S.cat==='Tutte'||r.cat===S.cat)
+    &&(!q||norm(r.nome).includes(q)||r.ing.some(i=>norm(i.n).includes(q))||(r.tag||[]).some(t=>norm(t).includes(q))));
+  view.innerHTML=`<div class="panel">
+    <div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" placeholder="Cerca piatto o ingrediente" value="${esc(S.q)}"></div>
+    <div class="toolrow">
+      <div class="chips">${cats.map(c=>`<button class="chip" data-cat="${esc(c)}" aria-pressed="${c===S.cat}">${esc(c)}</button>`).join('')}</div>
+      <div class="cols">
+        <button data-cols="1" aria-pressed="${S.cols===1}" aria-label="Una per riga"><svg viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="5" rx="1.5"/><rect x="1" y="9" width="14" height="5" rx="1.5"/></svg></button>
+        <button data-cols="2" aria-pressed="${S.cols===2}" aria-label="Due per riga"><svg viewBox="0 0 16 16"><rect x="1" y="2" width="6" height="6" rx="1.5"/><rect x="9" y="2" width="6" height="6" rx="1.5"/><rect x="1" y="10" width="6" height="4" rx="1.5"/><rect x="9" y="10" width="6" height="4" rx="1.5"/></svg></button>
+      </div></div>
+    ${f.length?`<div class="grid" data-cols="${S.cols}">${f.map((r,i)=>tile(r).replace('class="tile"',`class="tile" style="animation-delay:${Math.min(i*32,320)}ms"`)).join('')}</div>`
+      :`<div class="empty">Nessun piatto per “${esc(S.q)}”.<br>Prova con un ingrediente singolo, tipo “zucchine”.</div>`}
+    <footer>${RICETTE.length} ricette riscritte in forma originale sui classici italiani, con i parametri convertiti per Mambo Touch. Le illustrazioni sono segnaposto generati dagli ingredienti: apri una ricetta e usa la barra “Foto del piatto” per sostituirle con una foto vera (incolla un link o carica un file).</footer></div>`;
+  const i=document.getElementById('q');
+  i.oninput=e=>{S.q=e.target.value;const p=e.target.selectionStart;vRic();
+    const n=document.getElementById('q');n.focus();n.setSelectionRange(p,p);};
+  view.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{S.cat=b.dataset.cat;render();});
+  view.querySelectorAll('.cols button').forEach(b=>b.onclick=()=>{S.cols=+b.dataset.cols;save('mambo:cols',S.cols);render();});
+}
+
+/* ---------- GESTIONE FOTO REALI ---------- */
+let fotoTarget=null; /* {tipo:'ric'|'step', id, i} */
+const gCam=document.getElementById('globalCam');
+function chiediFile(target){ fotoTarget=target; gCam.value=''; gCam.click(); }
+function imgToDataURL(file,cb){
+  const fr=new FileReader();
+  fr.onload=()=>{const im=new Image(); im.onload=()=>{
+    const max=1100,sc=Math.min(1,max/Math.max(im.width,im.height));
+    const cv=document.createElement('canvas'); cv.width=Math.round(im.width*sc); cv.height=Math.round(im.height*sc);
+    cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);
+    cb(cv.toDataURL('image/jpeg',.74));
+  }; im.onerror=()=>cb(null); im.src=fr.result; };
+  fr.readAsDataURL(file);
+}
+function setFoto(target,src){
+  if(!src){ delFoto(target); return; }
+  if(target.tipo==='ric'){
+    S.foto[target.id]=src; save('mambo:foto:'+target.id,src);
+    load('mambo:fotoidx',[]).then(ix=>{ if(!ix.includes(target.id)){ix.push(target.id);save('mambo:fotoidx',ix);} });
+  } else {
+    const k=stepKey(target.id,target.i);
+    S.stepfoto[k]=src; save('mambo:stepfoto:'+k,src);
+    load('mambo:stepidx',[]).then(ix=>{ if(!ix.includes(k)){ix.push(k);save('mambo:stepidx',ix);} });
+  }
+}
+function delFoto(target){
+  if(target.tipo==='ric'){
+    delete S.foto[target.id]; save('mambo:foto:'+target.id,null);
+    load('mambo:fotoidx',[]).then(ix=>save('mambo:fotoidx',ix.filter(x=>x!==target.id)));
+  } else {
+    const k=stepKey(target.id,target.i);
+    delete S.stepfoto[k]; save('mambo:stepfoto:'+k,null);
+    load('mambo:stepidx',[]).then(ix=>save('mambo:stepidx',ix.filter(x=>x!==k)));
+  }
+}
+gCam.onchange=e=>{const file=e.target.files[0]; if(!file||!fotoTarget)return;
+  imgToDataURL(file,d=>{ if(d){ setFoto(fotoTarget,d); if(deck.classList.contains('open'))buildDeck(); render(); } });};
+
+/* ---------- DETTAGLIO ---------- */
+function vDett(){
+  const r=RICETTE.find(x=>x.id===S.open), f=S.porz/r.porz, vol=r.vol*f;
+  const inSp=S.spesa.some(s=>s.id===r.id), hasFoto=!!S.foto[r.id];
+  let w=''; if(vol>2300) w=`Per ${S.porz} persone servono circa ${Math.round(vol/100)*100} ml e la caraffa ne tiene 2300 utili. Dividi in due cotture.`;
+  else if(vol>1900) w=`Sei vicino al limite: ${Math.round(vol/100)*100} ml su 2300 utili. Tieni d’occhio il bollore.`;
+  const camSvg='<svg viewBox="0 0 24 24"><path d="M4 8h3l1.5-2h7L16 8h4a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13" r="3.2"/></svg>';
+  view.innerHTML=`<div class="panel" style="padding-top:0">
+    <div class="hero">${heroMedia(r)}<div class="shade"></div>
+      <button class="fab" data-back aria-label="Indietro">←</button>
+      <button class="fab fav2" data-fav="${r.id}" aria-pressed="${S.pref.includes(r.id)}" aria-label="Preferito">${S.pref.includes(r.id)?'♥':'♡'}</button>
+      <button class="fab cam" data-picfoto="${r.id}" aria-label="Aggiungi la tua foto">📷</button>
+      <div class="htxt"><h2>${esc(r.nome)}</h2>
+        <div class="sub">${esc(r.cat)} &nbsp;|&nbsp; ${durata(r.tempo)} &nbsp;|&nbsp; ${r.acc.length} accessori</div></div>
+    </div>
+    <div class="photobar">
+      <span class="plab">${camSvg}Foto del piatto</span>
+      <input class="url" id="fotoUrl" placeholder="Incolla un link immagine (https://…)" value="${hasFoto&&/^https?:/.test(S.foto[r.id])?esc(S.foto[r.id]):''}">
+      <button class="pbtn" data-picfoto="${r.id}">${camSvg}Carica</button>
+      ${hasFoto?`<button class="pbtn rm" data-rmfoto="${r.id}">Rimuovi</button>`:''}
+    </div>
+    <div class="card">
+      <div class="row"><div class="k">Ti serve</div><div class="v"><div class="accgrid">
+        <span class="accitem">${ICONE.Caraffa}<span>${r.caraffa==='Habana'?'Caraffa Habana':'Caraffa acciaio'}<small>${USO[r.caraffa]}</small></span></span>
+        ${r.acc.map(a=>`<span class="accitem">${icoAcc(a)}<span>${esc(a)}<small>${USO[a]||''}</small></span></span>`).join('')}
+      </div></div></div>
+      <div class="row"><div class="k">In caraffa</div><div class="v">circa ${Math.round(vol/50)*50} ml su 2300 utili</div></div>
+    </div>
+    ${w?`<div class="warn">${w}</div>`:''}
+    <div class="card pad"><h3 class="sec2">Ingredienti <span>per ${S.porz} ${S.porz===1?'persona':'persone'}</span></h3>
+    <ul class="ing">${r.ing.map(i=>`<li>
+      <span class="n">${esc(i.n)}${i.s==='s'?'<i>non scala in proporzione</i>':i.s==='f'?'<i>quantità fissa</i>':''}</span>
+      <span class="q">${fmtQ(scala(i,r.porz,S.porz))} ${esc(i.u)}</span></li>`).join('')}</ul></div>
+    <h3 class="sec">Sul Mambo Touch <span>${r.steps.length} passaggi</span></h3>
+    <div class="steps">${r.steps.map((s,idx)=>{const has=s.t!=='—'||s.v!=='—';const k=stepKey(r.id,idx);const sf=S.stepfoto[k];
+      return `<div class="step">
+        ${sf?`<img class="stepmedia" src="${esc(sf)}" alt="Passaggio ${idx+1}">`:''}
+        <div class="txt"><span class="n"></span><span>${esc(s.x)}${
+        s.a&&s.a!=='—'?`<span class="accpill">${icoAcc(s.a)}${esc(s.a)}</span>`:''}</span></div>
+      ${has?quadri(s):''}
+      <div class="bimby">Sul Bimby era <b>${esc(s.b)}</b></div>
+      <button class="stepcam" data-picstep="${r.id}" data-i="${idx}">${camSvg}${sf?'Cambia foto del passaggio':'Aggiungi foto del passaggio'}</button>
+      </div>`;}).join('')}</div>
+    ${r.note&&r.note.length?`<h3 class="sec">Note di conversione</h3>${r.note.map(n=>`<div class="note">${esc(n)}</div>`).join('')}`:''}
+    <div class="acts">
+      <button class="btn play" data-deck="${r.id}"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Presentazione</button>
+      <button class="btn ${inSp?'on':''}" data-spesa="${r.id}">${inSp?'✓ Nella spesa':'Aggiungi alla spesa'}</button>
+      <button class="btn ghost" data-back>Chiudi</button></div>
+    <button class="toggle" data-bimby aria-pressed="${S.bimby}"><span class="sw"></span>Mostra i parametri Bimby originali</button>
+  </div>`;
+  const fu=document.getElementById('fotoUrl');
+  if(fu)fu.onchange=()=>{const v=fu.value.trim();
+    if(!v){ if(S.foto[r.id]&&/^https?:/.test(S.foto[r.id]))delFoto({tipo:'ric',id:r.id}); }
+    else if(/^https?:\/\/.+/i.test(v)) setFoto({tipo:'ric',id:r.id},v);
+    render(); };
+}
+
+/* ============================================================
+   MODALITÀ PRESENTAZIONE / SLIDE
+   ============================================================ */
+const deck=document.getElementById('deck');
+const deckTrack=document.getElementById('deckTrack');
+const deckDots=document.getElementById('deckDots');
+let deckId=null, deckN=0, deckTotal=0;
+
+function slideMediaR(r){
+  return S.foto[r.id]?`<img src="${esc(S.foto[r.id])}" alt="${esc(r.nome)}">`:art(r);
+}
+function slideMediaStep(r,idx){
+  const sf=S.stepfoto[stepKey(r.id,idx)];
+  if(sf)return `<img src="${esc(sf)}" alt="Passaggio ${idx+1}">`;
+  if(S.foto[r.id])return `<img src="${esc(S.foto[r.id])}" alt="${esc(r.nome)}">`;
+  return art(r);
+}
+function buildDeck(){
+  const r=RICETTE.find(x=>x.id===deckId); if(!r)return;
+  document.getElementById('deckTitle').textContent=r.nome;
+  const slides=[];
+  /* copertina */
+  slides.push(`<section class="slide cover"><div class="inner">
+    <div class="sph">${slideMediaR(r)}</div>
+    <div class="eyebrow">Cucina Mambo</div>
+    <h2>${esc(r.nome)}</h2>
+    <div class="csub">${esc(r.cat)} · ${durata(r.tempo)} · per ${S.porz} ${S.porz===1?'persona':'persone'}</div>
+  </div></section>`);
+  /* ingredienti */
+  slides.push(`<section class="slide"><div class="inner">
+    <div class="kicker">Ingredienti · ${S.porz} ${S.porz===1?'persona':'persone'}</div>
+    <div class="stitle">Cosa mettere in caraffa</div>
+    <ul class="singred">${r.ing.map(i=>`<li><span>${esc(i.n)}</span><span class="sq">${fmtQ(scala(i,r.porz,S.porz))} ${esc(i.u)}</span></li>`).join('')}</ul>
+  </div></section>`);
+  /* passaggi */
+  r.steps.forEach((s,idx)=>{const has=s.t!=='—'||s.v!=='—';
+    slides.push(`<section class="slide"><div class="inner">
+      <div class="kicker">Passaggio ${idx+1} di ${r.steps.length}</div>
+      <div class="sph2">${slideMediaStep(r,idx)}</div>
+      <div class="stext">${esc(s.x)}${s.a&&s.a!=='—'?` <span class="accpill">${icoAcc(s.a)}${esc(s.a)}</span>`:''}</div>
+      ${has?`<div class="sdials">${quadri(s)}</div>`:''}
+      ${s.b&&s.b!=='—'?`<div class="sbimby">Sul Bimby: <b>${esc(s.b)}</b></div>`:''}
+    </div></section>`);
+  });
+  /* chiusura */
+  slides.push(`<section class="slide cover"><div class="inner">
+    <div class="eyebrow">Pronto</div>
+    <h2>Buon appetito</h2>
+    <div class="csub">${esc(r.nome)} · convertita per Cecotec Mambo Touch${r.note&&r.note.length?` · ${r.note.length} note di conversione`:''}</div>
+  </div></section>`);
+  deckTotal=slides.length;
+  deckTrack.innerHTML=slides.join('');
+  deckDots.innerHTML=slides.map((_,i)=>`<i data-goto="${i}"></i>`).join('');
+  deckDots.querySelectorAll('[data-goto]').forEach(d=>d.onclick=()=>gotoSlide(+d.dataset.goto));
+  if(deckN>=deckTotal)deckN=deckTotal-1;
+  applyDeck();
+}
+function applyDeck(){
+  deckTrack.style.transform=`translateX(${-deckN*100}%)`;
+  deckDots.querySelectorAll('i').forEach((d,i)=>d.classList.toggle('on',i===deckN));
+  document.getElementById('deckPrev').disabled=deckN<=0;
+  document.getElementById('deckNext').disabled=deckN>=deckTotal-1;
+  document.getElementById('progline').style.width=((deckN+1)/deckTotal*100)+'%';
+  const cur=deckTrack.children[deckN];
+  if(cur){cur.scrollTop=0;const inner=cur.querySelector('.inner');if(inner){inner.style.animation='none';void inner.offsetWidth;inner.style.animation='';}}
+}
+function gotoSlide(n){ deckN=Math.max(0,Math.min(deckTotal-1,n)); applyDeck(); }
+function openDeck(id){ deckId=id; deckN=0; deck.classList.add('open'); document.body.style.overflow='hidden'; buildDeck(); }
+function closeDeck(){ deck.classList.remove('open'); document.body.style.overflow=''; }
+document.getElementById('deckClose').onclick=closeDeck;
+document.getElementById('deckPrev').onclick=()=>gotoSlide(deckN-1);
+document.getElementById('deckNext').onclick=()=>gotoSlide(deckN+1);
+document.getElementById('deckPdf').onclick=()=>window.print();
+document.addEventListener('keydown',e=>{ if(!deck.classList.contains('open'))return;
+  if(e.key==='ArrowRight'||e.key==='PageDown'){gotoSlide(deckN+1);}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'){gotoSlide(deckN-1);}
+  else if(e.key==='Escape'){closeDeck();} });
+/* swipe */
+let tx0=null,ty0=null,swiping=false;
+deckTrack.addEventListener('touchstart',e=>{const t=e.touches[0];tx0=t.clientX;ty0=t.clientY;swiping=false;},{passive:true});
+deckTrack.addEventListener('touchmove',e=>{if(tx0===null)return;const t=e.touches[0];
+  if(Math.abs(t.clientX-tx0)>Math.abs(t.clientY-ty0)+6)swiping=true;},{passive:true});
+deckTrack.addEventListener('touchend',e=>{if(tx0===null)return;const dx=e.changedTouches[0].clientX-tx0;
+  if(swiping&&Math.abs(dx)>52){ gotoSlide(deckN+(dx<0?1:-1)); } tx0=ty0=null;},{passive:true});
+
+/* ---------- PREFERITI ---------- */
+function vPref(){
+  const f=RICETTE.filter(r=>S.pref.includes(r.id));
+  view.innerHTML=`<div class="panel">
+    <h2 class="sec" style="margin-top:6px">Preferiti</h2>
+    ${f.length?`<p class="muted" style="font-size:14px;margin:8px 0 0">${f.length} ${f.length===1?'ricetta salvata':'ricette salvate'}. Tocca di nuovo il cuore per togliere.</p>
+      <div class="grid" data-cols="${S.cols}">${f.map((r,i)=>tile(r).replace('class="tile"',`class="tile" style="animation-delay:${Math.min(i*32,320)}ms"`)).join('')}</div>`
+    :`<div class="empty">Nessun preferito ancora.<br>Tocca il cuore in alto a destra su una ricetta e la ritrovi qui.</div>`}
+  </div>`;
+}
+
+/* ---------- FRIGO ---------- */
+function vFrigo(){
+  const sc=RICETTE.map(r=>{
+    const req=r.ing.filter(i=>!i.b);
+    const miss=req.filter(i=>{const ni=norm(i.n);
+      return !S.frigo.some(p=>{const np=norm(p);return ni.includes(np)||np.includes(ni.split(' ')[0]);});});
+    return {r,pct:req.length?Math.round((req.length-miss.length)/req.length*100):100,miss};
+  }).filter(x=>x.pct>0).sort((a,b)=>b.pct-a.pct);
+  view.innerHTML=`<div class="panel">
+    <h2 class="sec" style="margin-top:6px">Cosa ho in frigo</h2>
+    <p class="muted" style="font-size:13.5px;margin:8px 0 0">Elenca quello che hai. Sale, olio, farina, zucchero e acqua li do per scontati in dispensa.</p>
+    <div class="inrow"><input id="pin" placeholder="Es. zucchine, gamberetti, uova" enterkeyhint="done"><button id="padd">Aggiungi</button></div>
+    ${S.frigo.length?`<div class="mine">${S.frigo.map((p,i)=>`<span class="chip">${esc(p)}<button data-del="${i}" aria-label="Togli">×</button></span>`).join('')}</div>`:''}
+    ${!S.frigo.length?`<div class="empty">Aggiungi almeno un ingrediente e ordino i piatti da quelli che puoi già fare stasera.</div>`
+      :`<h3 class="sec">Puoi cucinare</h3><div class="grid" data-cols="${S.cols}">${sc.slice(0,24).map(x=>
+        tile(x.r,`<span class="pct">${x.pct}%</span>`)).join('')}</div>
+        ${sc[0]&&sc[0].miss.length&&sc[0].miss.length<=4?`<div class="note" style="margin-top:14px">Per ${esc(sc[0].r.nome)} ti manca solo: ${sc[0].miss.map(m=>esc(m.n)).join(', ')}.</div>`:''}`}
+  </div>`;
+  const i=document.getElementById('pin'),a=document.getElementById('padd');
+  const push=()=>{const v=i.value.trim();if(!v)return;
+    v.split(',').map(s=>s.trim()).filter(Boolean).forEach(s=>{if(!S.frigo.includes(s))S.frigo.push(s);});
+    i.value='';save('mambo:frigo',S.frigo);render();document.getElementById('pin').focus();};
+  a.onclick=push; i.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();push();}};
+  view.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{S.frigo.splice(+b.dataset.del,1);save('mambo:frigo',S.frigo);render();});
+}
+
+/* ---------- SPESA ---------- */
+function vSpesa(){
+  const agg={};
+  S.spesa.forEach(e=>{const r=RICETTE.find(x=>x.id===e.id);if(!r)return;
+    r.ing.forEach(i=>{const k=norm(i.n)+'|'+i.u;
+      if(!agg[k])agg[k]={n:i.n,u:i.u,q:0,from:[]};
+      agg[k].q+=scala(i,r.porz,e.porz);
+      if(!agg[k].from.includes(r.nome))agg[k].from.push(r.nome);});});
+  const it=Object.entries(agg).sort((a,b)=>a[1].n.localeCompare(b[1].n));
+  view.innerHTML=`<div class="panel">
+    <h2 class="sec" style="margin-top:6px">Lista della spesa</h2>
+    ${!S.spesa.length?`<div class="empty">Ancora vuota. Apri una ricetta e usa “Aggiungi alla spesa”: le quantità entrano già scalate sulle persone che hai scelto, e qui trovi il tasto per copiare tutto.</div>`
+    :`<div class="card"><div class="head"><span>${S.spesa.length} ricette · ${it.length} voci</span>
+        <button id="clr" style="color:var(--tomato)">Svuota</button></div>
+      ${it.map(([k,v])=>`<div class="li" data-done="0" data-k="${esc(k)}"><span class="box">✓</span>
+        <span class="lbl">${esc(v.n)}<small>${esc(v.from.join(', '))}</small></span>
+        <span class="qty">${fmtQ(v.q)} ${esc(v.u)}</span></div>`).join('')}</div>
+      <div class="acts"><button class="btn" id="cp">Copia la lista</button></div>
+      <h3 class="sec">Ricette in lista</h3><div class="card">${S.spesa.map(e=>{
+        const r=RICETTE.find(x=>x.id===e.id);
+        return `<div class="li"><span class="lbl">${esc(r.nome)}<small>per ${e.porz} ${e.porz===1?'persona':'persone'}</small></span>
+          <button class="qty" data-rm="${e.id}" style="color:var(--tomato)">Togli</button></div>`;}).join('')}</div>`}
+  </div>`;
+  view.querySelectorAll('.li[data-k]').forEach(el=>el.onclick=()=>el.dataset.done=el.dataset.done==='1'?'0':'1');
+  const c=document.getElementById('clr'); if(c)c.onclick=()=>{S.spesa=[];save('mambo:spesa',S.spesa);render();};
+  const cp=document.getElementById('cp');
+  if(cp)cp.onclick=async()=>{
+    const t='Lista della spesa\n'+it.map(([k,v])=>`• ${v.n} — ${fmtQ(v.q)} ${v.u}`).join('\n');
+    let ok=false;
+    try{ await navigator.clipboard.writeText(t); ok=true; }
+    catch(e){ const ta=document.createElement('textarea'); ta.value=t;
+      ta.style.cssText='position:fixed;opacity:0'; document.body.appendChild(ta);
+      ta.select(); try{ ok=document.execCommand('copy'); }catch(_){}
+      document.body.removeChild(ta); }
+    cp.textContent = ok?'Copiata ✓':'Non riesco a copiare';
+    setTimeout(()=>cp.textContent='Copia la lista',1800); };
+  view.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{S.spesa=S.spesa.filter(e=>e.id!==b.dataset.rm);save('mambo:spesa',S.spesa);render();});
+}
+
+/* ---------- CONVERSIONI ---------- */
+const PREP={
+ soffritto:{lab:'Soffritto, rosolatura',T:120,P:10,acc:'MamboMix',n:'Coperchio aperto o senza dosatore: l’umidità deve uscire, altrimenti lessi invece di rosolare.'},
+ bollire:{lab:'Bollire acqua o pasta',T:100,P:9,acc:'MamboMix',n:'Usa il cestello se vuoi scolare senza svuotare la caraffa.'},
+ sugo:{lab:'Sugo o zuppa a sobbollire',T:100,P:5,acc:'MamboMix',n:'Cestello capovolto al posto del dosatore: antischizzo che lascia restringere.'},
+ risotto:{lab:'Risotto',T:100,P:6,acc:'MamboMix',n:'Brodo sempre caldo: il Mambo recupera la temperatura lentamente.'},
+ brasato:{lab:'Stufato o brasato lungo',T:98,P:4,acc:'MamboMix',n:'Se disponibile, SlowMambo è meglio della velocità 1.'},
+ crema:{lab:'Crema con latte, uova o amido',T:90,P:4,acc:'Lame',n:'Caraffa Habana. La potenza bassa è ciò che evita il fondo bruciato.'},
+ formaggio:{lab:'Crema di formaggio (cacio e pepe)',T:62,P:2,acc:'Farfalla',n:'Sopra i 68°C il formaggio fila e l’uovo straccia.'},
+ fondere:{lab:'Sciogliere burro o cioccolato',T:55,P:2,acc:'Lame',n:'Sopra P3 il cioccolato si separa.'},
+ lievito:{lab:'Lievitazione, yogurt',T:37,P:1,acc:'MamboMix',n:'Il timer arriva a 12 ore: puoi fermentare in caraffa.'},
+ vapore:{lab:'Cottura al vapore',T:120,P:10,acc:'Vaporiera',n:'700-900 ml d’acqua in caraffa. La velocità non serve.'},
+ freddo:{lab:'Nessuna cottura',T:0,P:0,acc:'Lame',n:'Campo gradi e potenza spenti.'}};
+const VELMAP={'0':'0 – 1',soft:'0 – 1',anti:'0 – 1 + MamboMix',spiga:'2 – 3 + MamboMix','1':'1 – 2','2':'2 – 3','3':'3 – 4','4':'4 – 5','5':'5 – 6','6':'6 – 7','7':'7 – 8','8':'8','9':'9','10':'10',turbo:'Turbo'};
+function vConv(){
+  const plain=t=>String(t).replace(/<[^>]+>/g,'');
+  const rigaVel=([bi,ma,de])=>`<div class="crow">
+    <div class="mini">${mini(dVel(bi),'gV')}<span class="arw">→</span>${mini(dVel(plain(ma)),'gV')}</div>
+    <div class="cap"><b>${bi} → ${ma}</b><span>${de}</span></div></div>`;
+  const rigaTemp=([bi,ma,de])=>{
+    const f=/varoma/i.test(bi)?1:dTemp(bi).f||(/sear/i.test(bi)?1:0);
+    return `<div class="crow"><div class="cap"><b>${bi} → ${ma}</b><span>${de}</span>
+      <div class="thermo" style="width:100%;margin-top:10px"><i style="width:${Math.round(f*100)}%"></i></div></div></div>`;};
+  const rigaPot=([pr,po,gr])=>{
+    const n=po.match(/\d+/g),hi=n?+n[n.length-1]:0;
+    return `<div class="crow"><div class="meter">${[...Array(10)].map((_,i)=>
+      `<i class="${i<hi?'on':''}"></i>`).join('')}</div>
+      <div class="cap"><b>${pr}</b><span>potenza ${po} · ${gr}</span></div></div>`;};
+  const rigaAcc=([bi,ma,de])=>`<div class="crow">${icoAcc(ma)||icoAcc(bi)||''}
+    <div class="cap"><b>${bi} → ${ma}</b><span>${de}</span></div></div>`;
+
+  view.innerHTML=`<div class="panel">
+    <h2 class="sec" style="margin-top:6px">Convertitore rapido</h2>
+    <p class="muted" style="font-size:14px;margin:8px 0 0">Per le ricette Bimby che non sono in elenco: traduci il singolo passaggio.</p>
+    <div class="conv"><div class="r2">
+      <div><label for="cv">Velocità Bimby</label><select id="cv">${Object.keys(VELMAP).map(k=>
+        `<option value="${k}">${k==='anti'?'Antiorario':k==='spiga'?'Spiga':k==='soft'?'Soft':k==='turbo'?'Turbo':'Velocità '+k}</option>`).join('')}</select></div>
+      <div><label for="cp2">Cosa stai facendo</label><select id="cp2">${Object.entries(PREP).map(([k,v])=>
+        `<option value="${k}">${v.lab}</option>`).join('')}</select></div></div>
+      <div id="cout"></div></div>
+
+    <h3 class="sec">Velocità</h3>
+    ${T_VEL.map(rigaVel).join('')}
+
+    <h3 class="sec">Temperatura</h3>
+    ${T_TEMP.map(rigaTemp).join('')}
+
+    <h3 class="sec">Potenza calorifica <span>il parametro che il Bimby non ha</span></h3>
+    <p class="muted" style="font-size:14px;margin:8px 0 0">È la fiamma del fornello, da 0 a 10. Nelle ricette Bimby non è scritta da nessuna parte, va dedotta da cosa stai cuocendo. Stessa temperatura con potenza sbagliata significa fondo bruciato o cottura che non parte.</p>
+    ${T_POT.map(rigaPot).join('')}
+
+    <h3 class="sec">Accessori</h3>
+    ${T_ACC.map(rigaAcc).join('')}
+
+    <h3 class="sec">Limiti della macchina</h3>
+    <div class="card">
+      <div class="row"><div class="k">Caraffa</div><div class="v">3,3 L totali · <b style="color:var(--saffron)">2,3 L utili</b></div></div>
+      <div class="row"><div class="k">Liquidi</div><div class="v">massimo 2,0 L in ebollizione</div></div>
+      <div class="row"><div class="k">A freddo</div><div class="v">massimo 1,5 L per frullare</div></div>
+      <div class="row"><div class="k">Impasti</div><div class="v">massimo 600 g di farina</div></div>
+      <div class="row"><div class="k">Temperatura</div><div class="v">37 – 120 °C, grado per grado</div></div>
+      <div class="row"><div class="k">Timer</div><div class="v">da 1 secondo a 12 ore</div></div>
+    </div>
+    <footer>Specifiche Mambo Touch verificate sulla scheda prodotto Cecotec. I tempi convertiti sono indicativi: sui sughi lunghi il Mambo chiede in genere il 5-10% in più a parità di risultato.</footer></div>`;
+
+  const cv=document.getElementById('cv'),cp2=document.getElementById('cp2'),out=document.getElementById('cout');
+  const upd=()=>{const p=PREP[cp2.value];let vel=VELMAP[cv.value];
+    if(p.acc==='Vaporiera')vel='—';
+    if((cp2.value==='sugo'||cp2.value==='brasato')&&['0','1','soft','anti'].includes(cv.value))vel='0 – 1 + MamboMix';
+    out.innerHTML=`<div class="dials" style="border-radius:12px;margin-top:14px;border-top:0">
+      ${quad(dVel(vel),'gV','velocità','v')}${quad(dTemp(p.T?p.T+'°C':'—'),'gG','gradi','g')}
+      ${quad(dPot(p.P?String(p.P):'—'),'gP','potenza','p')}</div>
+      <div style="text-align:center;margin-top:12px"><span class="accpill">${p.acc}</span></div>
+      <div class="cnote" style="margin-top:12px;border-radius:12px">${p.n}</div>`;};
+  cv.onchange=upd;cp2.onchange=upd;upd();
+}
+
+/* ---------- EVENTI ---------- */
+document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;S.open=null;render();});
+document.getElementById('tema').onclick=()=>{
+  S.tema=S.tema==='giorno'?'notte':'giorno'; save('mambo:tema',S.tema); render(); };
+function bumpN(){const n=document.getElementById('pNum');n.classList.remove('bump');void n.offsetWidth;n.classList.add('bump');}
+document.getElementById('pMinus').onclick=()=>{if(S.porz>1){S.porz--;save('mambo:porz',S.porz);render();bumpN();}};
+document.getElementById('pPlus').onclick=()=>{if(S.porz<12){S.porz++;save('mambo:porz',S.porz);render();bumpN();}};
+document.addEventListener('click',e=>{
+  const pf=e.target.closest('[data-picfoto]'); if(pf){ chiediFile({tipo:'ric',id:pf.dataset.picfoto}); return; }
+  const rf=e.target.closest('[data-rmfoto]'); if(rf){ delFoto({tipo:'ric',id:rf.dataset.rmfoto}); render(); return; }
+  const ps=e.target.closest('[data-picstep]'); if(ps){ chiediFile({tipo:'step',id:ps.dataset.picstep,i:+ps.dataset.i}); return; }
+  const dk=e.target.closest('[data-deck]'); if(dk){ openDeck(dk.dataset.deck); return; }
+  const fv=e.target.closest('[data-fav]');
+  if(fv){ e.stopPropagation(); const id=fv.dataset.fav;
+    if(S.pref.includes(id))S.pref=S.pref.filter(x=>x!==id); else S.pref.push(id);
+    save('mambo:pref',S.pref); render(); return; }
+  const o=e.target.closest('[data-open]'); if(o){S.open=o.dataset.open;render();window.scrollTo(0,0);return;}
+  if(e.target.closest('[data-back]')){S.open=null;render();return;}
+  const sp=e.target.closest('[data-spesa]');
+  if(sp){const id=sp.dataset.spesa;
+    if(S.spesa.some(x=>x.id===id))S.spesa=S.spesa.filter(x=>x.id!==id);else S.spesa.push({id,porz:S.porz});
+    save('mambo:spesa',S.spesa);render();return;}
+  if(e.target.closest('[data-bimby]')){S.bimby=!S.bimby;save('mambo:bimby',S.bimby);render();}
+});
+(async()=>{
+  S.porz=await load('mambo:porz',4); S.frigo=await load('mambo:frigo',[]);
+  S.spesa=await load('mambo:spesa',[]); S.bimby=await load('mambo:bimby',false);
+  S.pref=await load('mambo:pref',[]); S.cols=await load('mambo:cols',1);
+  S.tema=await load('mambo:tema','giorno');
+  const ix=await load('mambo:fotoidx',[]);
+  for(const id of ix){const d=await load('mambo:foto:'+id,null); if(d)S.foto[id]=d;}
+  const six=await load('mambo:stepidx',[]);
+  for(const k of six){const d=await load('mambo:stepfoto:'+k,null); if(d)S.stepfoto[k]=d;}
+  render();
+})();
+</script>
+</body>
+</html>
