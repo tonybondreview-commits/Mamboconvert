@@ -158,6 +158,10 @@ body.giorno .hero{box-shadow:0 10px 30px -18px rgba(40,30,20,.45)}
 .chip[aria-pressed="true"]{background:linear-gradient(96deg,var(--saffron),var(--tomato));
   border-color:transparent;color:#241108;font-weight:700}
 .chip.fv[aria-pressed="true"]{background:linear-gradient(96deg,#FF3D6E,var(--tomato));color:#fff}
+.chips.filtri{padding-top:9px}
+.chip.fl{font-size:13.5px;padding:8px 14px}
+.chip.fl[aria-pressed="true"]{background:linear-gradient(96deg,var(--mint),var(--acqua));border-color:transparent;color:#04281C;font-weight:700}
+.chip.clr{color:var(--tomato);border-color:var(--line-2)}
 
 .grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:18px}
 .grid[data-cols="2"]{grid-template-columns:1fr 1fr;gap:12px}
@@ -523,9 +527,13 @@ body.giorno .deckctl{background:linear-gradient(to top,rgba(255,255,255,.55),tra
   padding:11px;font-size:14.5px}
 .cout{margin-top:14px;border-radius:11px;overflow:hidden;border:1px solid var(--line)}
 .cnote{font-size:14px;color:var(--cream);padding:11px 13px;background:var(--surf2)}
-.bimbyta{width:100%;min-height:120px;background:var(--surf2);border:1px solid var(--line);border-radius:12px;
+.bimbyta,.noteta{width:100%;min-height:120px;background:var(--surf2);border:1px solid var(--line);border-radius:12px;
   padding:12px 13px;font-size:15px;line-height:1.5;resize:vertical;color:var(--cream);font-family:var(--sans)}
-.bimbyta:focus{outline:none;border-color:var(--saffron)}
+.bimbyta:focus,.noteta:focus{outline:none;border-color:var(--saffron)}
+.noteta{min-height:92px;margin-top:6px}
+.tile .notetag{position:absolute;top:11px;right:11px;width:26px;height:26px;border-radius:999px;
+  background:rgba(11,14,8,.6);backdrop-filter:blur(5px);display:grid;place-items:center;font-size:12px}
+.tile .camtag+.notetag{right:43px}
 .brow{display:flex;gap:12px;background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:13px 14px;margin-top:10px}
 .brow .bnum{flex:none;width:24px;height:24px;border-radius:999px;border:1px solid var(--line-2);color:var(--saffron);
   font-size:12.5px;font-weight:700;display:grid;place-items:center;font-variant-numeric:tabular-nums}
@@ -1933,8 +1941,18 @@ function mini(o,grad){
    foto     : foto reale del piatto  (id -> url|dataURL)
    stepfoto : foto reale del passaggio (id#indice -> url|dataURL)
    ============================================================ */
-const S={porz:4,tab:'ricette',q:'',cat:'Tutte',open:null,frigo:[],spesa:[],bimby:false,
-  foto:{},stepfoto:{},accfoto:{},pref:[],cols:1,tema:'giorno'};
+const S={porz:4,tab:'ricette',q:'',cat:'Tutte',filtri:[],open:null,frigo:[],spesa:[],bimby:false,
+  foto:{},stepfoto:{},accfoto:{},note:{},pref:[],cols:1,tema:'giorno'};
+/* filtri combinabili (AND) con categoria e ricerca */
+const FILTRI=[
+  {id:'veloce', lab:'Veloce ≤20′', test:r=>r.tempo<=20},
+  {id:'noforno', lab:'Senza forno', test:r=>!r.steps.some(s=>/forno/i.test(s.T))},
+  {id:'veg', lab:'Vegetariano', test:r=>(r.tag||[]).some(t=>t==='vegetariano'||t==='vegano')},
+  {id:'pesce', lab:'Pesce', test:r=>(r.tag||[]).includes('pesce')},
+  {id:'carne', lab:'Carne', test:r=>(r.tag||[]).includes('carne')},
+  {id:'vapore', lab:'Al vapore', test:r=>r.acc.includes('Vaporiera')||(r.tag||[]).includes('vapore')},
+  {id:'note', lab:'Con le mie note', test:r=>!!(S.note[r.id]&&S.note[r.id].trim())}
+];
 const mem={};
 // HOST = window.storage SOLO se risponde. Alcuni ambienti lo iniettano ma non
 // risolvono mai la promise (capacità non concessa): senza sonda l'await
@@ -1998,7 +2016,8 @@ function render(){
 function tile(r,badge){
   const hab=r.caraffa==='Habana';
   const cam=S.foto[r.id]?'':'<span class="camtag" aria-hidden="true">📷</span>';
-  return `<button class="tile" data-open="${r.id}">${tileMedia(r)}${badge||''}${cam}
+  const nota=(S.note[r.id]&&S.note[r.id].trim())?'<span class="notetag" aria-hidden="true">📝</span>':'';
+  return `<button class="tile" data-open="${r.id}">${tileMedia(r)}${badge||''}${cam}${nota}
     <span class="fav" data-fav="${r.id}" role="button" aria-pressed="${S.pref.includes(r.id)}" aria-label="Preferito">${S.pref.includes(r.id)?'♥':'♡'}</span>
     <span class="lay"><span class="nm">${esc(r.nome)}</span>
     <span class="mt"><span>${durata(r.tempo)}</span><span>${esc(r.cat)}</span>${hab?'<span>caraffa Habana</span>':''}</span></span></button>`;
@@ -2007,8 +2026,10 @@ function tile(r,badge){
 /* ---------- RICETTE ---------- */
 function vRic(){
   const cats=['Tutte',...new Set(RICETTE.map(r=>r.cat))], q=norm(S.q);
+  const attivi=FILTRI.filter(fl=>S.filtri.includes(fl.id));
   const f=RICETTE.filter(r=>(S.cat==='Tutte'||r.cat===S.cat)
-    &&(!q||norm(r.nome).includes(q)||r.ing.some(i=>norm(i.n).includes(q))||(r.tag||[]).some(t=>norm(t).includes(q))));
+    &&(!q||norm(r.nome).includes(q)||r.ing.some(i=>norm(i.n).includes(q))||(r.tag||[]).some(t=>norm(t).includes(q)))
+    &&attivi.every(fl=>fl.test(r)));
   view.innerHTML=`<div class="panel">
     <div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input id="q" placeholder="Cerca piatto o ingrediente" value="${esc(S.q)}"></div>
@@ -2018,13 +2039,17 @@ function vRic(){
         <button data-cols="1" aria-pressed="${S.cols===1}" aria-label="Una per riga"><svg viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="5" rx="1.5"/><rect x="1" y="9" width="14" height="5" rx="1.5"/></svg></button>
         <button data-cols="2" aria-pressed="${S.cols===2}" aria-label="Due per riga"><svg viewBox="0 0 16 16"><rect x="1" y="2" width="6" height="6" rx="1.5"/><rect x="9" y="2" width="6" height="6" rx="1.5"/><rect x="1" y="10" width="6" height="4" rx="1.5"/><rect x="9" y="10" width="6" height="4" rx="1.5"/></svg></button>
       </div></div>
+    <div class="chips filtri">${FILTRI.map(fl=>`<button class="chip fl" data-filtro="${fl.id}" aria-pressed="${S.filtri.includes(fl.id)}">${esc(fl.lab)}</button>`).join('')}${S.filtri.length?`<button class="chip clr" data-clrfiltri>Azzera ✕</button>`:''}</div>
     ${f.length?`<div class="grid" data-cols="${S.cols}">${f.map((r,i)=>tile(r).replace('class="tile"',`class="tile" style="animation-delay:${Math.min(i*32,320)}ms"`)).join('')}</div>`
-      :`<div class="empty">Nessun piatto per “${esc(S.q)}”.<br>Prova con un ingrediente singolo, tipo “zucchine”.</div>`}
-    <footer>${RICETTE.length} ricette riscritte in forma originale sui classici italiani, con i parametri convertiti per Mambo Touch. Le illustrazioni sono segnaposto generati dagli ingredienti: apri una ricetta e usa la barra “Foto del piatto” per sostituirle con una foto vera (incolla un link o carica un file).</footer></div>`;
+      :`<div class="empty">Nessun piatto con questi filtri${q?` per “${esc(S.q)}”`:''}.<br>Togli un filtro o cambia categoria.</div>`}
+    <footer>${f.length} di ${RICETTE.length} ricette. Classici italiani con i parametri convertiti per Mambo Touch. Apri una ricetta per “Cucina passo-passo” col timer, le foto e le tue note.</footer></div>`;
   const i=document.getElementById('q');
   i.oninput=e=>{S.q=e.target.value;const p=e.target.selectionStart;vRic();
     const n=document.getElementById('q');n.focus();n.setSelectionRange(p,p);};
   view.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{S.cat=b.dataset.cat;render();});
+  view.querySelectorAll('[data-filtro]').forEach(b=>b.onclick=()=>{const id=b.dataset.filtro;
+    if(S.filtri.includes(id))S.filtri=S.filtri.filter(x=>x!==id);else S.filtri.push(id);render();});
+  const clr=view.querySelector('[data-clrfiltri]'); if(clr)clr.onclick=()=>{S.filtri=[];render();};
   view.querySelectorAll('.cols button').forEach(b=>b.onclick=()=>{S.cols=+b.dataset.cols;save('mambo:cols',S.cols);render();});
 }
 
@@ -2068,6 +2093,18 @@ function delFoto(target){
     delete S.stepfoto[k]; save('mambo:stepfoto:'+k,null);
     load('mambo:stepidx',[]).then(ix=>save('mambo:stepidx',ix.filter(x=>x!==k)));
   }
+}
+// note personali per ricetta (salvate sul dispositivo)
+let notaTimer=null;
+function salvaNota(id,txt){
+  S.note[id]=txt;
+  clearTimeout(notaTimer);
+  notaTimer=setTimeout(()=>{
+    if(txt&&txt.trim()){ save('mambo:note:'+id,txt);
+      load('mambo:noteidx',[]).then(ix=>{ if(!ix.includes(id)){ix.push(id);save('mambo:noteidx',ix);} }); }
+    else{ save('mambo:note:'+id,null);
+      load('mambo:noteidx',[]).then(ix=>save('mambo:noteidx',ix.filter(x=>x!==id))); }
+  },400);
 }
 // icona accessorio: foto reale caricata dall'utente, altrimenti disegno
 function accIco(name){
@@ -2158,6 +2195,8 @@ function vDett(){
       <button class="stepcam" data-picstep="${r.id}" data-i="${idx}">${camSvg}${sf?'Cambia foto del passaggio':'Aggiungi foto del passaggio'}</button>
       </div>`;}).join('')})()}</div>
     ${r.note&&r.note.length?`<h3 class="sec">Note di conversione</h3>${r.note.map(n=>`<div class="note">${esc(n)}</div>`).join('')}`:''}
+    <h3 class="sec">Le mie note <span>salvate su questo dispositivo</span></h3>
+    <textarea id="notaTa" class="noteta" placeholder="Es. ho messo meno sale · aggiungere 5 min · piaciuta ai bambini…">${esc(S.note[r.id]||'')}</textarea>
     <div class="acts">
       <button class="btn play" data-deck="${r.id}"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Cucina passo-passo</button>
       <button class="btn ${inSp?'on':''}" data-spesa="${r.id}">${inSp?'✓ Nella spesa':'Aggiungi alla spesa'}</button>
@@ -2169,6 +2208,8 @@ function vDett(){
     if(!v){ if(S.foto[r.id]&&/^https?:/.test(S.foto[r.id]))delFoto({tipo:'ric',id:r.id}); }
     else if(/^https?:\/\/.+/i.test(v)) setFoto({tipo:'ric',id:r.id},v);
     render(); };
+  const nt=document.getElementById('notaTa');
+  if(nt)nt.oninput=()=>salvaNota(r.id,nt.value);
 }
 
 /* ============================================================
@@ -2563,6 +2604,8 @@ document.addEventListener('click',e=>{
   for(const k of six){const d=await load('mambo:stepfoto:'+k,null); if(d)S.stepfoto[k]=d;}
   const aix=await load('mambo:accfotoidx',[]);
   for(const n of aix){const d=await load('mambo:accfoto:'+n,null); if(d)S.accfoto[n]=d;}
+  const nix=await load('mambo:noteidx',[]);
+  for(const id of nix){const d=await load('mambo:note:'+id,null); if(d)S.note[id]=d;}
   render();
 })();
 
