@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Revisione foto · Mamboconvert</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
 :root{--bg:#120D0B;--surf:#241A16;--surf2:#31231D;--line:rgba(255,236,214,.14);
   --ink:#FFF3E4;--muted:#B39B87;--saffron:#FFB424;--tomato:#FF5B36;--ok:#3FE0A8;
@@ -69,6 +70,7 @@ textarea{width:100%;height:240px;background:var(--bg);color:var(--ink);border:1p
     <button id="saveKey">Salva chiave</button>
     <button class="pri" id="searchAll">Cerca e scegli tutte</button>
     <button id="export">Esporta foto.js</button>
+    <button class="pri" id="zip">Scarica pacchetto offline (.zip)</button>
   </div>
   <div class="bar"><div class="fill" id="fill"></div></div>
   <div class="meta"><span><b id="nDone">0</b>/<span id="nTot">150</span> scelte</span>
@@ -213,6 +215,42 @@ $('#copy').onclick=()=>{$('#out').select();document.execCommand('copy');$('#copy
 $('#dl').onclick=()=>{const b=new Blob([$('#out').value],{type:'text/javascript'});const a=document.createElement('a');
   a.href=URL.createObjectURL(b);a.download='foto.js';a.click();};
 $('#close').onclick=()=>$('#dlg').close();
+
+/* ---- pacchetto offline: scarica le foto nel browser, le rimpicciolisce e le zippa ---- */
+function loadImg(url){return new Promise((res,rej)=>{const im=new Image();im.crossOrigin='anonymous';
+  im.onload=()=>res(im);im.onerror=()=>rej(new Error('img'));im.src=url;});}
+function toJpeg(im,maxW){const sc=Math.min(1,maxW/im.naturalWidth);
+  const w=Math.round(im.naturalWidth*sc),h=Math.round(im.naturalHeight*sc);
+  const cv=document.createElement('canvas');cv.width=w;cv.height=h;
+  cv.getContext('2d').drawImage(im,0,0,w,h);
+  return new Promise((res,rej)=>cv.toBlob(b=>b?res(b):rej(new Error('blob')),'image/jpeg',0.72));}
+function localFotoJs(){
+  const lines=RECIPES.filter(r=>sel[r.id]).map(r=>`  ${JSON.stringify(r.id)}: ${JSON.stringify('foto/'+r.id+'.jpg')}`);
+  const cred=RECIPES.filter(r=>sel[r.id]&&sel[r.id].by).map(r=>`   - ${r.nome}: foto di ${sel[r.id].by} (Pexels)`);
+  return `/* Foto predefinite dei piatti (offline) — generato da revisione-foto.html.\n`+
+    `   Fonte: Pexels (licenza Pexels). ${lines.length} foto nella cartella /foto.\n`+
+    (cred.length?`   Crediti:\n`+cred.join('\n')+'\n':'')+
+    `*/\nwindow.FOTODEF = {\n`+lines.join(',\n')+`\n};\n`;
+}
+$('#zip').onclick=async()=>{
+  if(typeof JSZip==='undefined'){status.textContent='JSZip non caricato (sei offline?).';return;}
+  const chosen=RECIPES.filter(r=>sel[r.id]);
+  if(!chosen.length){status.textContent='Prima scegli almeno una foto.';return;}
+  $('#zip').disabled=true;
+  const z=new JSZip(), fail=[];
+  for(let i=0;i<chosen.length;i++){
+    const r=chosen[i]; status.textContent='Scarico '+(i+1)+'/'+chosen.length+'… '+r.nome;
+    try{const im=await loadImg(sel[r.id].url);const b=await toJpeg(im,800);z.file('foto/'+r.id+'.jpg',b);}
+    catch(e){fail.push(r.nome);}
+  }
+  z.file('foto.js',localFotoJs());
+  status.textContent='Creo lo zip…';
+  const blob=await z.generateAsync({type:'blob'},m=>{status.textContent='Comprimo… '+Math.round(m.percent)+'%';});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mambo-foto.zip';a.click();
+  status.textContent='Zip pronto ('+(chosen.length-fail.length)+' foto)'+(fail.length?' · non riuscite: '+fail.length:'')+'. Mandalo a Claude.';
+  if(fail.length)alert('Non sono riuscito a scaricare queste foto (scegline un\'altra e riprova):\n\n'+fail.join('\n'));
+  $('#zip').disabled=false;
+};
 
 render();
 </script>
