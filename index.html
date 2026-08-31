@@ -2422,45 +2422,21 @@ const PREP={
  vapore:{lab:'Cottura al vapore',T:120,P:10,acc:'Vaporiera',n:'700-900 ml d’acqua in caraffa. La velocità non serve.'},
  freddo:{lab:'Nessuna cottura',T:0,P:0,acc:'Lame',n:'Campo gradi e potenza spenti.'}};
 const VELMAP={'0':'0 – 1',soft:'0 – 1',anti:'0 – 1 + MamboMix',spiga:'2 – 3 + MamboMix','1':'1 – 2','2':'2 – 3','3':'3 – 4','4':'4 – 5','5':'5 – 6','6':'6 – 7','7':'7 – 8','8':'8','9':'9','10':'10',turbo:'Turbo'};
-/* ---- importa e converti una ricetta Bimby (testo libero) ---- */
-function convBimby(txt){
-  return txt.split(/\n+/).map(l=>l.trim()).filter(Boolean).map(line=>{
-    const low=line.toLowerCase();
-    const times=[...low.matchAll(/(\d+(?:[.,]\d+)?)\s*(sec(?:ondi)?|min(?:uti)?|or[ae]|h)\b/g)];
-    const tstr=times.map(m=>{const u=m[2][0]==='h'||m[2].slice(0,2)==='or'?'ore':m[2].slice(0,3)==='min'?'min':'sec';return m[1].replace('.',',')+' '+u;}).join(' ');
-    const varoma=/varoma/.test(low);
-    const tempM=low.match(/(\d{2,3})\s*°\s*c?/)||low.match(/(\d{2,3})\s*c\b/)||low.match(/(\d{2,3})\s*gradi/);
-    const hasSpeed=/turbo|spiga|antiorario|vel(?:ocit[àa]|\.)?\s*[0-9]/.test(low);
-    // Varoma = vaporiera solo se si cuoce al vapore (o senza velocità); altrimenti è solo la temperatura ~120°C
-    const steam=/vapore|vaporiera|al vapore/.test(low)||(varoma&&!hasSpeed);
-    const g=varoma?120:(tempM?+tempM[1]:0);
-    const temp=steam?'120°C (vaporiera)':(varoma?'120°C':(tempM?tempM[1]+'°C':''));
-    let vel='';
-    if(steam)vel='—';
-    else if(/turbo/.test(low))vel='Turbo';
-    else if(/spiga/.test(low))vel='2-3 + MamboMix';
-    else if(/antiorario/.test(low))vel='0-1 + MamboMix';
-    else{const vm=low.match(/vel(?:ocit[àa]|\.)?\s*([0-9]+(?:[.,][0-9]+)?)/);
-      if(vm){const n=Math.round(parseFloat(vm[1].replace(',','.')));vel=VELMAP[String(n)]||String(n);}}
-    let acc='';
-    if(steam)acc='Vaporiera';
-    else if(/farfalla/.test(low))acc='Farfalla';
-    else if(/cestello/.test(low))acc='Cestello';
-    else if(/spiga|antiorario/.test(low))acc='MamboMix';
-    else if(/turbo/.test(low))acc='Lame';
-    let pot='';
-    if(steam)pot='10';
-    else if(!g)pot='';
-    else if(/rosol|soffri|imbiond|sfum/.test(low)||g>=118)pot='9-10';
-    else if(g>=100)pot=(/pasta|bollo|bollire|acqua|lessa/.test(low)?'9':'5-6');
-    else if(g>=88)pot='4';
-    else if(g>=78)pot='3';
-    else if(g>=55)pot='2';
-    else pot='1';
-    if(!acc){const vn=parseInt(vel);acc=(vn>=5||/trita|frulla|polverizza/.test(low))?'Lame':(g?'MamboMix':'Lame');}
-    const isStep=!!(tstr||temp||(vel&&vel!=='—'));
-    return {orig:line,t:tstr||'—',v:vel||'—',T:temp||'—',P:pot||'—',a:acc,isStep};
-  });
+/* ---- controlla aggiornamenti (PWA network-first) ---- */
+async function controllaAggiornamenti(btn){
+  const set=t=>{ if(btn)btn.textContent=t; };
+  set('Controllo…');
+  try{
+    if('serviceWorker' in navigator){
+      const reg=await navigator.serviceWorker.getRegistration();
+      if(reg){
+        await reg.update();
+        if(reg.waiting){ set('Aggiorno…'); reg.waiting.postMessage({type:'SKIP_WAITING'}); return; }
+      }
+    }
+  }catch(e){}
+  set('Aggiorno…');
+  setTimeout(()=>location.reload(),300); // network-first: ricarica prende le ricette più recenti
 }
 function vConv(){
   const plain=t=>String(t).replace(/<[^>]+>/g,'');
@@ -2480,17 +2456,14 @@ function vConv(){
     <div class="cap"><b>${bi} → ${ma}</b><span>${de}</span></div></div>`;
 
   view.innerHTML=`<div class="panel">
-    <h2 class="sec" style="margin-top:6px">Converti una ricetta Bimby</h2>
-    <p class="muted" style="font-size:14px;margin:8px 0 0">Incolla i passaggi di una ricetta Bimby (uno per riga). L’app riconosce tempo, temperatura, velocità e accessorio e propone i parametri Mambo, potenza inclusa.</p>
-    <div class="conv">
-      <textarea id="bimbyIn" class="bimbyta" placeholder="Es.
-5 sec vel 5
-5 min Varoma vel 1 antiorario
-20 min 100°C vel 1 antiorario
-2 min vel 8"></textarea>
-      <div class="acts" style="margin-top:10px"><button class="btn" id="bimbyGo">Converti</button>
-        <button class="btn ghost" id="bimbyClr">Pulisci</button></div>
-      <div id="bimbyOut"></div>
+    <div class="card" style="margin-top:6px;padding:15px 16px">
+      <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+        <div style="flex:1;min-width:150px">
+          <b style="font-size:15.5px;color:var(--cream)">Cucina Mambo</b>
+          <div class="muted" style="font-size:13px;margin-top:2px">${RICETTE.length} ricette · installala dalla schermata Home</div>
+        </div>
+        <button class="btn" id="updBtn" style="flex:none;min-width:0;padding:12px 17px">Controlla aggiornamenti</button>
+      </div>
     </div>
 
     <h2 class="sec">Convertitore rapido</h2>
@@ -2549,22 +2522,8 @@ function vConv(){
       <div class="cnote" style="margin-top:12px;border-radius:12px">${p.n}</div>`;};
   cv.onchange=upd;cp2.onchange=upd;upd();
 
-  const bin=document.getElementById('bimbyIn'),bout=document.getElementById('bimbyOut');
-  const parametro=(lab,val,cls)=>val&&val!=='—'?`<span class="bp ${cls}">${lab} <b>${esc(val)}</b></span>`:'';
-  const conv=()=>{
-    const txt=bin.value.trim();
-    if(!txt){bout.innerHTML='';return;}
-    const steps=convBimby(txt);
-    bout.innerHTML=`<div class="cnote" style="border-radius:12px;margin-top:14px">Parametri Mambo suggeriti — la potenza calorifica è dedotta, regolala secondo la tua caraffa.</div>`+
-      steps.map((s,i)=>`<div class="brow">
-        <div class="bnum">${i+1}</div>
-        <div class="bbody"><div class="borig">${esc(s.orig)}</div>
-          ${s.isStep?`<div class="bparams">${parametro('⏱',s.t,'t')}${parametro('vel',s.v,'v')}${parametro('',s.T,'g')}${parametro('P',s.P,'p')}${s.a?`<span class="bp a">${accIco(s.a)}<b>${esc(s.a)}</b></span>`:''}</div>`
-            :`<div class="bparams"><span class="bp">nessun parametro macchina — passaggio manuale</span></div>`}
-        </div></div>`).join('');
-  };
-  document.getElementById('bimbyGo').onclick=conv;
-  document.getElementById('bimbyClr').onclick=()=>{bin.value='';bout.innerHTML='';bin.focus();};
+  const ub=document.getElementById('updBtn');
+  if(ub)ub.onclick=()=>controllaAggiornamenti(ub);
 }
 
 /* ---------- EVENTI ---------- */
