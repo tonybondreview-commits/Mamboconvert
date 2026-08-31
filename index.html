@@ -54,7 +54,7 @@ body.giorno{
   --grape:#7E30C9;
 }
 *{box-sizing:border-box}
-html,body{margin:0;padding:0;background:var(--bg);overscroll-behavior:none}
+html,body{margin:0;padding:0;background:var(--bg)}
 /* nasconde il badge iniettato dall'host (niente salti di layout) */
 #nl-badge-frame,#netlify-badge,.netlify-badge{display:none!important}
 body::before{
@@ -209,8 +209,7 @@ body.giorno .hero{box-shadow:0 10px 30px -18px rgba(40,30,20,.45)}
 .tile{
   position:relative;border-radius:20px;overflow:hidden;background:var(--surf);
   border:1px solid var(--line);text-align:left;display:block;width:100%;padding:0;
-  transition:transform .2s var(--ease),box-shadow .2s;animation:tileIn .4s var(--ease) both;
-  content-visibility:auto;contain-intrinsic-size:auto 320px
+  transition:transform .2s var(--ease),box-shadow .2s;animation:tileIn .4s var(--ease) both
 }
 @keyframes tileIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
 .tile:active{transform:scale(.97)}
