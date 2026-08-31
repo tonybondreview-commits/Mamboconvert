@@ -79,8 +79,8 @@ h1,h2,h3{margin:0;font-weight:500;line-height:1.15}
 :focus-visible{outline:2px solid var(--saffron);outline-offset:2px;border-radius:6px}
 
 /* ---------- header ---------- */
-body.giorno header{background:rgba(241,240,238,.92)}
-body.giorno nav.tabs{background:rgba(255,255,255,.97)}
+body.giorno header{background:#F1F0EE}
+body.giorno nav.tabs{background:#FFFFFF}
 body.giorno .dials{background:radial-gradient(120% 100% at 50% 0%,rgba(222,124,5,.10),rgba(74,45,28,.06))}
 body.giorno .trk{stroke:rgba(74,45,28,.13)}
 body.giorno .strip{background:#F3EADF}
@@ -98,9 +98,11 @@ body.giorno .card,body.giorno ul.ing,body.giorno .step,body.giorno .crow,body.gi
   background:var(--surf2);font-size:17px;transition:transform .5s var(--ease),background .2s
 }
 .themeb:active{transform:rotate(-40deg) scale(.9)}
+.themeb svg{display:block}
+.themeb.spin svg{animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 header{
-  position:sticky;top:0;z-index:40;background:rgba(18,13,11,.9);
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  position:sticky;top:0;z-index:40;background:#17110E;
   border-bottom:1px solid var(--line);
   padding:11px 0 11px;padding-top:calc(11px + env(safe-area-inset-top));
 }
@@ -128,7 +130,7 @@ header{
 /* ---------- tab bar ---------- */
 nav.tabs{
   position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;
-  background:rgba(18,13,11,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  background:#17110E;transform:translateZ(0);
   border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)
 }
 nav.tabs button{flex:1;padding:14px 4px 7px;display:flex;flex-direction:column;align-items:center;gap:4px;
@@ -597,6 +599,7 @@ footer{padding:28px 0 6px;font-size:12px;color:var(--muted);line-height:1.65}
 <body>
 <header><div class="wrap"><div class="hrow">
   <div class="logo"><img class="logomk" src="logo.png" alt="Mamboconvert" width="128" height="128"><span>Mambo<em>convert</em></span></div>
+  <button class="themeb" id="updTop" aria-label="Controlla aggiornamenti" title="Controlla aggiornamenti"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-.6 4"/><path d="M20 4v6h-6"/></svg></button>
   <button class="themeb" id="tema" aria-label="Cambia tema">🌙</button>
 </div></div></header>
 
@@ -2573,9 +2576,7 @@ function vRic(){
     <div class="chips filtri">${FILTRI.map(fl=>`<button class="chip fl" data-filtro="${fl.id}" aria-pressed="${S.filtri.includes(fl.id)}">${esc(fl.lab)}</button>`).join('')}${S.filtri.length?`<button class="chip clr" data-clrfiltri>Azzera ✕</button>`:''}</div>
     ${f.length?`<div class="grid" data-cols="${S.cols}">${f.map((r,i)=>tile(r).replace('class="tile"',`class="tile" style="animation-delay:${Math.min(i*32,320)}ms"`)).join('')}</div>`
       :`<div class="empty">Nessun piatto con questi filtri${q?` per “${esc(S.q)}”`:''}.<br>Togli un filtro o cambia categoria.</div>`}
-    <footer>${f.length} di ${RICETTE.length} ricette. Classici italiani con i parametri convertiti per Mambo Touch. Apri una ricetta per “Cucina passo-passo” col timer, le foto e le tue note.
-      <div class="updrow"><button class="updmini" id="updBtnHome"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-.6 4"/><path d="M20 4v6h-6"/></svg>Controlla aggiornamenti</button></div>
-      ${CREDITO}</footer></div>`;
+    <footer>${f.length} di ${RICETTE.length} ricette. Classici italiani con i parametri convertiti per Mambo Touch. Apri una ricetta per “Cucina passo-passo” col timer, le foto e le tue note.<br><br>${CREDITO}</footer></div>`;
   const i=document.getElementById('q');
   i.oninput=e=>{S.q=e.target.value;const p=e.target.selectionStart;vRic();
     const n=document.getElementById('q');n.focus();n.setSelectionRange(p,p);};
@@ -2584,7 +2585,6 @@ function vRic(){
     if(S.filtri.includes(id))S.filtri=S.filtri.filter(x=>x!==id);else S.filtri.push(id);render();});
   const clr=view.querySelector('[data-clrfiltri]'); if(clr)clr.onclick=()=>{S.filtri=[];render();};
   view.querySelectorAll('.cols button').forEach(b=>b.onclick=()=>{S.cols=+b.dataset.cols;save('mambo:cols',S.cols);render();});
-  const ubh=document.getElementById('updBtnHome'); if(ubh)ubh.onclick=()=>controllaAggiornamenti(ubh);
 }
 
 /* ---------- GESTIONE FOTO REALI ---------- */
@@ -3071,6 +3071,7 @@ function vConv(){
 document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;S.open=null;render();});
 document.getElementById('tema').onclick=()=>{
   S.tema=S.tema==='giorno'?'notte':'giorno'; save('mambo:tema',S.tema); applyTema(); };
+document.getElementById('updTop').onclick=function(){ this.classList.add('spin'); controllaAggiornamenti(null); };
 function bumpN(){const n=document.getElementById('pNum');if(!n)return;n.classList.remove('bump');void n.offsetWidth;n.classList.add('bump');}
 document.addEventListener('click',e=>{
   const dp=e.target.closest('[data-porz]');
