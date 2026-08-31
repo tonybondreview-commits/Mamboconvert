@@ -67,14 +67,14 @@ textarea{width:100%;height:240px;background:var(--bg);color:var(--ink);border:1p
   <div class="controls">
     <input class="key" id="key" type="password" placeholder="Incolla qui la tua chiave API Pexels" autocomplete="off">
     <button id="saveKey">Salva chiave</button>
-    <button class="pri" id="searchAll">Cerca tutte le mancanti</button>
+    <button class="pri" id="searchAll">Cerca e scegli tutte</button>
     <button id="export">Esporta foto.js</button>
   </div>
   <div class="bar"><div class="fill" id="fill"></div></div>
   <div class="meta"><span><b id="nDone">0</b>/<span id="nTot">150</span> scelte</span>
     <span id="status"></span>
     <label style="margin-left:auto"><input type="checkbox" id="onlyMissing"> mostra solo le mancanti</label></div>
-  <p class="hint">Chiave gratuita da <a href="https://www.pexels.com/api/" target="_blank" rel="noopener">pexels.com/api</a>. Resta salvata solo su questo browser. Clicca una miniatura per scegliere la foto; cambia la query e premi “Cerca” se il piatto non è giusto.</p>
+  <p class="hint">Chiave gratuita da <a href="https://www.pexels.com/api/" target="_blank" rel="noopener">pexels.com/api</a>, salvata solo su questo browser. Premi <b>“Cerca e scegli tutte”</b>: sceglie in automatico la prima foto di ogni piatto. Poi clicca un'altra miniatura per cambiarla, o modifica la query e premi “Cerca” se il piatto è sbagliato. Infine <b>“Esporta foto.js”</b>.</p>
 </div></header>
 
 <main class="wrap" id="main"></main>
@@ -153,8 +153,17 @@ async function search(id){
       return `<div class="th${isSel?' sel':''}" data-pick="${id}" data-url="${big}" data-thumb="${p.src.medium}" data-by="${(p.photographer||'').replace(/"/g,'&quot;')}" data-page="${p.url}">
         <img loading="lazy" src="${thumb}" alt=""><span class="by">${p.photographer||''}</span></div>`;
     }).join('');
-    return true;
+    return ph;
   }catch(e){if(er)er.textContent='Errore di rete: '+e.message;if(box)box.innerHTML='';return false;}
+}
+function pickPhoto(id,o){
+  sel[id]={url:o.src.landscape,thumb:o.src.medium,by:o.photographer||'',page:o.url};
+  saveSel();
+  const box=$('#th-'+id);
+  if(box){box.querySelectorAll('.th').forEach(t=>t.classList.toggle('sel',t.dataset.url===o.src.landscape));}
+  const st=$('#st-'+id); if(st){st.textContent='✓ scelta';st.classList.add('ok');}
+  const card=$('#card-'+id); if(card)card.classList.add('done');
+  refreshMeta();
 }
 
 main.addEventListener('click',e=>{
@@ -184,9 +193,10 @@ $('#searchAll').onclick=async()=>{
     if(card)card.scrollIntoView({block:'center'});
     const r=await search(todo[i].id);
     if(r==='rate'){status.textContent='Fermato: limite Pexels. Riprendi più tardi con “Cerca tutte”.';break;}
+    if(Array.isArray(r)&&r.length) pickPhoto(todo[i].id,r[0]); /* prende la prima; poi puoi cambiarla */
     await new Promise(x=>setTimeout(x,350));
   }
-  status.textContent='Fatto. Scegli le foto e poi “Esporta foto.js”.';
+  status.textContent='Fatto: prima foto scelta per tutte. Correggi quelle sbagliate, poi “Esporta foto.js”.';
   $('#searchAll').disabled=false;
 };
 
