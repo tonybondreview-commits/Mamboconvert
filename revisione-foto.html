@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revisione foto · Mamboconvert</title>
+<style>
+:root{--bg:#120D0B;--surf:#241A16;--surf2:#31231D;--line:rgba(255,236,214,.14);
+  --ink:#FFF3E4;--muted:#B39B87;--saffron:#FFB424;--tomato:#FF5B36;--ok:#3FE0A8;
+  --serif:"Iowan Old Style",Palatino,Georgia,serif;--sans:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5}
+a{color:var(--saffron)}
+.wrap{max-width:1000px;margin:0 auto;padding:0 16px}
+header{position:sticky;top:0;z-index:10;background:rgba(18,13,11,.94);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);padding:14px 0}
+.brand{font-family:var(--serif);font-size:22px;margin:0 0 10px}
+.brand em{font-style:normal;background:linear-gradient(96deg,var(--saffron),var(--tomato));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input,button{font:inherit;color:inherit}
+input.key{flex:1;min-width:220px;background:var(--surf);border:1px solid var(--line);border-radius:10px;
+  padding:10px 12px;color:var(--ink)}
+button{background:var(--surf2);border:1px solid var(--line);border-radius:10px;padding:10px 14px;
+  cursor:pointer;font-weight:600;transition:.15s;white-space:nowrap}
+button:hover{border-color:var(--muted)}
+button.pri{background:linear-gradient(96deg,var(--saffron),var(--tomato));color:#241108;border:0}
+button:disabled{opacity:.4;cursor:default}
+.bar{height:9px;border-radius:99px;background:var(--surf2);overflow:hidden;margin:10px 0 2px;border:1px solid var(--line)}
+.fill{height:100%;width:0;background:linear-gradient(96deg,var(--saffron),var(--tomato));transition:width .3s}
+.meta{font-size:13px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap}
+.hint{font-size:12.5px;color:var(--muted);margin:8px 0 0}
+main{padding:18px 0 80px}
+.cat{font-family:var(--serif);font-size:17px;margin:26px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line);color:var(--muted)}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}
+.card.done{border-color:rgba(63,224,168,.45)}
+.chd{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.nm{font-weight:600;font-size:15px;flex:1;min-width:140px}
+.nm small{display:block;color:var(--muted);font-weight:400;font-size:12px}
+.q{background:var(--surf2);border:1px solid var(--line);border-radius:8px;padding:7px 10px;color:var(--ink);
+  min-width:150px;font-size:13px}
+.mini{padding:7px 11px;font-size:13px}
+.state{font-size:12px;color:var(--muted);white-space:nowrap}
+.state.ok{color:var(--ok)}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin-top:10px}
+.thumbs:empty{display:none}
+.th{position:relative;aspect-ratio:16/10;border-radius:9px;overflow:hidden;cursor:pointer;
+  border:3px solid transparent;background:var(--surf2)}
+.th img{width:100%;height:100%;object-fit:cover;display:block}
+.th.sel{border-color:var(--ok)}
+.th .by{position:absolute;left:0;right:0;bottom:0;font-size:10px;padding:3px 6px;color:#fff;
+  background:linear-gradient(transparent,rgba(0,0,0,.7));opacity:0;transition:.15s}
+.th:hover .by{opacity:1}
+.cur{width:120px;aspect-ratio:16/10;border-radius:9px;object-fit:cover;flex:none;border:1px solid var(--line)}
+.err{color:var(--tomato);font-size:12.5px;margin-top:6px}
+dialog{background:var(--surf);color:var(--ink);border:1px solid var(--line);border-radius:14px;
+  max-width:680px;width:92%;padding:18px}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+textarea{width:100%;height:240px;background:var(--bg);color:var(--ink);border:1px solid var(--line);
+  border-radius:10px;padding:10px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px}
+.rowend{display:flex;gap:8px;justify-content:flex-end;margin-top:10px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <h1 class="brand"><em>Mambo</em>convert · revisione foto</h1>
+  <div class="controls">
+    <input class="key" id="key" type="password" placeholder="Incolla qui la tua chiave API Pexels" autocomplete="off">
+    <button id="saveKey">Salva chiave</button>
+    <button class="pri" id="searchAll">Cerca tutte le mancanti</button>
+    <button id="export">Esporta foto.js</button>
+  </div>
+  <div class="bar"><div class="fill" id="fill"></div></div>
+  <div class="meta"><span><b id="nDone">0</b>/<span id="nTot">150</span> scelte</span>
+    <span id="status"></span>
+    <label style="margin-left:auto"><input type="checkbox" id="onlyMissing"> mostra solo le mancanti</label></div>
+  <p class="hint">Chiave gratuita da <a href="https://www.pexels.com/api/" target="_blank" rel="noopener">pexels.com/api</a>. Resta salvata solo su questo browser. Clicca una miniatura per scegliere la foto; cambia la query e premi “Cerca” se il piatto non è giusto.</p>
+</div></header>
+
+<main class="wrap" id="main"></main>
+
+<dialog id="dlg">
+  <h3 style="margin:0 0 8px;font-family:var(--serif)">foto.js pronto</h3>
+  <p style="margin:0 0 10px;color:var(--muted);font-size:13.5px">Copia tutto e sostituisci il file <b>foto.js</b> nel repo (o mandamelo e lo committo io). Le foto scelte diventeranno la copertina per tutti.</p>
+  <textarea id="out" readonly></textarea>
+  <div class="rowend">
+    <button id="copy">Copia</button>
+    <button class="pri" id="dl">Scarica foto.js</button>
+    <button id="close">Chiudi</button>
+  </div>
+</dialog>
+
+<script>
+const RECIPES=[{"id":"soffritto","nome":"Soffritto base","cat":"Basi e salse"},{"id":"besciamella","nome":"Besciamella","cat":"Basi e salse"},{"id":"sugo-pomodoro","nome":"Sugo di pomodoro semplice","cat":"Basi e salse"},{"id":"ragu","nome":"Ragù alla bolognese","cat":"Basi e salse"},{"id":"pesto","nome":"Pesto alla genovese","cat":"Basi e salse"},{"id":"maionese","nome":"Maionese","cat":"Basi e salse"},{"id":"risotto-funghi","nome":"Risotto ai funghi porcini","cat":"Primi"},{"id":"risotto-milanese","nome":"Risotto alla milanese","cat":"Primi"},{"id":"minestrone","nome":"Minestrone di verdure","cat":"Primi"},{"id":"vellutata-zucca","nome":"Vellutata di zucca","cat":"Primi"},{"id":"lenticchie","nome":"Zuppa di lenticchie","cat":"Primi"},{"id":"pasta-patate","nome":"Pasta e patate","cat":"Primi"},{"id":"gnocchi","nome":"Impasto per gnocchi di patate","cat":"Primi"},{"id":"pizza","nome":"Impasto per pizza","cat":"Primi"},{"id":"polpette","nome":"Polpette al sugo","cat":"Secondi"},{"id":"spezzatino","nome":"Spezzatino di manzo con patate","cat":"Secondi"},{"id":"salmone-vapore","nome":"Salmone al vapore con patate","cat":"Secondi"},{"id":"pollo-limone","nome":"Pollo al limone","cat":"Secondi"},{"id":"baccala","nome":"Baccalà mantecato","cat":"Secondi"},{"id":"pure","nome":"Purè di patate","cat":"Contorni"},{"id":"peperonata","nome":"Peperonata","cat":"Contorni"},{"id":"verdure-vapore","nome":"Verdure miste al vapore","cat":"Contorni"},{"id":"crema-pasticcera","nome":"Crema pasticcera","cat":"Dolci"},{"id":"tiramisu","nome":"Crema al mascarpone per tiramisù","cat":"Dolci"},{"id":"torta-yogurt","nome":"Torta allo yogurt","cat":"Dolci"},{"id":"panna-cotta","nome":"Panna cotta","cat":"Dolci"},{"id":"marmellata","nome":"Marmellata di fragole","cat":"Dolci"},{"id":"cioccolata","nome":"Cioccolata calda densa","cat":"Dolci"},{"id":"yogurt","nome":"Yogurt fatto in casa","cat":"Colazione"},{"id":"latte-mandorla","nome":"Latte di mandorla","cat":"Colazione"},{"id":"pasta-zucchine-gamberetti","nome":"Pasta zucchine e gamberetti","cat":"Primi"},{"id":"risotto-zucchine-gamberetti","nome":"Risotto zucchine e gamberetti","cat":"Primi"},{"id":"carbonara","nome":"Spaghetti alla carbonara","cat":"Primi"},{"id":"amatriciana","nome":"Bucatini all’amatriciana","cat":"Primi"},{"id":"arrabbiata","nome":"Penne all’arrabbiata","cat":"Primi"},{"id":"aglio-olio","nome":"Spaghetti aglio, olio e peperoncino","cat":"Primi"},{"id":"norma","nome":"Pasta alla Norma","cat":"Primi"},{"id":"cacio-pepe","nome":"Spaghetti cacio e pepe","cat":"Primi"},{"id":"vongole","nome":"Spaghetti alle vongole","cat":"Primi"},{"id":"puttanesca","nome":"Pasta alla puttanesca","cat":"Primi"},{"id":"pasta-tonno","nome":"Pasta al tonno e pomodoro","cat":"Primi"},{"id":"pasta-ceci","nome":"Pasta e ceci","cat":"Primi"},{"id":"gnocchi-sorrentina","nome":"Gnocchi alla sorrentina","cat":"Primi"},{"id":"lasagne","nome":"Lasagne alla bolognese","cat":"Primi"},{"id":"risotto-frutti-mare","nome":"Risotto ai frutti di mare","cat":"Primi"},{"id":"risotto-radicchio","nome":"Risotto radicchio e taleggio","cat":"Primi"},{"id":"risotto-salsiccia","nome":"Risotto zafferano e salsiccia","cat":"Primi"},{"id":"risotto-limone","nome":"Risotto al limone","cat":"Primi"},{"id":"risi-bisi","nome":"Risi e bisi","cat":"Primi"},{"id":"pasta-fresca","nome":"Impasto per pasta fresca all’uovo","cat":"Primi"},{"id":"brodo-vegetale","nome":"Brodo vegetale","cat":"Basi e salse"},{"id":"brodo-carne","nome":"Brodo di carne","cat":"Basi e salse"},{"id":"dado-vegetale","nome":"Dado vegetale fatto in casa","cat":"Basi e salse"},{"id":"ragu-bianco","nome":"Ragù bianco","cat":"Basi e salse"},{"id":"salsa-tonnata","nome":"Salsa tonnata","cat":"Basi e salse"},{"id":"pasta-fagioli","nome":"Pasta e fagioli","cat":"Primi"},{"id":"pasta-broccoli","nome":"Pasta con i broccoli arriminati","cat":"Primi"},{"id":"orecchiette-cime","nome":"Orecchiette con cime di rapa","cat":"Primi"},{"id":"zuppa-farro","nome":"Zuppa di farro e verdure","cat":"Primi"},{"id":"crema-funghi","nome":"Crema di funghi","cat":"Primi"},{"id":"crema-piselli","nome":"Crema di piselli e menta","cat":"Primi"},{"id":"passato-verdura","nome":"Passato di verdura","cat":"Primi"},{"id":"stracciatella","nome":"Stracciatella in brodo","cat":"Primi"},{"id":"risotto-asparagi","nome":"Risotto agli asparagi","cat":"Primi"},{"id":"risotto-zucca","nome":"Risotto alla zucca","cat":"Primi"},{"id":"risotto-pere-gorgonzola","nome":"Risotto pere e gorgonzola","cat":"Primi"},{"id":"gnocchi-gorgonzola","nome":"Gnocchi al gorgonzola","cat":"Primi"},{"id":"pasta-forno","nome":"Pasta al forno","cat":"Primi"},{"id":"tortellini-brodo","nome":"Tortellini in brodo","cat":"Primi"},{"id":"polenta","nome":"Polenta","cat":"Primi"},{"id":"scaloppine-limone","nome":"Scaloppine al limone","cat":"Secondi"},{"id":"scaloppine-marsala","nome":"Scaloppine al marsala","cat":"Secondi"},{"id":"pollo-cacciatora","nome":"Pollo alla cacciatora","cat":"Secondi"},{"id":"spezzatino-pollo","nome":"Spezzatino di pollo con piselli","cat":"Secondi"},{"id":"arrosto-vitello","nome":"Arrosto di vitello","cat":"Secondi"},{"id":"brasato-barolo","nome":"Brasato al Barolo","cat":"Secondi"},{"id":"polpettone","nome":"Polpettone in umido","cat":"Secondi"},{"id":"frittata-zucchine","nome":"Frittata di zucchine al forno","cat":"Secondi"},{"id":"parmigiana","nome":"Parmigiana di melanzane","cat":"Secondi"},{"id":"peperoni-ripieni","nome":"Peperoni ripieni","cat":"Secondi"},{"id":"seppie-piselli","nome":"Seppie con piselli","cat":"Secondi"},{"id":"cozze-marinara","nome":"Impepata di cozze","cat":"Secondi"},{"id":"orata-acqua-pazza","nome":"Orata all’acqua pazza","cat":"Secondi"},{"id":"platessa-vapore","nome":"Filetti di platessa al vapore","cat":"Secondi"},{"id":"caponata","nome":"Caponata siciliana","cat":"Contorni"},{"id":"patate-forno","nome":"Patate al forno","cat":"Contorni"},{"id":"fagiolini-olio","nome":"Fagiolini all’olio e limone","cat":"Contorni"},{"id":"funghi-trifolati","nome":"Funghi trifolati","cat":"Contorni"},{"id":"finocchi-gratinati","nome":"Finocchi gratinati","cat":"Contorni"},{"id":"cipolline-agrodolce","nome":"Cipolline in agrodolce","cat":"Contorni"},{"id":"pasta-frolla","nome":"Pasta frolla","cat":"Dolci"},{"id":"ciambellone","nome":"Ciambellone soffice","cat":"Dolci"},{"id":"pan-di-spagna","nome":"Pan di Spagna","cat":"Dolci"},{"id":"plumcake","nome":"Plumcake allo yogurt","cat":"Dolci"},{"id":"budino-cioccolato","nome":"Budino al cioccolato","cat":"Dolci"},{"id":"zabaione","nome":"Zabaione","cat":"Dolci"},{"id":"lemon-curd","nome":"Crema al limone (lemon curd)","cat":"Dolci"},{"id":"castagnaccio","nome":"Castagnaccio","cat":"Dolci"},{"id":"pancake","nome":"Pancake","cat":"Colazione"},{"id":"crema-nocciole","nome":"Crema spalmabile alle nocciole","cat":"Colazione"},{"id":"salsa-verde","nome":"Salsa verde","cat":"Basi e salse"},{"id":"pesto-rosso","nome":"Pesto rosso alla trapanese","cat":"Basi e salse"},{"id":"ragu-anatra","nome":"Ragù d’anatra","cat":"Basi e salse"},{"id":"salsa-funghi","nome":"Salsa ai funghi","cat":"Basi e salse"},{"id":"gnocchi-burro-salvia","nome":"Gnocchi burro e salvia","cat":"Primi"},{"id":"pasta-4-formaggi","nome":"Pasta ai quattro formaggi","cat":"Primi"},{"id":"pasta-boscaiola","nome":"Pasta alla boscaiola","cat":"Primi"},{"id":"pasta-salmone","nome":"Pasta salmone e panna","cat":"Primi"},{"id":"pasta-lenticchie","nome":"Pasta e lenticchie","cat":"Primi"},{"id":"pasta-piselli","nome":"Pasta e piselli","cat":"Primi"},{"id":"gnocchi-romana","nome":"Gnocchi alla romana","cat":"Primi"},{"id":"risotto-parmigiano","nome":"Risotto al parmigiano","cat":"Primi"},{"id":"risotto-nero","nome":"Risotto al nero di seppia","cat":"Primi"},{"id":"risotto-verdure","nome":"Risotto primavera","cat":"Primi"},{"id":"minestra-riso-patate","nome":"Minestra di riso e patate","cat":"Primi"},{"id":"crema-carote","nome":"Vellutata di carote e zenzero","cat":"Primi"},{"id":"crema-patate-porri","nome":"Vellutata di patate e porri","cat":"Primi"},{"id":"zuppa-cipolle","nome":"Zuppa di cipolle","cat":"Primi"},{"id":"zuppa-legumi","nome":"Zuppa di legumi misti","cat":"Primi"},{"id":"linguine-scampi","nome":"Linguine agli scampi","cat":"Primi"},{"id":"spaghetti-bottarga","nome":"Spaghetti alla bottarga","cat":"Primi"},{"id":"paccheri-ragu","nome":"Paccheri al ragù napoletano","cat":"Primi"},{"id":"pollo-arrosto","nome":"Pollo arrosto con patate","cat":"Secondi"},{"id":"ossobuco","nome":"Ossobuco alla milanese","cat":"Secondi"},{"id":"coniglio-umido","nome":"Coniglio in umido alle olive","cat":"Secondi"},{"id":"salsicce-fagioli","nome":"Salsicce e fagioli","cat":"Secondi"},{"id":"polpette-tonno","nome":"Polpette di tonno","cat":"Secondi"},{"id":"frittata-patate","nome":"Frittata di patate al forno","cat":"Secondi"},{"id":"uova-pomodoro","nome":"Uova al pomodoro","cat":"Secondi"},{"id":"calamari-ripieni","nome":"Calamari ripieni","cat":"Secondi"},{"id":"merluzzo-patate","nome":"Merluzzo in umido con patate","cat":"Secondi"},{"id":"spezzatino-vitello","nome":"Spezzatino di vitello ai funghi","cat":"Secondi"},{"id":"involtini","nome":"Involtini di carne al sugo","cat":"Secondi"},{"id":"cotolette-forno","nome":"Cotolette al forno","cat":"Secondi"},{"id":"gamberi-guazzetto","nome":"Gamberi in guazzetto","cat":"Secondi"},{"id":"tonno-cipolle","nome":"Tonno fresco e cipolle","cat":"Secondi"},{"id":"zucchine-trifolate","nome":"Zucchine trifolate","cat":"Contorni"},{"id":"broccoli-ripassati","nome":"Broccoli ripassati in padella","cat":"Contorni"},{"id":"cavolfiore-gratinato","nome":"Cavolfiore gratinato","cat":"Contorni"},{"id":"melanzane-funghetto","nome":"Melanzane a funghetto","cat":"Contorni"},{"id":"spinaci-burro","nome":"Spinaci al burro","cat":"Contorni"},{"id":"insalata-russa","nome":"Insalata russa","cat":"Contorni"},{"id":"torta-mele","nome":"Torta di mele","cat":"Dolci"},{"id":"torta-caprese","nome":"Torta caprese","cat":"Dolci"},{"id":"mousse-cioccolato","nome":"Mousse al cioccolato","cat":"Dolci"},{"id":"crema-caffe","nome":"Crema fredda al caffè","cat":"Dolci"},{"id":"confettura-albicocche","nome":"Confettura di albicocche","cat":"Dolci"},{"id":"biscotti-frollini","nome":"Biscotti frollini","cat":"Dolci"},{"id":"frullato-frutta","nome":"Frullato di frutta","cat":"Colazione"},{"id":"porridge","nome":"Porridge d’avena","cat":"Colazione"}];
+const ORD=['Basi e salse','Primi','Secondi','Contorni','Dolci','Colazione'];
+RECIPES.sort((a,b)=>ORD.indexOf(a.cat)-ORD.indexOf(b.cat));
+const KKEY='mambo:pexkey', KSEL='mambo:fotodef';
+let sel={}; try{sel=JSON.parse(localStorage.getItem(KSEL))||{};}catch(e){sel={};}
+const saveSel=()=>{try{localStorage.setItem(KSEL,JSON.stringify(sel));}catch(e){}};
+const $=s=>document.querySelector(s);
+const main=$('#main'), fill=$('#fill'), status=$('#status');
+$('#key').value=localStorage.getItem(KKEY)||'';
+$('#nTot').textContent=RECIPES.length;
+
+function keyVal(){return ($('#key').value||'').trim();}
+$('#saveKey').onclick=()=>{localStorage.setItem(KKEY,keyVal());status.textContent='Chiave salvata ✓';setTimeout(()=>status.textContent='',1500);};
+
+function refreshMeta(){
+  const n=Object.keys(sel).length;
+  $('#nDone').textContent=n; fill.style.width=(n/RECIPES.length*100)+'%';
+}
+function render(){
+  const only=$('#onlyMissing').checked;
+  let html='', cat='';
+  RECIPES.forEach(r=>{
+    if(only&&sel[r.id])return;
+    if(r.cat!==cat){cat=r.cat;html+=`<div class="cat">${cat}</div>`;}
+    const s=sel[r.id];
+    html+=`<div class="card${s?' done':''}" id="card-${r.id}">
+      <div class="chd">
+        ${s?`<img class="cur" src="${s.thumb||s.url}" alt="">`:''}
+        <div class="nm">${r.nome}<small>${r.id}</small></div>
+        <input class="q" id="q-${r.id}" value="${r.nome.replace(/"/g,'&quot;')}">
+        <button class="mini" data-search="${r.id}">Cerca</button>
+        ${s?`<button class="mini" data-clear="${r.id}">Togli</button>`:''}
+        <span class="state${s?' ok':''}" id="st-${r.id}">${s?'✓ scelta':''}</span>
+      </div>
+      <div class="thumbs" id="th-${r.id}"></div>
+      <div class="err" id="er-${r.id}"></div>
+    </div>`;
+  });
+  main.innerHTML=html||'<p style="color:var(--muted)">Tutte le ricette hanno una foto. 🎉</p>';
+  refreshMeta();
+}
+
+async function search(id){
+  const k=keyVal();
+  const er=$('#er-'+id); if(er)er.textContent='';
+  if(!k){if(er)er.textContent='Inserisci prima la chiave API Pexels.';return false;}
+  const q=($('#q-'+id)?$('#q-'+id).value:'')||'';
+  const box=$('#th-'+id); if(box)box.innerHTML='<span style="color:var(--muted);font-size:12px">Cerco…</span>';
+  try{
+    const res=await fetch('https://api.pexels.com/v1/search?per_page=6&orientation=landscape&locale=it-IT&query='+encodeURIComponent(q),
+      {headers:{Authorization:k}});
+    if(res.status===401){if(er)er.textContent='Chiave non valida.';if(box)box.innerHTML='';return false;}
+    if(res.status===429){if(er)er.textContent='Limite Pexels raggiunto: riprova tra un po’.';if(box)box.innerHTML='';return 'rate';}
+    const data=await res.json();
+    const ph=data.photos||[];
+    if(!ph.length){if(box)box.innerHTML='<span style="color:var(--muted);font-size:12px">Nessun risultato. Cambia la query.</span>';return false;}
+    if(box)box.innerHTML=ph.map(p=>{
+      const big=p.src.landscape, thumb=p.src.tiny;
+      const isSel=sel[id]&&sel[id].url===big;
+      return `<div class="th${isSel?' sel':''}" data-pick="${id}" data-url="${big}" data-thumb="${p.src.medium}" data-by="${(p.photographer||'').replace(/"/g,'&quot;')}" data-page="${p.url}">
+        <img loading="lazy" src="${thumb}" alt=""><span class="by">${p.photographer||''}</span></div>`;
+    }).join('');
+    return true;
+  }catch(e){if(er)er.textContent='Errore di rete: '+e.message;if(box)box.innerHTML='';return false;}
+}
+
+main.addEventListener('click',e=>{
+  const s=e.target.closest('[data-search]'); if(s){search(s.dataset.search);return;}
+  const c=e.target.closest('[data-clear]'); if(c){delete sel[c.dataset.clear];saveSel();render();return;}
+  const pick=e.target.closest('[data-pick]');
+  if(pick){
+    const id=pick.dataset.pick;
+    sel[id]={url:pick.dataset.url,thumb:pick.dataset.thumb,by:pick.dataset.by,page:pick.dataset.page};
+    saveSel();
+    pick.parentElement.querySelectorAll('.th').forEach(t=>t.classList.remove('sel'));
+    pick.classList.add('sel');
+    const st=$('#st-'+id); if(st){st.textContent='✓ scelta';st.classList.add('ok');}
+    $('#card-'+id).classList.add('done');
+    refreshMeta();
+  }
+});
+$('#onlyMissing').onchange=render;
+
+$('#searchAll').onclick=async()=>{
+  if(!keyVal()){status.textContent='Inserisci prima la chiave.';return;}
+  const todo=RECIPES.filter(r=>!sel[r.id]);
+  $('#searchAll').disabled=true;
+  for(let i=0;i<todo.length;i++){
+    status.textContent='Cerco '+(i+1)+'/'+todo.length+'…';
+    const card=$('#card-'+todo[i].id);
+    if(card)card.scrollIntoView({block:'center'});
+    const r=await search(todo[i].id);
+    if(r==='rate'){status.textContent='Fermato: limite Pexels. Riprendi più tardi con “Cerca tutte”.';break;}
+    await new Promise(x=>setTimeout(x,350));
+  }
+  status.textContent='Fatto. Scegli le foto e poi “Esporta foto.js”.';
+  $('#searchAll').disabled=false;
+};
+
+function buildFotoJs(){
+  const lines=RECIPES.filter(r=>sel[r.id]).map(r=>`  ${JSON.stringify(r.id)}: ${JSON.stringify(sel[r.id].url)}`);
+  const cred=RECIPES.filter(r=>sel[r.id]&&sel[r.id].by).map(r=>`  ${r.nome}: foto di ${sel[r.id].by} (Pexels)`);
+  return `/* Foto predefinite dei piatti — generato da revisione-foto.html.\n`+
+    `   Fonte: Pexels (licenza Pexels, uso libero). ${lines.length} foto.\n`+
+    (cred.length?`   Crediti:\n`+cred.map(c=>'   - '+c).join('\n')+'\n':'')+
+    `*/\nwindow.FOTODEF = {\n`+lines.join(',\n')+`\n};\n`;
+}
+$('#export').onclick=()=>{$('#out').value=buildFotoJs();$('#dlg').showModal();};
+$('#copy').onclick=()=>{$('#out').select();document.execCommand('copy');$('#copy').textContent='Copiato ✓';setTimeout(()=>$('#copy').textContent='Copia',1500);};
+$('#dl').onclick=()=>{const b=new Blob([$('#out').value],{type:'text/javascript'});const a=document.createElement('a');
+  a.href=URL.createObjectURL(b);a.download='foto.js';a.click();};
+$('#close').onclick=()=>$('#dlg').close();
+
+render();
+</script>
+</body>
+</html>

@@ -632,6 +632,8 @@ footer{padding:28px 0 6px;font-size:12px;color:var(--muted);line-height:1.65}
   </div>
 </div>
 <input type="file" id="globalCam" accept="image/*" hidden>
+<!-- foto predefinite dei piatti (generato dallo strumento di revisione); assente = nessuna, si usano le illustrazioni -->
+<script src="foto.js" onerror="window.FOTODEF=window.FOTODEF||{}"></script>
 <script>
 /* ============================================================
    DATI RICETTE — 30 ricette (blocco 1)
@@ -2508,12 +2510,18 @@ const view=document.getElementById('view');
 
 /* chiave foto passaggio */
 const stepKey=(id,i)=>id+'#'+i;
+/* foto effettiva di una ricetta: prima la foto caricata dall'utente,
+   poi quella predefinita distribuita con l'app (FOTODEF), altrimenti niente */
+const FOTODEF=(typeof window!=='undefined'&&window.FOTODEF)||{};
+function fotoR(r){ return S.foto[r.id]||FOTODEF[r.id]||''; }
 /* media di una ricetta: foto reale se c'è, altrimenti illustrazione segnaposto */
 function heroMedia(r){
-  return S.foto[r.id]?`<img src="${esc(S.foto[r.id])}" alt="${esc(r.nome)}">`:`<div class="art">${art(r)}</div>`;
+  const src=fotoR(r);
+  return src?`<img src="${esc(src)}" alt="${esc(r.nome)}">`:`<div class="art">${art(r)}</div>`;
 }
 function tileMedia(r){
-  return S.foto[r.id]?`<img class="art" loading="lazy" decoding="async" src="${esc(S.foto[r.id])}" alt="${esc(r.nome)}">`:`<div class="art">${art(r)}</div>`;
+  const src=fotoR(r);
+  return src?`<img class="art" loading="lazy" decoding="async" src="${esc(src)}" alt="${esc(r.nome)}">`:`<div class="art">${art(r)}</div>`;
 }
 
 function applyTema(){
@@ -2752,12 +2760,14 @@ const deckDots=document.getElementById('deckDots');
 let deckId=null, deckN=0, deckTotal=0;
 
 function slideMediaR(r){
-  return S.foto[r.id]?`<img src="${esc(S.foto[r.id])}" alt="${esc(r.nome)}">`:art(r);
+  const src=fotoR(r);
+  return src?`<img src="${esc(src)}" alt="${esc(r.nome)}">`:art(r);
 }
 function slideMediaStep(r,idx){
   const sf=S.stepfoto[stepKey(r.id,idx)];
   if(sf)return `<img src="${esc(sf)}" alt="Passaggio ${idx+1}">`;
-  if(S.foto[r.id])return `<img src="${esc(S.foto[r.id])}" alt="${esc(r.nome)}">`;
+  const src=fotoR(r);
+  if(src)return `<img src="${esc(src)}" alt="${esc(r.nome)}">`;
   return art(r);
 }
 function buildDeck(){
