@@ -54,7 +54,10 @@ body.giorno{
   --grape:#7E30C9;
 }
 *{box-sizing:border-box}
-html,body{margin:0;padding:0;background:var(--bg)}
+html,body{margin:0;padding:0;background:var(--bg);overscroll-behavior:none}
+html{overflow-x:hidden}
+/* nasconde il badge iniettato dall'host (niente salti di layout) */
+#nl-badge-frame,#netlify-badge,.netlify-badge{display:none!important}
 body::before{
   content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
   background:
