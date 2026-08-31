@@ -117,18 +117,17 @@ nav.tabs{
   background:rgba(18,13,11,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)
 }
-nav.tabs button{flex:1;padding:9px 4px 11px;display:flex;flex-direction:column;align-items:center;gap:4px;
-  font-size:11px;color:var(--muted);position:relative;transition:color .2s}
-nav.tabs button svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.6;
+nav.tabs button{flex:1;padding:14px 4px 7px;display:flex;flex-direction:column;align-items:center;gap:4px;
+  font-size:11.5px;color:var(--muted);position:relative;transition:color .2s}
+nav.tabs button svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:1.6;
   stroke-linecap:round;stroke-linejoin:round;transition:transform .3s var(--ease)}
 nav.tabs button:active svg{transform:scale(.85)}
 nav.tabs button[aria-selected="true"]{color:var(--saffron)}
 nav.tabs button[aria-selected="true"] svg{
   background:linear-gradient(150deg,var(--saffron),var(--tomato));
-  color:#fff;stroke:#fff;border-radius:999px;padding:8px;width:40px;height:40px;
-  margin:-13px 0 -4px;box-shadow:0 6px 14px -5px rgba(208,131,7,.75);animation:pop .34s var(--ease)}
+  color:#fff;stroke:#fff;border-radius:999px;padding:10px;width:48px;height:48px;
+  margin:-16px 0 -3px;box-shadow:0 6px 14px -5px rgba(208,131,7,.75);animation:pop .34s var(--ease)}
 @keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
-nav.tabs button{padding-top:12px}
 .badge{
   position:absolute;top:5px;left:50%;margin-left:5px;background:var(--tomato);color:#fff;
   font-size:10px;font-weight:700;min-width:16px;height:16px;border-radius:999px;
@@ -424,23 +423,23 @@ body.bimby-on .bimby{display:block}
 .deck .track{display:flex;height:100%;transition:transform .45s var(--ease);will-change:transform}
 .slide{
   flex:0 0 100%;height:100%;overflow-y:auto;overflow-x:hidden;
-  display:flex;flex-direction:column;justify-content:center;
-  padding:calc(70px + env(safe-area-inset-top)) 24px calc(96px + env(safe-area-inset-bottom));
+  display:flex;flex-direction:column;justify-content:flex-start;
+  padding:calc(74px + env(safe-area-inset-top)) 22px calc(128px + env(safe-area-inset-bottom));
   scroll-snap-align:start
 }
 .slide .inner{max-width:640px;margin:0 auto;width:100%;animation:slideUp .5s var(--ease) both}
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-.slide.cover{text-align:center}
+.slide.cover{text-align:center;justify-content:center}
 .slide.cover .sph{width:100%;height:min(46vh,340px);border-radius:26px;overflow:hidden;
   border:1px solid var(--line);margin-bottom:26px;background:var(--surf)}
 .slide.cover .sph img,.slide.cover .sph svg{width:100%;height:100%;object-fit:cover;display:block}
 .slide.cover .eyebrow{font-size:13px;letter-spacing:.28em;text-transform:uppercase;color:var(--saffron);font-weight:700}
 .slide.cover h2{font-family:var(--serif);font-size:clamp(30px,8vw,52px);letter-spacing:-.02em;margin:12px 0 14px;color:var(--cream)}
 .slide.cover .csub{color:var(--muted);font-size:16px}
-.slide .kicker{font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--saffron);font-weight:700;margin-bottom:14px}
+.slide .kicker{font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--saffron);font-weight:700;margin-bottom:10px}
 .slide .stitle{font-family:var(--serif);font-size:clamp(24px,6vw,38px);line-height:1.14;letter-spacing:-.01em;color:var(--cream)}
-.slide .sph2{width:100%;height:min(34vh,260px);border-radius:22px;overflow:hidden;border:1px solid var(--line);
-  margin:20px 0;background:var(--surf)}
+.slide .sph2{width:100%;height:min(24vh,190px);border-radius:20px;overflow:hidden;border:1px solid var(--line);
+  margin:12px 0 14px;background:var(--surf)}
 .slide .sph2 img,.slide .sph2 svg{width:100%;height:100%;object-fit:cover;display:block}
 .slide .stext{font-size:clamp(18px,4.6vw,24px);line-height:1.5;color:var(--cream);margin-top:6px}
 .slide .sbimby{margin-top:18px;font-size:14.5px;color:var(--muted);border-left:3px solid var(--mint);
@@ -450,9 +449,10 @@ body.bimby-on .bimby{display:block}
 .slide ul.singred li{display:flex;justify-content:space-between;gap:16px;padding:12px 2px;
   border-bottom:1px solid var(--line);font-size:clamp(16px,4vw,20px)}
 .slide ul.singred li .sq{color:var(--saffron);font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
-.slide .sdials{margin-top:12px}
-.timer{margin-top:18px;display:flex;align-items:center;gap:16px;background:var(--surf);
-  border:1px solid var(--line);border-radius:18px;padding:14px 18px}
+.slide .sdials{margin-top:8px}
+.slide .sdials .dials{padding:10px 6px 4px}
+.timer{margin-top:14px;display:flex;align-items:center;gap:16px;background:var(--surf);
+  border:1px solid var(--line);border-radius:18px;padding:13px 16px}
 .timer .tdisp{font-size:clamp(30px,9vw,46px);font-weight:800;font-variant-numeric:tabular-nums;
   letter-spacing:-.02em;color:var(--cream);min-width:2.6em}
 .timer .tbtn{margin-left:auto;display:inline-flex;align-items:center;gap:8px;border-radius:12px;
@@ -467,17 +467,15 @@ body.bimby-on .bimby{display:block}
 .timer.done .tdisp{color:var(--mint)}
 @keyframes done{0%,100%{transform:none}30%{transform:scale(1.03)}}
 .deckbar{position:absolute;top:0;left:0;right:0;z-index:2;display:flex;align-items:center;gap:12px;
-  padding:calc(14px + env(safe-area-inset-top)) 18px 14px;
-  background:linear-gradient(to bottom,rgba(0,0,0,.34),transparent)}
-body.giorno .deckbar{background:linear-gradient(to bottom,rgba(255,255,255,.5),transparent)}
+  padding:calc(14px + env(safe-area-inset-top)) 18px 16px;
+  background:linear-gradient(to bottom,var(--bg) 55%,transparent)}
 .deckbar .dtitle{flex:1;min-width:0;font-size:14px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .deckbar button{width:40px;height:40px;border-radius:999px;background:var(--surf2);display:grid;place-items:center;font-size:16px;flex:none}
 .deckbar .pdf{width:auto;padding:0 15px;font-size:13.5px;font-weight:600;gap:7px;display:flex;align-items:center}
 .deckbar .pdf svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8}
 .deckctl{position:absolute;bottom:0;left:0;right:0;z-index:2;display:flex;align-items:center;gap:14px;
-  padding:16px 20px calc(20px + env(safe-area-inset-bottom));
-  background:linear-gradient(to top,rgba(0,0,0,.4),transparent)}
-body.giorno .deckctl{background:linear-gradient(to top,rgba(255,255,255,.55),transparent)}
+  padding:16px 20px calc(18px + env(safe-area-inset-bottom));
+  background:linear-gradient(to top,var(--bg) 58%,transparent)}
 .deckctl button.nav{width:52px;height:52px;border-radius:999px;flex:none;display:grid;place-items:center;
   background:linear-gradient(150deg,var(--saffron),var(--tomato));color:#241108;font-size:22px;
   box-shadow:0 8px 20px -8px rgba(255,91,54,.7);transition:transform .14s}
