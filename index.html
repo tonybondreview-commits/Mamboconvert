@@ -276,6 +276,19 @@ body.giorno .hero{box-shadow:0 10px 30px -18px rgba(40,30,20,.45)}
   background:rgba(216,88,61,.13);border:1px solid rgba(216,88,61,.35);border-radius:14px;
   padding:14px 16px;margin-top:14px;font-size:14.5px;line-height:1.45;color:#FFB9A6
 }
+.fuori{
+  background:rgba(255,180,36,.12);border:1px solid rgba(255,180,36,.42);border-radius:14px;
+  padding:13px 15px;margin:14px 0 4px
+}
+.fuori-h{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14.5px;color:var(--saffron);margin-bottom:6px}
+.fuori-h span.ic{font-size:17px}
+.fuori ul{list-style:none;margin:0;padding:0}
+.fuori li{position:relative;padding:3px 0 3px 16px;font-size:14px;line-height:1.42;color:var(--cream)}
+.fuori li:before{content:'•';position:absolute;left:2px;color:var(--saffron)}
+.outpill{display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;font-size:11.5px;font-weight:700;
+  background:rgba(255,180,36,.16);color:var(--saffron);border:1px solid rgba(255,180,36,.4);white-space:nowrap;vertical-align:middle}
+body.giorno .fuori{background:rgba(208,131,7,.10);border-color:rgba(208,131,7,.4)}
+body.giorno .outpill{background:rgba(208,131,7,.12);border-color:rgba(208,131,7,.4)}
 .sec{
   font-family:var(--sans);font-size:23px;font-weight:600;margin:30px 0 4px;display:flex;
   align-items:baseline;gap:10px;letter-spacing:-.01em;color:var(--cream)
@@ -2509,7 +2522,7 @@ const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').re
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const durata=m=>m<60?m+' min':(m/60).toFixed(1).replace('.0','').replace('.',',')+' h';
 const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati. Contenuti e funzionalità protetti: vietata la copia o la clonazione.';
-const APP_VER='v12 · 01-09';
+const APP_VER='v13 · 01-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const view=document.getElementById('view');
 
@@ -2688,6 +2701,24 @@ function dosiHTML(list,r){
 }
 
 /* ---------- DETTAGLIO ---------- */
+/* Passaggi "fuori dal robot": rilevati dal testo (a parte, in padella, friggi, lessa, in forno...).
+   Una ricetta puo' anche dichiararli a mano con r.fuori:['...']. */
+const RE_FUORI=/\b(a parte|separatamente|in padella|in forno|in una pentola|frigg\w*|grigli\w+|sul fuoco)\b/i;
+const RE_LESS=/\bless\w+\b/i;
+function isFuori(s){
+  if(!s||!s.x) return false; const x=s.x;
+  const inCaraffa=/\b(in|nella)\s+caraffa\b/i.test(x);
+  if(RE_LESS.test(x) && !inCaraffa) return true;              /* lessare fuori dal robot */
+  if(RE_FUORI.test(x)){
+    if(/\bserv\w*/i.test(x) && !/frigg|forno|padella|pentola|less|sul fuoco/i.test(x)) return false; /* "a parte" da servizio, non preparazione */
+    return true;
+  }
+  return false;
+}
+function fuoriDi(r){
+  if(Array.isArray(r.fuori)&&r.fuori.length) return r.fuori.slice();
+  return (r.steps||[]).filter(isFuori).map(s=>s.x);
+}
 function vDett(){
   const r=RICETTE.find(x=>x.id===S.open), f=S.porz/r.porz, vol=r.vol*f;
   const inSp=S.spesa.some(s=>s.id===r.id), hasFoto=!!S.foto[r.id];
@@ -2702,6 +2733,7 @@ function vDett(){
       <div class="htxt"><h2>${esc(r.nome)}</h2>
         <div class="sub">${esc(r.cat)} &nbsp;|&nbsp; ${durata(r.tempo)} &nbsp;|&nbsp; ${r.acc.length} accessori</div></div>
     </div>
+    ${(()=>{const fl=fuoriDi(r);return fl.length?`<div class="fuori"><div class="fuori-h"><span class="ic">\u{1F373}</span>Prima di iniziare \u2014 da preparare a parte</div><ul>${fl.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>`:'';})()}
     <div class="photobar">
       <span class="plab">${camSvg}Foto del piatto</span>
       <input class="url" id="fotoUrl" placeholder="Incolla un link immagine (https://…)" value="${hasFoto&&/^https?:/.test(S.foto[r.id])?esc(S.foto[r.id]):''}">
@@ -2730,7 +2762,7 @@ function vDett(){
       return `<div class="step">
         ${sf?`<img class="stepmedia" loading="lazy" decoding="async" src="${esc(sf)}" alt="Passaggio ${idx+1}">`:''}
         <div class="txt"><span class="n"></span><span>${esc(s.x)}${
-        s.a&&s.a!=='—'?`<span class="accpill">${accIco(s.a)}${esc(s.a)}</span>`:''}${dosiHTML(add[idx],r)}</span></div>
+        s.a&&s.a!=='—'?`<span class="accpill">${accIco(s.a)}${esc(s.a)}</span>`:''}${isFuori(s)?'<span class="outpill">\u{1F373} fuori dal robot</span>':''}${dosiHTML(add[idx],r)}</span></div>
       ${has?quadri(s):''}
       <div class="bimby">Sul Bimby era <b>${esc(s.b)}</b></div>
       <button class="stepcam" data-picstep="${r.id}" data-i="${idx}">${camSvg}${sf?'Cambia foto del passaggio':'Aggiungi foto del passaggio'}</button>
@@ -2784,6 +2816,14 @@ function buildDeck(){
     <h2>${esc(r.nome)}</h2>
     <div class="csub">${esc(r.cat)} · ${durata(r.tempo)} · per ${S.porz} ${S.porz===1?'persona':'persone'}</div>
   </div></section>`);
+  /* prima di iniziare: cosa preparare fuori dal robot */
+  const fuoriList=fuoriDi(r);
+  if(fuoriList.length){ slides.push(`<section class="slide"><div class="inner">
+    <div class="kicker">Prima di iniziare</div>
+    <div class="stitle">Da preparare a parte \u{1F373}</div>
+    <ul class="singred">${fuoriList.map(t=>`<li><span>${esc(t)}</span></li>`).join('')}</ul>
+    <div class="sbimby">Queste cose non si fanno nel Mambo: falle prima o mentre il robot lavora.</div>
+  </div></section>`); }
   /* ingredienti */
   slides.push(`<section class="slide"><div class="inner">
     <div class="kicker">Ingredienti · ${S.porz} ${S.porz===1?'persona':'persone'}</div>
@@ -2796,7 +2836,7 @@ function buildDeck(){
     slides.push(`<section class="slide"><div class="inner">
       <div class="kicker">Passaggio ${idx+1} di ${r.steps.length}</div>
       <div class="sph2">${slideMediaStep(r,idx)}</div>
-      <div class="stext">${esc(s.x)}${s.a&&s.a!=='—'?` <span class="accpill">${accIco(s.a)}${esc(s.a)}</span>`:''}</div>
+      <div class="stext">${esc(s.x)}${s.a&&s.a!=='—'?` <span class="accpill">${accIco(s.a)}${esc(s.a)}</span>`:''}${isFuori(s)?' <span class="outpill">\u{1F373} fuori dal robot</span>':''}</div>
       ${dosiHTML(add[idx],r)}
       ${has?`<div class="sdials">${quadri(s)}</div>`:''}
       ${secDi(s.t)?`<div class="timer" data-sec="${secDi(s.t)}"><div class="tdisp">${fmtClock(secDi(s.t))}</div><button class="tbtn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Avvia timer</button></div>`:''}
