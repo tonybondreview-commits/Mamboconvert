@@ -507,7 +507,9 @@ body.bimby-on .bimby{display:block}
 .deckbar button{width:40px;height:40px;border-radius:999px;background:var(--surf2);display:grid;place-items:center;font-size:16px;flex:none}
 .deckbar .pdf{width:auto;padding:0 15px;font-size:13.5px;font-weight:600;gap:7px;display:flex;align-items:center}
 .deckbar .pdf svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8}
-.deckbar #deckVoice[aria-pressed="true"]{color:var(--saffron);background:rgba(255,180,36,.18)}
+.deckbar .voice{width:auto;padding:0 15px;font-size:13.5px;font-weight:600;gap:7px;display:flex;align-items:center;color:var(--saffron)}
+.deckbar .voice svg{width:16px;height:16px}
+.deckbar .voice[aria-pressed="true"]{color:#fff;background:linear-gradient(96deg,var(--saffron),var(--tomato))}
 .deckctl{position:absolute;bottom:0;left:0;right:0;z-index:2;display:flex;align-items:center;gap:14px;
   padding:16px 20px calc(18px + env(safe-area-inset-bottom));
   background:linear-gradient(to top,var(--bg) 58%,transparent)}
@@ -639,7 +641,7 @@ footer{padding:28px 0 6px;font-size:12px;color:var(--muted);line-height:1.65}
   <div class="deckbar">
     <button id="deckClose" aria-label="Chiudi presentazione">✕</button>
     <div class="dtitle" id="deckTitle"></div>
-    <button id="deckVoice" aria-label="Leggi i passaggi ad alta voce" aria-pressed="false">\u{1F507}</button>
+    <button class="voice" id="deckVoice" aria-label="Leggi i passaggi ad alta voce" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.8 5.5a9 9 0 0 1 0 13"/></svg><span>Leggi</span></button>
     <button class="pdf" id="deckPdf"><svg viewBox="0 0 24 24"><path d="M12 3v11m0 0 4-4m-4 4-4-4"/><path d="M5 20h14"/></svg>PDF</button>
   </div>
   <div class="track" id="deckTrack"></div>
@@ -2526,7 +2528,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const durata=m=>m<60?m+' min':(m/60).toFixed(1).replace('.0','').replace('.',',')+' h';
 const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati. Contenuti e funzionalità protetti: vietata la copia o la clonazione.';
 const BUG_EMAIL='tony.bondreview@gmail.com';
-const APP_VER='v15 · 01-09';
+const APP_VER='v16 · 01-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const view=document.getElementById('view');
 
@@ -2897,7 +2899,8 @@ function applyDeck(){
 }
 function gotoSlide(n){ deckN=Math.max(0,Math.min(deckTotal-1,n)); applyDeck(); }
 function openDeck(id){ deckId=id; deckN=0; deck.classList.add('open'); document.body.style.overflow='hidden'; buildDeck(); reqWake(); }
-function closeDeck(){ deck.classList.remove('open'); document.body.style.overflow=''; clearTimers(); relWake(); stopSpeak(); }
+function closeDeck(){ deck.classList.remove('open'); document.body.style.overflow=''; clearTimers(); relWake(); stopSpeak();
+  voiceOn=false; const vb=document.getElementById('deckVoice'); if(vb){ vb.setAttribute('aria-pressed','false'); const l=vb.querySelector('span'); if(l)l.textContent='Leggi'; } }
 
 /* ---- modalità cottura: timer, avviso, schermo acceso ---- */
 function fmtClock(s){const m=Math.floor(s/60),ss=Math.round(s%60);return m+':'+String(ss).padStart(2,'0');}
@@ -2941,7 +2944,7 @@ document.getElementById('deckNext').onclick=()=>gotoSlide(deckN+1);
 document.getElementById('deckPdf').onclick=()=>window.print();
 const deckVoiceBtn=document.getElementById('deckVoice');
 deckVoiceBtn.onclick=()=>{ voiceOn=!voiceOn; deckVoiceBtn.setAttribute('aria-pressed',voiceOn?'true':'false');
-  deckVoiceBtn.textContent=voiceOn?'\u{1F50A}':'\u{1F507}';
+  const lab=deckVoiceBtn.querySelector('span'); if(lab)lab.textContent=voiceOn?'Fermo':'Leggi';
   if(voiceOn){ pickVoice(); speak(deckSpeech[deckN]); } else stopSpeak(); };
 document.addEventListener('keydown',e=>{ if(!deck.classList.contains('open'))return;
   if(e.key==='ArrowRight'||e.key==='PageDown'){gotoSlide(deckN+1);}
