@@ -208,6 +208,7 @@ body.giorno .hero{box-shadow:0 10px 30px -18px rgba(40,30,20,.45)}
 .accpill{display:inline-flex;align-items:center;gap:6px}
 .accpill .ico{width:17px;height:17px;color:var(--grape)}
 .crow .ico{width:44px;height:44px;flex:none;color:var(--saffron)}
+.tile[hidden]{display:none!important}
 .tile{
   position:relative;border-radius:20px;overflow:hidden;background:var(--surf);
   border:1px solid var(--line);text-align:left;display:block;width:100%;padding:0;
@@ -2591,7 +2592,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const durata=m=>m<60?m+' min':(m/60).toFixed(1).replace('.0','').replace('.',',')+' h';
 const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati. Contenuti e funzionalità protetti: vietata la copia o la clonazione.';
 const BUG_EMAIL='tony.bondreview@gmail.com';
-const APP_VER='v24 · 01-09';
+const APP_VER='v25 · 01-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 const view=document.getElementById('view');
@@ -2636,18 +2637,24 @@ function tile(r,badge){
   const hab=r.caraffa==='Habana';
   const cam=S.foto[r.id]?'':'<span class="camtag" aria-hidden="true">📷</span>';
   const nota=(S.note[r.id]&&S.note[r.id].trim())?'<span class="notetag" aria-hidden="true">📝</span>':'';
-  return `<button class="tile" data-open="${r.id}">${tileMedia(r)}${badge||''}${cam}${nota}
+  return `<button class="tile" data-open="${r.id}" data-search="${esc(norm(r.nome+' '+r.ing.map(i=>i.n).join(' ')+' '+(r.tag||[]).join(' ')))}">${tileMedia(r)}${badge||''}${cam}${nota}
     <span class="fav" data-fav="${r.id}" role="button" aria-pressed="${S.pref.includes(r.id)}" aria-label="Preferito">${S.pref.includes(r.id)?'♥':'♡'}</span>
     <span class="lay"><span class="nm">${esc(r.nome)}</span>
     <span class="mt"><span>${durata(r.tempo)}</span><span>${esc(r.cat)}</span>${hab?'<span>caraffa Habana</span>':''}</span></span></button>`;
 }
 
 /* ---------- RICETTE ---------- */
+function filterTiles(){
+  const grid=document.getElementById('grid'); if(!grid)return;
+  const q=norm(S.q); let shown=0;
+  grid.querySelectorAll('.tile').forEach(t=>{ const m=!q||(t.dataset.search||'').includes(q); t.hidden=!m; if(m)shown++; });
+  const cnt=document.getElementById('cnt'); if(cnt)cnt.textContent=shown;
+  const no=document.getElementById('noRes'); if(no){ no.hidden=shown>0; if(!no.hidden)no.innerHTML='Nessun piatto per \u201c'+esc(S.q)+'\u201d.<br>Prova con un altro nome o ingrediente.'; }
+}
 function vRic(){
   const cats=['Tutte',...new Set(RICETTE.map(r=>r.cat))], q=norm(S.q);
   const attivi=FILTRI.filter(fl=>S.filtri.includes(fl.id));
   const f=RICETTE.filter(r=>(S.cat==='Tutte'||r.cat===S.cat)
-    &&(!q||norm(r.nome).includes(q)||r.ing.some(i=>norm(i.n).includes(q))||(r.tag||[]).some(t=>norm(t).includes(q)))
     &&attivi.every(fl=>fl.test(r)));
   view.innerHTML=`<div class="panel">
     <div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -2659,17 +2666,17 @@ function vRic(){
         <button data-cols="2" aria-pressed="${S.cols===2}" aria-label="Due per riga"><svg viewBox="0 0 16 16"><rect x="1" y="2" width="6" height="6" rx="1.5"/><rect x="9" y="2" width="6" height="6" rx="1.5"/><rect x="1" y="10" width="6" height="4" rx="1.5"/><rect x="9" y="10" width="6" height="4" rx="1.5"/></svg></button>
       </div></div>
     <div class="chips filtri">${FILTRI.map(fl=>`<button class="chip fl" data-filtro="${fl.id}" aria-pressed="${S.filtri.includes(fl.id)}">${esc(fl.lab)}</button>`).join('')}${S.filtri.length?`<button class="chip clr" data-clrfiltri>Azzera ✕</button>`:''}</div>
-    ${f.length?`<div class="grid" data-cols="${S.cols}">${f.map((r,i)=>tile(r).replace('class="tile"',`class="tile" style="animation-delay:${Math.min(i*32,320)}ms"`)).join('')}</div>`
-      :`<div class="empty">Nessun piatto con questi filtri${q?` per “${esc(S.q)}”`:''}.<br>Togli un filtro o cambia categoria.</div>`}
-    <footer>${f.length} di ${RICETTE.length} ricette. Classici italiani con i parametri convertiti per Mambo Touch. Apri una ricetta per “Cucina passo-passo” col timer, le foto e le tue note.<br><br><span class="avviso">${AVVISO_FOTO}</span><br><br>${CREDITO}<br><span style="opacity:.55">versione ${APP_VER}</span></footer></div>`;
+    ${f.length?`<div class="grid" id="grid" data-cols="${S.cols}">${f.map((r,i)=>tile(r).replace('class="tile"',`class="tile" style="animation-delay:${Math.min(i*32,320)}ms"`)).join('')}</div><div class="empty" id="noRes" hidden></div>`
+      :`<div class="empty">Nessun piatto con questi filtri.<br>Togli un filtro o cambia categoria.</div>`}
+    <footer><span id="cnt">${f.length}</span> di ${RICETTE.length} ricette. Classici italiani con i parametri convertiti per Mambo Touch. Apri una ricetta per “Cucina passo-passo” col timer, le foto e le tue note.<br><br><span class="avviso">${AVVISO_FOTO}</span><br><br>${CREDITO}<br><span style="opacity:.55">versione ${APP_VER}</span></footer></div>`;
   const i=document.getElementById('q');
-  i.oninput=e=>{S.q=e.target.value;const p=e.target.selectionStart;vRic();
-    const n=document.getElementById('q');n.focus();n.setSelectionRange(p,p);};
+  if(i)i.oninput=e=>{ S.q=e.target.value; filterTiles(); };
   view.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{S.cat=b.dataset.cat;render();});
   view.querySelectorAll('[data-filtro]').forEach(b=>b.onclick=()=>{const id=b.dataset.filtro;
     if(S.filtri.includes(id))S.filtri=S.filtri.filter(x=>x!==id);else S.filtri.push(id);render();});
   const clr=view.querySelector('[data-clrfiltri]'); if(clr)clr.onclick=()=>{S.filtri=[];render();};
   view.querySelectorAll('.cols button').forEach(b=>b.onclick=()=>{S.cols=+b.dataset.cols;save('mambo:cols',S.cols);render();});
+  filterTiles();
 }
 
 /* ---------- GESTIONE FOTO REALI ---------- */
