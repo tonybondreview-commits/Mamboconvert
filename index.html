@@ -69,6 +69,7 @@ body{
   color:var(--cream);font-family:var(--sans);font-size:16px;line-height:1.5;
   -webkit-font-smoothing:antialiased;padding-bottom:calc(74px + env(safe-area-inset-bottom));
   overflow-x:hidden;min-height:100vh;min-height:100dvh;
+  touch-action:manipulation; /* niente doppio-tap-zoom, resta scroll e tap */
 }
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 input,select{font:inherit;color:inherit}
@@ -2508,7 +2509,7 @@ const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').re
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const durata=m=>m<60?m+' min':(m/60).toFixed(1).replace('.0','').replace('.',',')+' h';
 const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati. Contenuti e funzionalità protetti: vietata la copia o la clonazione.';
-const APP_VER='v10 · 31-08';
+const APP_VER='v11 · 01-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const view=document.getElementById('view');
 
@@ -3134,6 +3135,18 @@ if('serviceWorker' in navigator){
     });
   });
 }
+
+/* ---- Blocco zoom: Chrome Android ignora user-scalable=no, quindi fermiamo il
+   pinch a due dita via JS. Lo scorrimento a un dito (touches.length===1) resta intatto. */
+(function(){
+  document.addEventListener('touchmove', function(e){
+    if (e.touches && e.touches.length > 1) e.preventDefault();
+  }, {passive:false});
+  ['gesturestart','gesturechange','gestureend'].forEach(function(ev){
+    document.addEventListener(ev, function(e){ e.preventDefault(); });
+  });
+  document.addEventListener('wheel', function(e){ if (e.ctrlKey) e.preventDefault(); }, {passive:false});
+})();
 
 /* ---- Statistiche: Cloudflare Web Analytics (privacy-friendly, senza cookie) ----
    Incolla qui il token dato da Cloudflare (Web Analytics -> Add a site -> Manual).
