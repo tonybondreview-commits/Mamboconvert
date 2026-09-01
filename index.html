@@ -395,6 +395,14 @@ body.giorno .trk{stroke:rgba(80,50,30,.11)}
 .bimby{display:none;padding:9px 14px;font-size:12px;color:var(--muted);
   border-top:1px solid var(--line);background:rgba(255,180,36,.07)}
 body.bimby-on .bimby{display:block}
+.bnote{padding:9px 14px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);background:rgba(255,180,36,.07)}
+.bnote b{color:var(--cream);font-weight:600}
+.robotsel{display:flex;gap:6px;background:var(--surf);border:1px solid var(--line-2);border-radius:14px;padding:6px;margin:24px 0 4px}
+.robotsel button{flex:1;border:0;background:none;font:inherit;font-weight:600;font-size:13.5px;color:var(--muted);padding:10px 6px;border-radius:9px;cursor:pointer;line-height:1.2}
+.robotsel button[aria-pressed="true"]{background:linear-gradient(96deg,var(--saffron),var(--tomato));color:#241108;box-shadow:0 6px 16px -9px rgba(255,91,54,.8)}
+.robotnote{font-size:12.5px;color:var(--muted);line-height:1.45;margin:9px 2px 0}
+.robotnote b{color:var(--cream);font-weight:600}
+.revpill{display:inline-block;margin:0 0 12px 8px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;background:rgba(46,208,240,.14);color:var(--acqua);border:1px solid rgba(46,208,240,.3)}
 .bimby b{color:var(--mint);font-weight:600}
 .note{
   border-left:3px solid var(--tomato);background:var(--surf);border-radius:0 14px 14px 0;
@@ -2479,6 +2487,38 @@ function quadri(s){
     ${quad(dTempo(s.t),'gT','tempo','t')}${quad(dVel(s.v),'gV','velocità','v')}
     ${quad(dTemp(s.T),'gG','gradi','g')}${quad(dPot(s.P),'gP','potenza','p')}</div>`;
 }
+/* ---- SELETTORE ROBOT: Bimby/Monsieur Cuisine usano gli stessi semicerchi del Mambo ---- */
+const ROBOTS={
+  mambo:{short:'Mambo', nome:'Cecotec Mambo', head:'Sul Mambo Touch'},
+  bimby:{short:'Bimby', nome:'Bimby / Thermomix', head:'Sul Bimby / Thermomix'},
+  monsieur:{short:'Monsieur', nome:'Monsieur Cuisine', head:'Sul Monsieur Cuisine'}
+};
+function parseBimby(b){
+  if(!b||b==='—') return {has:false, note:''};
+  let t='—',v='—',T='—',note='';
+  b.split('·').map(p=>p.trim()).forEach(p=>{ const pl=p.toLowerCase();
+    if(t==='—'&&/\b(sec|min|or[ae])\b/.test(pl)) t=p;
+    else if(T==='—'&&/varoma/.test(pl)) T='Varoma';
+    else if(T==='—'&&(/\d+\s*°/.test(p)||/°c/.test(pl))) T=p;
+    else if(v==='—'&&/vel|turbo|spiga/.test(pl)) v=p;
+    else if(/antiorar/.test(pl)) {}
+    else note=p;
+  });
+  const rev=/antiorar/i.test(b);
+  const has = t!=='—'||v!=='—'||T!=='—';
+  return {t,v,T,rev,note:has?'':note, has};
+}
+function quadriBimby(s){
+  const b=parseBimby(s.b);
+  if(!b.has) return b.note?`<div class="bnote">Su Bimby / Monsieur Cuisine: <b>${esc(b.note)}</b></div>`:'';
+  const tempG=b.T==='Varoma'?{d:'Varoma',f:1,off:0}:dTemp(b.T);
+  const rev=b.rev?`<span class="revpill">↺ senso antiorario</span>`:'';
+  return `<div class="dials three">${quad(dTempo(b.t),'gT','tempo','t')}${quad(dVel(b.v),'gV','velocità','v')}${quad(tempG,'gG','gradi','g')}</div>${rev}`;
+}
+function quadriFor(s){
+  if(S.robot==='mambo'){ const has=s.t!=='—'||s.v!=='—'; return has?quadri(s):''; }
+  return quadriBimby(s);
+}
 function mini(o,grad){
   const fs=o.d.length<=2?36:o.d.length===3?28:22;
   return `<svg viewBox="0 0 100 100" aria-hidden="true">
@@ -2494,7 +2534,7 @@ function mini(o,grad){
    foto     : foto reale del piatto  (id -> url|dataURL)
    stepfoto : foto reale del passaggio (id#indice -> url|dataURL)
    ============================================================ */
-const S={porz:4,tab:'ricette',q:'',cat:'Tutte',filtri:[],open:null,frigo:[],spesa:[],bimby:false,
+const S={porz:4,tab:'ricette',q:'',cat:'Tutte',filtri:[],open:null,frigo:[],spesa:[],bimby:false,robot:'mambo',
   foto:{},stepfoto:{},accfoto:{},note:{},pref:[],cols:1,tema:'giorno'};
 /* filtri combinabili (AND) con categoria e ricerca */
 const FILTRI=[
@@ -2542,7 +2582,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const durata=m=>m<60?m+' min':(m/60).toFixed(1).replace('.0','').replace('.',',')+' h';
 const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati. Contenuti e funzionalità protetti: vietata la copia o la clonazione.';
 const BUG_EMAIL='tony.bondreview@gmail.com';
-const APP_VER='v21 · 01-09';
+const APP_VER='v22 · 01-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 const view=document.getElementById('view');
@@ -2790,14 +2830,16 @@ function vDett(){
     <ul class="ing">${r.ing.map(i=>`<li>
       <span class="n">${esc(i.n)}${i.s==='s'?'<i>non scala in proporzione</i>':i.s==='f'?'<i>quantità fissa</i>':''}</span>
       <span class="q">${fmtQ(scala(i,r.porz,S.porz))} ${esc(i.u)}</span></li>`).join('')}</ul></div>
-    <h3 class="sec">Sul Mambo Touch <span>${r.steps.length} passaggi</span></h3>
+    <div class="robotsel" role="group" aria-label="Scegli il robot">${Object.keys(ROBOTS).map(k=>`<button data-robot="${k}" aria-pressed="${S.robot===k}">${ROBOTS[k].short}</button>`).join('')}</div>
+    ${S.robot!=='mambo'?`<p class="robotnote">I passaggi restano descritti per il Mambo; qui sotto trovi i parametri equivalenti per <b>${ROBOTS[S.robot].nome}</b>${S.robot==='monsieur'?' (stessa scala del Bimby)':''}. Verifica sempre in cottura.</p>`:''}
+    <h3 class="sec">${ROBOTS[S.robot].head} <span>${r.steps.length} passaggi</span></h3>
     <div class="steps">${(()=>{const add=assegnaIng(r);return r.steps.map((s,idx)=>{const has=s.t!=='—'||s.v!=='—';const k=stepKey(r.id,idx);const sf=S.stepfoto[k];
       return `<div class="step">
         ${sf?`<img class="stepmedia" loading="lazy" decoding="async" src="${esc(sf)}" alt="Passaggio ${idx+1}">`:''}
         <div class="txt"><span class="n"></span><span>${esc(s.x)}${
-        s.a&&s.a!=='—'?`<span class="accpill">${accIco(s.a)}${esc(s.a)}</span>`:''}${isFuori(s)?'<span class="outpill">\u{1F373} fuori dal robot</span>':''}${dosiHTML(add[idx],r)}</span></div>
-      ${has?quadri(s):''}
-      <div class="bimby">Sul Bimby era <b>${esc(s.b)}</b></div>
+        S.robot==='mambo'&&s.a&&s.a!=='—'?`<span class="accpill">${accIco(s.a)}${esc(s.a)}</span>`:''}${isFuori(s)?'<span class="outpill">\u{1F373} fuori dal robot</span>':''}${dosiHTML(add[idx],r)}</span></div>
+      ${quadriFor(s)}
+      ${S.robot==='mambo'?`<div class="bimby">Sul Bimby era <b>${esc(s.b)}</b></div>`:''}
       <button class="stepcam" data-picstep="${r.id}" data-i="${idx}">${camSvg}${sf?'Cambia foto del passaggio':'Aggiungi foto del passaggio'}</button>
       </div>`;}).join('')})()}</div>
     ${r.note&&r.note.length?`<h3 class="sec">Note di conversione</h3>${r.note.map(n=>`<div class="note">${esc(n)}</div>`).join('')}`:''}
@@ -2808,7 +2850,7 @@ function vDett(){
       <button class="btn ${inSp?'on':''}" data-spesa="${r.id}">${inSp?'✓ Nella spesa':'Aggiungi alla spesa'}</button>
       <button class="btn ghost" data-share="${r.id}"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>Condividi</button>
       <button class="btn ghost" data-back>Chiudi</button></div>
-    <button class="toggle" data-bimby aria-pressed="${S.bimby}"><span class="sw"></span>Mostra i parametri Bimby originali</button>
+    ${S.robot==='mambo'?`<button class="toggle" data-bimby aria-pressed="${S.bimby}"><span class="sw"></span>Mostra i parametri Bimby originali</button>`:''}
   </div>`;
   const fu=document.getElementById('fotoUrl');
   if(fu)fu.onchange=()=>{const v=fu.value.trim();
@@ -2896,18 +2938,18 @@ function buildDeck(){
     slides.push(`<section class="slide"><div class="inner">
       <div class="kicker">Passaggio ${idx+1} di ${r.steps.length}</div>
       <div class="sph2">${slideMediaStep(r,idx)}</div>
-      <div class="stext">${esc(s.x)}${s.a&&s.a!=='—'?` <span class="accpill">${accIco(s.a)}${esc(s.a)}</span>`:''}${isFuori(s)?' <span class="outpill">\u{1F373} fuori dal robot</span>':''}</div>
+      <div class="stext">${esc(s.x)}${S.robot==='mambo'&&s.a&&s.a!=='—'?` <span class="accpill">${accIco(s.a)}${esc(s.a)}</span>`:''}${isFuori(s)?' <span class="outpill">\u{1F373} fuori dal robot</span>':''}</div>
       ${dosiHTML(add[idx],r)}
-      ${has?`<div class="sdials">${quadri(s)}</div>`:''}
+      ${(()=>{const g=quadriFor(s);return g?`<div class="sdials">${g}</div>`:'';})()}
       ${secDi(s.t)?`<div class="timer" data-sec="${secDi(s.t)}"><div class="tdisp">${fmtClock(secDi(s.t))}</div><button class="tbtn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>Avvia timer</button></div>`:''}
-      ${s.b&&s.b!=='—'?`<div class="sbimby">Sul Bimby: <b>${esc(s.b)}</b></div>`:''}
+      ${S.robot==='mambo'&&s.b&&s.b!=='—'?`<div class="sbimby">Sul Bimby: <b>${esc(s.b)}</b></div>`:''}
     </div></section>`);
   });
   /* chiusura */
   slides.push(`<section class="slide cover"><div class="inner">
     <div class="eyebrow">Pronto</div>
     <h2>Buon appetito</h2>
-    <div class="csub">${esc(r.nome)} · convertita per Cecotec Mambo Touch${r.note&&r.note.length?` · ${r.note.length} note di conversione`:''}</div>
+    <div class="csub">${esc(r.nome)} · convertita per ${ROBOTS[S.robot].nome}${r.note&&r.note.length?` · ${r.note.length} note di conversione`:''}</div>
   </div></section>`);
   /* testo da leggere ad alta voce, stesso ordine delle slide */
   deckSpeech=[];
@@ -3306,6 +3348,7 @@ document.addEventListener('click',e=>{
   if(sp){const id=sp.dataset.spesa;
     if(S.spesa.some(x=>x.id===id))S.spesa=S.spesa.filter(x=>x.id!==id);else S.spesa.push({id,porz:S.porz});
     save('mambo:spesa',S.spesa);render();return;}
+  const rob=e.target.closest('[data-robot]'); if(rob){ S.robot=rob.dataset.robot; save('mambo:robot',S.robot); if(S.open)vDett(); else render(); return; }
   if(e.target.closest('[data-bimby]')){S.bimby=!S.bimby;save('mambo:bimby',S.bimby);render();}
   const sh=e.target.closest('[data-share]'); if(sh){ const r=RICETTE.find(x=>x.id===sh.dataset.share); if(r)condividiRicetta(r); return; }
 });
@@ -3315,7 +3358,7 @@ window.addEventListener('hashchange',openFromHash);
   S.porz=await load('mambo:porz',4); S.frigo=await load('mambo:frigo',[]);
   S.spesa=await load('mambo:spesa',[]); S.bimby=await load('mambo:bimby',false);
   S.pref=await load('mambo:pref',[]); S.cols=await load('mambo:cols',1);
-  S.tema=await load('mambo:tema','giorno');
+  S.tema=await load('mambo:tema','giorno'); S.robot=await load('mambo:robot','mambo');
   const ix=await load('mambo:fotoidx',[]);
   for(const id of ix){const d=await load('mambo:foto:'+id,null); if(d)S.foto[id]=d;}
   const six=await load('mambo:stepidx',[]);
