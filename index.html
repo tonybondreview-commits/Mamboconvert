@@ -88,6 +88,7 @@ body.giorno .accpill{background:rgba(139,52,214,.10)}
 body.giorno .bimby{background:rgba(222,124,5,.09)}
 body.giorno .sw{background:#D8C7B6}
 body.giorno .btn{color:#FFF6EC}
+body.giorno .btn.ghost{color:var(--cream);background:#fff;border-color:var(--line-2)}
 body.giorno .li .box{color:#fff}
 body.giorno .warn{background:rgba(222,58,22,.09);color:#A82E12}
 body.giorno .head,body.giorno .tbl th{background:rgba(74,45,28,.04)}
@@ -2528,8 +2529,9 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const durata=m=>m<60?m+' min':(m/60).toFixed(1).replace('.0','').replace('.',',')+' h';
 const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati. Contenuti e funzionalità protetti: vietata la copia o la clonazione.';
 const BUG_EMAIL='tony.bondreview@gmail.com';
-const APP_VER='v16 · 01-09';
+const APP_VER='v17 · 01-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
+const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 const view=document.getElementById('view');
 
 /* chiave foto passaggio */
@@ -3134,6 +3136,7 @@ function vConv(){
           <div class="muted" style="font-size:13px;margin-top:2px">${RICETTE.length} ricette · installala dalla schermata Home</div>
           <div class="muted" style="font-size:12px;margin-top:6px">${CREDITO}</div>
           <div class="muted" style="font-size:12px;margin-top:5px;opacity:.75">versione ${APP_VER}</div>
+          <div class="muted" style="font-size:12px;margin-top:6px;line-height:1.4">${AVVISO_AI}</div>
         </div>
         <button class="btn" id="updBtn" style="flex:none;min-width:0;padding:12px 17px">Controlla aggiornamenti</button>
       </div>
