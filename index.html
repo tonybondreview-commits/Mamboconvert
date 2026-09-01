@@ -2234,6 +2234,76 @@ const BLOCCO6 = [
 ];
 RICETTE.push(...BLOCCO5, ...BLOCCO6);
 
+/* ---- 5 ricette convertite dal PDF (fonte: ricetteperbimby.it, testi riscritti) ---- */
+const BIMBYPDF = [
+
+{id:'cosce-pollo-stufate', nome:'Cosce di pollo stufate', cat:'Secondi', tempo:55, porz:2, vol:1200,
+ caraffa:'Acciaio', acc:['Lame','MamboMix','Vaporiera'], tag:['carne'],
+ ing:[{q:4,u:'pz',n:'cosce di pollo'},{q:50,u:'g',n:'cipolla'},{q:70,u:'g',n:'sedano'},{q:70,u:'g',n:'carote'},{q:50,u:'ml',n:'olio extravergine',s:'s',b:1},{q:30,u:'g',n:'farina 00 per infarinare',b:1},{q:1,u:'ciuffo',n:'rosmarino, salvia e timo',s:'s',b:1},{q:100,u:'ml',n:'vino bianco',s:'s'},{q:50,u:'ml',n:'acqua',s:'s',b:1},{q:5,u:'g',n:'sale',s:'s',b:1},{q:1,u:'pizzico',n:'pepe nero',s:'s',b:1}],
+ steps:[
+  {x:'Trita cipolla, sedano e carota a pezzi.', t:'5 sec', v:'7', T:'—', P:'—', a:'Lame', b:'5 sec · vel 7'},
+  {x:'Riunisci sul fondo, unisci l’olio, le cosce infarinate, le erbe, sale e pepe e rosola.', t:'15 min', v:'0', T:'120°C', P:'9', a:'MamboMix', b:'15 min · Varoma · vel Soft antiorario'},
+  {x:'Versa vino e acqua e togli il dosatore per far concentrare il fondo.', t:'15 min', v:'0', T:'100°C', P:'6', a:'MamboMix', b:'15 min · 100° · vel Soft antiorario senza misurino'},
+  {x:'Prosegui senza dosatore fino a ottenere una salsa densa.', t:'15 min', v:'0', T:'120°C', P:'8', a:'MamboMix', b:'15 min · Varoma · vel Soft antiorario senza misurino'},
+  {x:'Impiatta le cosce e irrora con la salsa della caraffa.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Piatto unico: dal secondo passaggio metti 500 g di patate a dadini salate nella vaporiera.','La velocità Soft antiorario del Bimby diventa velocità 0 con il MamboMix: le cosce restano intere e il fondo non attacca.','Qui il Varoma non è vapore ma rosolatura: in caraffa 120 °C con potenza alta.','Fonte dei parametri Bimby: ricetteperbimby.it (testo e conversione riscritti).']},
+
+{id:'riso-cantonese', nome:'Riso alla cantonese', cat:'Primi', tempo:35, porz:4, vol:1800,
+ caraffa:'Acciaio', acc:['Cestello','Vaporiera','MamboMix'], tag:['carne','vapore'],
+ ing:[{q:300,u:'g',n:'riso basmati'},{q:3,u:'pz',n:'uova'},{q:200,u:'g',n:'piselli surgelati'},{q:200,u:'g',n:'prosciutto cotto a cubetti'},{q:1000,u:'ml',n:'acqua',b:1},{q:20,u:'ml',n:'olio extravergine',s:'s',b:1},{q:5,u:'g',n:'sale',s:'s',b:1},{q:1,u:'pizzico',n:'pepe nero',s:'s',b:1}],
+ steps:[
+  {x:'Sbatti le uova con sale e pepe, fuori dal robot.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Metti l’acqua e un cucchiaino di sale in caraffa e porta a bollore.', t:'8 min', v:'1', T:'100°C', P:'10', a:'MamboMix', b:'8 min · 100° · vel 1'},
+  {x:'Sciacqua il riso nel cestello e inseriscilo. Metti piselli e prosciutto nel piano basso della vaporiera e le uova su carta forno bagnata nel piano alto.', t:'—', v:'—', T:'—', P:'—', a:'Cestello', b:'—'},
+  {x:'Chiudi la vaporiera e cuoci tutto insieme.', t:'20 min', v:'0', T:'120°C', P:'10', a:'Vaporiera', b:'15 min · Varoma · vel 4'},
+  {x:'A metà cottura solleva il cestello e rimescola il riso a mano.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Unisci tutto in una zuppiera, taglia la frittata a striscioline e condisci con olio a filo.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Conversione non letterale: sul Bimby la velocità 4 muove l’acqua sotto il cestello; sul Mambo, con il cestello inserito, la velocità non serve e il vapore lo fa la potenza 10 (velocità 0).','Servono circa 5 minuti in più: con la caraffa piena d’acqua il vapore del Mambo sale più lentamente.','Variante di mare: 200 g di gamberetti al posto del prosciutto, in vaporiera solo negli ultimi 8 minuti.','Fonte dei parametri Bimby: ricetteperbimby.it (testo e conversione riscritti).']},
+
+{id:'pollo-mandorle', nome:'Pollo alle mandorle', cat:'Secondi', tempo:30, porz:4, vol:1000,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['carne'],
+ ing:[{q:500,u:'g',n:'petto di pollo'},{q:100,u:'g',n:'mandorle pelate'},{q:1,u:'pz',n:'cipollotto'},{q:75,u:'ml',n:'olio di semi di girasole',s:'s',b:1},{q:200,u:'ml',n:'brodo di pollo'},{q:45,u:'ml',n:'salsa di soia',s:'s',b:1},{q:5,u:'g',n:'zenzero grattugiato',s:'s',b:1},{q:20,u:'g',n:'amido di mais',b:1},{q:3,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Taglia il petto a bocconcini e passali nell’amido, fuori dal robot.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Trita grossolanamente metà delle mandorle.', t:'5 sec', v:'4', T:'—', P:'—', a:'Lame', b:'5 sec · vel 3'},
+  {x:'Unisci le mandorle intere e 15 g di olio e tostale, poi toglile.', t:'3 min', v:'2', T:'90°C', P:'5', a:'Lame', b:'3 min · 90° · vel 2'},
+  {x:'Aggiungi l’olio rimasto, lo zenzero e il cipollotto e soffriggi.', t:'3 min', v:'4', T:'110°C', P:'7', a:'Lame', b:'3 min · 100° · vel 4'},
+  {x:'Monta il MamboMix, unisci il pollo e rosolalo.', t:'4 min', v:'1', T:'120°C', P:'9', a:'MamboMix', b:'3 min · 100° · vel 1 con farfalla'},
+  {x:'Versa il brodo e porta a cottura.', t:'12 min', v:'0', T:'100°C', P:'6', a:'MamboMix', b:'12 min · 100° · vel Soft antiorario'},
+  {x:'Aggiungi il sale, le mandorle e la salsa di soia.', t:'2 min', v:'0', T:'100°C', P:'5', a:'MamboMix', b:'2 min · 100° · vel Soft antiorario'},
+  {x:'Servi subito: l’amido lega la salsa mentre raffredda.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['L’originale usa la farfalla per il pollo; sul Mambo la farfalla non regge i bocconcini infarinati sopra i 100 °C, quindi il MamboMix a 120 °C dà una rosolatura vera.','Salsa di soia sempre alla fine: se cuoce a lungo diventa amara e troppo salata.','Fonte dei parametri Bimby: ricetteperbimby.it (testo e conversione riscritti).']},
+
+{id:'risotto-zafferano', nome:'Risotto allo zafferano', cat:'Primi', tempo:35, porz:4, vol:1400,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:[],
+ ing:[{q:350,u:'g',n:'riso arborio'},{q:2,u:'bustine',n:'zafferano',s:'s',b:1},{q:1,u:'pz',n:'scalogno'},{q:40,u:'g',n:'burro',s:'s'},{q:50,u:'ml',n:'olio extravergine',s:'s',b:1},{q:100,u:'ml',n:'vino bianco',s:'s'},{q:600,u:'ml',n:'brodo di carne'},{q:50,u:'g',n:'parmigiano',s:'s'},{q:5,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Sciogli lo zafferano in 50 g di acqua tiepida.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Trita lo scalogno a pezzi.', t:'3 sec', v:'5', T:'—', P:'—', a:'Lame', b:'3 sec · vel 5'},
+  {x:'Aggiungi 20 g di burro e l’olio e fai appassire.', t:'3 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'3 min · 100° · vel 1'},
+  {x:'Unisci il riso e tostalo, senza dosatore.', t:'3 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'3 min · 100° · vel 1 antiorario senza misurino'},
+  {x:'Sfuma con il vino.', t:'1 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'1 min · 100° · vel 1 antiorario'},
+  {x:'Versa il brodo caldo, il sale e lo zafferano sciolto, senza dosatore.', t:'16 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'15 min · 100° · vel 1 antiorario senza misurino'},
+  {x:'Manteca in zuppiera con i restanti 20 g di burro e il parmigiano.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Il Bimby tosta il riso a 100 °C; sul Mambo conviene salire a 120 °C con potenza 8, così la tostatura sigilla il chicco e il risotto regge meglio la cottura.','Un minuto in più sul brodo, perché il Mambo recupera la temperatura più lentamente quando versi il liquido.','Il brodo deve essere sempre caldo, mai freddo.','Fonte dei parametri Bimby: ricetteperbimby.it (testo e conversione riscritti).']},
+
+{id:'risotto-zucchine-scamorza', nome:'Risotto zucchine e scamorza', cat:'Primi', tempo:30, porz:4, vol:1700,
+ caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano'],
+ ing:[{q:320,u:'g',n:'riso carnaroli'},{q:400,u:'g',n:'zucchine'},{q:100,u:'g',n:'scamorza affumicata'},{q:1,u:'pz',n:'cipollotto'},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:850,u:'ml',n:'brodo vegetale'},{q:30,u:'g',n:'parmigiano',s:'s'},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'},{q:5,u:'g',n:'sale',s:'s',b:1},{q:1,u:'pizzico',n:'pepe',s:'s',b:1}],
+ steps:[
+  {x:'Trita il cipollotto.', t:'20 sec', v:'4', T:'—', P:'—', a:'Lame', b:'20 sec · vel 4'},
+  {x:'Aggiungi l’olio e fai appassire.', t:'2 min', v:'1', T:'110°C', P:'7', a:'MamboMix', b:'2 min · 100° · vel 1'},
+  {x:'Unisci le zucchine a cubetti e insaporisci.', t:'3 min', v:'1', T:'110°C', P:'7', a:'MamboMix', b:'3 min · 100° · vel 2 antiorario'},
+  {x:'Riunisci sul fondo, aggiungi il riso e tosta.', t:'2 min', v:'1', T:'120°C', P:'8', a:'MamboMix', b:'1 min · 100° · vel 1 antiorario'},
+  {x:'Versa il brodo vegetale caldo.', t:'18 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'18 min · 100° · vel 1 antiorario'},
+  {x:'Unisci pepe, sale, prezzemolo e la scamorza a cubetti.', t:'1 min', v:'0', T:'80°C', P:'2', a:'MamboMix', b:'1 min · vel 1 antiorario'},
+  {x:'Impiatta e spolvera con il parmigiano.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['La velocità 2 antiorario delle zucchine diventa velocità 1 con il MamboMix: a 2 con le lame si sfalderebbero.','La mantecatura finale con la scamorza va a 80 °C e potenza 2: sopra, il formaggio fila invece di sciogliersi.','Un minuto in più di tostatura rispetto all’originale, per compensare la temperatura più bassa del Bimby in quel passaggio.','Fonte dei parametri Bimby: ricetteperbimby.it (testo e conversione riscritti).']}
+
+];
+RICETTE.push(...BIMBYPDF);
+
+
 /* ============================================================
    ILLUSTRAZIONI — generate dagli ingredienti reali della ricetta
    Usate come SEGNAPOSTO finché non c'è una foto reale.
@@ -2459,6 +2529,8 @@ function dTempo(t){
 function dVel(v){
   if(!v||v==='—')return {d:'—',f:0,off:1};
   if(/turbo/i.test(v))return {d:'Turbo',f:1,off:0};
+  if(/soft/i.test(v))return {d:'Soft',f:.1,off:0};
+  if(/spiga/i.test(v))return {d:'Spiga',f:.25,off:0};
   const n=v.match(/\d+/g); if(!n)return {d:v,f:0,off:1};
   const hi=+n[n.length-1];
   return {d:n.length>1?n[0]+'-'+n[1]:n[0], f:hi/10, off:0};
@@ -2592,7 +2664,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const durata=m=>m<60?m+' min':(m/60).toFixed(1).replace('.0','').replace('.',',')+' h';
 const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati. Contenuti e funzionalità protetti: vietata la copia o la clonazione.';
 const BUG_EMAIL='tony.bondreview@gmail.com';
-const APP_VER='v25 · 01-09';
+const APP_VER='v26 · 01-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 const view=document.getElementById('view');
@@ -2780,7 +2852,7 @@ function dosiHTML(list,r){
 /* ---------- DETTAGLIO ---------- */
 /* Passaggi "fuori dal robot": rilevati dal testo (a parte, in padella, friggi, lessa, in forno...).
    Una ricetta puo' anche dichiararli a mano con r.fuori:['...']. */
-const RE_FUORI=/\b(a parte|separatamente|in padella|in forno|in una pentola|frigg\w*|grigli\w+|sul fuoco)\b/i;
+const RE_FUORI=/\b(a parte|separatamente|in padella|in forno|in una pentola|frigg\w*|grigli\w+|sul fuoco|fuori dal robot)\b/i;
 const RE_LESS=/\bless\w+\b/i;
 function isFuori(s){
   if(!s||!s.x) return false; const x=s.x;
