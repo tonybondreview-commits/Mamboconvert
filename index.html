@@ -507,6 +507,7 @@ body.bimby-on .bimby{display:block}
 .deckbar button{width:40px;height:40px;border-radius:999px;background:var(--surf2);display:grid;place-items:center;font-size:16px;flex:none}
 .deckbar .pdf{width:auto;padding:0 15px;font-size:13.5px;font-weight:600;gap:7px;display:flex;align-items:center}
 .deckbar .pdf svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.8}
+.deckbar #deckVoice[aria-pressed="true"]{color:var(--saffron);background:rgba(255,180,36,.18)}
 .deckctl{position:absolute;bottom:0;left:0;right:0;z-index:2;display:flex;align-items:center;gap:14px;
   padding:16px 20px calc(18px + env(safe-area-inset-bottom));
   background:linear-gradient(to top,var(--bg) 58%,transparent)}
@@ -638,6 +639,7 @@ footer{padding:28px 0 6px;font-size:12px;color:var(--muted);line-height:1.65}
   <div class="deckbar">
     <button id="deckClose" aria-label="Chiudi presentazione">✕</button>
     <div class="dtitle" id="deckTitle"></div>
+    <button id="deckVoice" aria-label="Leggi i passaggi ad alta voce" aria-pressed="false">\u{1F507}</button>
     <button class="pdf" id="deckPdf"><svg viewBox="0 0 24 24"><path d="M12 3v11m0 0 4-4m-4 4-4-4"/><path d="M5 20h14"/></svg>PDF</button>
   </div>
   <div class="track" id="deckTrack"></div>
@@ -648,6 +650,7 @@ footer{padding:28px 0 6px;font-size:12px;color:var(--muted);line-height:1.65}
   </div>
 </div>
 <input type="file" id="globalCam" accept="image/*" hidden>
+<input type="file" id="impFile" accept="application/json,.json" hidden>
 <!-- foto predefinite dei piatti (generato dallo strumento di revisione); assente = nessuna, si usano le illustrazioni -->
 <script src="foto.js" onerror="window.FOTODEF=window.FOTODEF||{}"></script>
 <script>
@@ -2522,7 +2525,7 @@ const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').re
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const durata=m=>m<60?m+' min':(m/60).toFixed(1).replace('.0','').replace('.',',')+' h';
 const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati. Contenuti e funzionalità protetti: vietata la copia o la clonazione.';
-const APP_VER='v13 · 01-09';
+const APP_VER='v14 · 01-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const view=document.getElementById('view');
 
@@ -2792,6 +2795,18 @@ const deck=document.getElementById('deck');
 const deckTrack=document.getElementById('deckTrack');
 const deckDots=document.getElementById('deckDots');
 let deckId=null, deckN=0, deckTotal=0;
+let deckSpeech=[], voiceOn=false, itVoice=null;
+function saySan(t){ return String(t||'')
+  .replace(/\u00b0C/g,' gradi').replace(/\u00b0/g,' gradi')
+  .replace(/\bsec\b/gi,'secondi').replace(/\bmin\b/gi,'minuti')
+  .replace(/\bvel\b/gi,'velocit\u00e0').replace(/\u00b7/g,' ').replace(/\s+/g,' ').trim(); }
+function pickVoice(){ try{ const vs=(speechSynthesis.getVoices()||[]);
+  itVoice=vs.find(v=>/^it([-_]|$)/i.test(v.lang))||vs.find(v=>/it/i.test(v.lang))||null; }catch(e){} }
+function speak(text){ try{ if(!('speechSynthesis' in window)||!text)return; speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text); u.lang='it-IT'; if(itVoice)u.voice=itVoice; u.rate=0.98; u.pitch=1; speechSynthesis.speak(u);
+ }catch(e){} }
+function stopSpeak(){ try{ if('speechSynthesis' in window)speechSynthesis.cancel(); }catch(e){} }
+if('speechSynthesis' in window){ try{ speechSynthesis.onvoiceschanged=pickVoice; pickVoice(); }catch(e){} }
 
 function slideMediaR(r){
   const src=fotoR(r);
@@ -2849,6 +2864,19 @@ function buildDeck(){
     <h2>Buon appetito</h2>
     <div class="csub">${esc(r.nome)} · convertita per Cecotec Mambo Touch${r.note&&r.note.length?` · ${r.note.length} note di conversione`:''}</div>
   </div></section>`);
+  /* testo da leggere ad alta voce, stesso ordine delle slide */
+  deckSpeech=[];
+  deckSpeech.push(saySan(`${r.nome}. ${r.cat}, ${durata(r.tempo)}, per ${S.porz} ${S.porz===1?'persona':'persone'}.`));
+  if(fuoriList.length) deckSpeech.push(saySan('Prima di iniziare, prepara a parte. '+fuoriList.map(t=>String(t).replace(/[.\s]+$/,'')).join('. ')+'.'));
+  deckSpeech.push(saySan('Ingredienti per '+S.porz+(S.porz===1?' persona. ':' persone. ')+r.ing.map(i=>fmtQ(scala(i,r.porz,S.porz))+' '+i.u+' di '+i.n).join(', ')+'.'));
+  r.steps.forEach((s,idx)=>{ const parts=[];
+    if(s.t&&s.t!=='\u2014')parts.push('tempo '+s.t);
+    if(s.v&&s.v!=='\u2014')parts.push('velocit\u00e0 '+s.v);
+    if(s.T&&s.T!=='\u2014')parts.push('temperatura '+s.T);
+    if(s.P&&s.P!=='\u2014')parts.push('potenza '+s.P);
+    deckSpeech.push(saySan('Passaggio '+(idx+1)+'. '+s.x+(parts.length?'. Imposta '+parts.join(', ')+'.':'')));
+  });
+  deckSpeech.push('Buon appetito.');
   deckTotal=slides.length;
   deckTrack.innerHTML=slides.join('');
   deckDots.innerHTML=slides.map((_,i)=>`<i data-goto="${i}"></i>`).join('');
@@ -2862,12 +2890,13 @@ function applyDeck(){
   document.getElementById('deckPrev').disabled=deckN<=0;
   document.getElementById('deckNext').disabled=deckN>=deckTotal-1;
   document.getElementById('progline').style.width=((deckN+1)/deckTotal*100)+'%';
+  if(voiceOn) speak(deckSpeech[deckN]);
   const cur=deckTrack.children[deckN];
   if(cur){cur.scrollTop=0;const inner=cur.querySelector('.inner');if(inner){inner.style.animation='none';void inner.offsetWidth;inner.style.animation='';}}
 }
 function gotoSlide(n){ deckN=Math.max(0,Math.min(deckTotal-1,n)); applyDeck(); }
 function openDeck(id){ deckId=id; deckN=0; deck.classList.add('open'); document.body.style.overflow='hidden'; buildDeck(); reqWake(); }
-function closeDeck(){ deck.classList.remove('open'); document.body.style.overflow=''; clearTimers(); relWake(); }
+function closeDeck(){ deck.classList.remove('open'); document.body.style.overflow=''; clearTimers(); relWake(); stopSpeak(); }
 
 /* ---- modalità cottura: timer, avviso, schermo acceso ---- */
 function fmtClock(s){const m=Math.floor(s/60),ss=Math.round(s%60);return m+':'+String(ss).padStart(2,'0');}
@@ -2909,6 +2938,10 @@ document.getElementById('deckClose').onclick=closeDeck;
 document.getElementById('deckPrev').onclick=()=>gotoSlide(deckN-1);
 document.getElementById('deckNext').onclick=()=>gotoSlide(deckN+1);
 document.getElementById('deckPdf').onclick=()=>window.print();
+const deckVoiceBtn=document.getElementById('deckVoice');
+deckVoiceBtn.onclick=()=>{ voiceOn=!voiceOn; deckVoiceBtn.setAttribute('aria-pressed',voiceOn?'true':'false');
+  deckVoiceBtn.textContent=voiceOn?'\u{1F50A}':'\u{1F507}';
+  if(voiceOn){ pickVoice(); speak(deckSpeech[deckN]); } else stopSpeak(); };
 document.addEventListener('keydown',e=>{ if(!deck.classList.contains('open'))return;
   if(e.key==='ArrowRight'||e.key==='PageDown'){gotoSlide(deckN+1);}
   else if(e.key==='ArrowLeft'||e.key==='PageUp'){gotoSlide(deckN-1);}
@@ -2921,6 +2954,40 @@ deckTrack.addEventListener('touchmove',e=>{if(tx0===null)return;const t=e.touche
 deckTrack.addEventListener('touchend',e=>{if(tx0===null)return;const dx=e.changedTouches[0].clientX-tx0;
   if(swiping&&Math.abs(dx)>52){ gotoSlide(deckN+(dx<0?1:-1)); } tx0=ty0=null;},{passive:true});
 
+/* ---------- BACKUP DATI (tutto sul dispositivo, non tocca il server) ---------- */
+function collectData(){
+  return { app:'mamboconvert', v:1, date:new Date().toISOString(), data:{
+    pref:S.pref, note:S.note, foto:S.foto, stepfoto:S.stepfoto, accfoto:S.accfoto,
+    frigo:S.frigo, spesa:S.spesa, porz:S.porz, tema:S.tema, cols:S.cols } };
+}
+function exportData(){
+  try{
+    const blob=new Blob([JSON.stringify(collectData(),null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob), a=document.createElement('a');
+    const d=new Date(), p=n=>String(n).padStart(2,'0');
+    a.href=url; a.download=`mamboconvert-backup-${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}.json`;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1500);
+  }catch(e){ alert('Non riesco a creare il file di backup su questo dispositivo.'); }
+}
+async function importData(file){
+  let obj; try{ obj=JSON.parse(await file.text()); }catch(e){ alert('File non valido.'); return; }
+  const d=obj&&obj.data;
+  if(!obj||obj.app!=='mamboconvert'||!d){ alert('Questo non sembra un backup di Mamboconvert.'); return; }
+  const nFav=(d.pref||[]).length, nNote=Object.keys(d.note||{}).length, nFoto=Object.keys(d.foto||{}).length;
+  if(!confirm(`Importo il backup del ${obj.date?obj.date.slice(0,10):'?'}?\n\n${nFav} preferiti \u00b7 ${nNote} note \u00b7 ${nFoto} foto\n\nI dati vengono uniti a quelli gi\u00e0 presenti su questo telefono.`)) return;
+  if(Array.isArray(d.pref)){ S.pref=[...new Set([...S.pref,...d.pref])]; save('mambo:pref',S.pref); }
+  if(Array.isArray(d.frigo)){ S.frigo=[...new Set([...S.frigo,...d.frigo])]; save('mambo:frigo',S.frigo); }
+  if(Array.isArray(d.spesa)){ const ids=new Set(S.spesa.map(e=>e.id)); d.spesa.forEach(e=>{ if(e&&!ids.has(e.id)){S.spesa.push(e);ids.add(e.id);} }); save('mambo:spesa',S.spesa); }
+  if(d.note){ Object.assign(S.note,d.note); const ix=Object.keys(S.note).filter(k=>S.note[k]&&String(S.note[k]).trim()); ix.forEach(k=>save('mambo:note:'+k,S.note[k])); save('mambo:noteidx',ix); }
+  if(d.foto){ Object.assign(S.foto,d.foto); const ix=Object.keys(S.foto); ix.forEach(k=>save('mambo:foto:'+k,S.foto[k])); save('mambo:fotoidx',ix); }
+  if(d.stepfoto){ Object.assign(S.stepfoto,d.stepfoto); const ix=Object.keys(S.stepfoto); ix.forEach(k=>save('mambo:stepfoto:'+k,S.stepfoto[k])); save('mambo:stepidx',ix); }
+  if(d.accfoto){ Object.assign(S.accfoto,d.accfoto); const ix=Object.keys(S.accfoto); ix.forEach(k=>save('mambo:accfoto:'+k,S.accfoto[k])); save('mambo:accfotoidx',ix); }
+  if(typeof d.porz==='number'){ S.porz=d.porz; save('mambo:porz',S.porz); }
+  if(d.tema){ S.tema=d.tema; save('mambo:tema',S.tema); applyTema(); }
+  if(typeof d.cols==='number'){ S.cols=d.cols; save('mambo:cols',S.cols); }
+  alert('Backup importato \u2713'); render();
+}
+
 /* ---------- PREFERITI ---------- */
 function vPref(){
   const f=RICETTE.filter(r=>S.pref.includes(r.id));
@@ -2929,7 +2996,18 @@ function vPref(){
     ${f.length?`<p class="muted" style="font-size:14px;margin:8px 0 0">${f.length} ${f.length===1?'ricetta salvata':'ricette salvate'}. Tocca di nuovo il cuore per togliere.</p>
       <div class="grid" data-cols="${S.cols}">${f.map((r,i)=>tile(r).replace('class="tile"',`class="tile" style="animation-delay:${Math.min(i*32,320)}ms"`)).join('')}</div>`
     :`<div class="empty">Nessun preferito ancora.<br>Tocca il cuore in alto a destra su una ricetta e la ritrovi qui.</div>`}
+    <div class="card pad" style="margin-top:24px">
+      <h3 class="sec2" style="margin:0 0 4px">Dati e backup</h3>
+      <p class="muted" style="font-size:13.5px;line-height:1.45;margin:0 0 13px">Preferiti, note e foto sono salvati solo su questo dispositivo. Esporta un file per non perderli, o per spostarli su un altro telefono. Il file resta sul tuo dispositivo, non viene inviato a nessun server.</p>
+      <div class="acts">
+        <button class="btn" id="expData">\u2193 Esporta i miei dati</button>
+        <button class="btn ghost" id="impData">\u2191 Importa da file</button>
+      </div>
+    </div>
   </div>`;
+  const eb=document.getElementById('expData'); if(eb)eb.onclick=exportData;
+  const ib=document.getElementById('impData'), ifl=document.getElementById('impFile');
+  if(ib&&ifl){ ib.onclick=()=>ifl.click(); ifl.onchange=()=>{ const f=ifl.files&&ifl.files[0]; if(f)importData(f); ifl.value=''; }; }
 }
 
 /* ---------- FRIGO ---------- */
