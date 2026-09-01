@@ -517,6 +517,10 @@ body.bimby-on .bimby{display:block}
 .deckbar .tsize b:last-child{font-size:17px}
 .deckbar .tsize[aria-pressed="true"]{color:#fff;background:linear-gradient(96deg,var(--saffron),var(--tomato))}
 .slide .toggle.hf{margin-top:18px;max-width:340px;font-size:13px;line-height:1.35;text-align:left}
+.slide .voicesel{display:flex;flex-direction:column;gap:6px;max-width:340px;margin:14px auto 0;text-align:left}
+.slide .voicesel span{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--cream-dim,#C9B6A4)}
+.slide .voicesel select{font:inherit;font-size:15px;color:var(--cream);background:var(--surf2);border:1px solid var(--line-2);
+  border-radius:12px;padding:11px 12px;-webkit-appearance:none;appearance:none}
 .rephead{font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--saffron);padding:13px 2px 5px;border-bottom:1px solid var(--line);margin-bottom:2px}
 .rephead:first-child{padding-top:2px}
 .deckctl{position:absolute;bottom:0;left:0;right:0;z-index:2;display:flex;align-items:center;gap:14px;
@@ -2538,7 +2542,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const durata=m=>m<60?m+' min':(m/60).toFixed(1).replace('.0','').replace('.',',')+' h';
 const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati. Contenuti e funzionalità protetti: vietata la copia o la clonazione.';
 const BUG_EMAIL='tony.bondreview@gmail.com';
-const APP_VER='v20 · 01-09';
+const APP_VER='v21 · 01-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 const view=document.getElementById('view');
@@ -2822,7 +2826,7 @@ const deck=document.getElementById('deck');
 const deckTrack=document.getElementById('deckTrack');
 const deckDots=document.getElementById('deckDots');
 let deckId=null, deckN=0, deckTotal=0;
-let deckSpeech=[], voiceOn=false, itVoice=null, handsFree=false;
+let deckSpeech=[], voiceOn=false, itVoice=null, handsFree=false, voiceURI='';
 /* TESTO GRANDE (rimovibile) */
 const FS_LEVELS=[1,1.28,1.6], FS_NAMES=['Normale','Grande','Extra']; let fsIdx=0;
 function applyFS(){ const v=FS_LEVELS[fsIdx]||1; if(typeof deck!=='undefined'&&deck)deck.style.setProperty('--dfs',v);
@@ -2831,8 +2835,15 @@ function saySan(t){ return String(t||'')
   .replace(/\u00b0C/g,' gradi').replace(/\u00b0/g,' gradi')
   .replace(/\bsec\b/gi,'secondi').replace(/\bmin\b/gi,'minuti')
   .replace(/\bvel\b/gi,'velocit\u00e0').replace(/\u00b7/g,' ').replace(/\s+/g,' ').trim(); }
+function itVoices(){ try{ return (speechSynthesis.getVoices()||[]).filter(v=>/^it([-_]|$)/i.test(v.lang)); }catch(e){ return []; } }
 function pickVoice(){ try{ const vs=(speechSynthesis.getVoices()||[]);
-  itVoice=vs.find(v=>/^it([-_]|$)/i.test(v.lang))||vs.find(v=>/it/i.test(v.lang))||null; }catch(e){} }
+  if(voiceURI){ const c=vs.find(v=>v.voiceURI===voiceURI); if(c){ itVoice=c; return; } }
+  const it=itVoices();
+  const score=v=>{ const n=(v.name||'').toLowerCase(); let sc=0;
+    if(/enhanced|premium|natural|migliorat|neural|siri|eloquence/.test(n))sc+=4;
+    if(/compact/.test(n))sc-=2; if(v.localService)sc+=1; return sc; };
+  it.sort((a,b)=>score(b)-score(a));
+  itVoice=it[0]||vs.find(v=>/it/i.test(v.lang))||null; }catch(e){} }
 function speak(text){ try{ if(!('speechSynthesis' in window)||!text)return; speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text); u.lang='it-IT'; if(itVoice)u.voice=itVoice; u.rate=0.98; u.pitch=1; speechSynthesis.speak(u);
  }catch(e){} }
@@ -2862,6 +2873,8 @@ function buildDeck(){
     <h2>${esc(r.nome)}</h2>
     <div class="csub">${esc(r.cat)} · ${durata(r.tempo)} · per ${S.porz} ${S.porz===1?'persona':'persone'}</div>
     <button class="toggle hf" id="hfToggle" aria-pressed="${handsFree}"><span class="sw"></span>Mani libere: a fine timer passa da solo al passaggio dopo (e lo legge, se la voce è attiva)</button>
+    ${(()=>{ const vs=itVoices(); if(!vs.length) return '';
+      return `<label class="voicesel"><span>Voce della lettura</span><select id="voiceSel">${vs.map(v=>`<option value="${esc(v.voiceURI)}"${v.voiceURI===voiceURI?' selected':''}>${esc(v.name)}</option>`).join('')}</select></label>`; })()}
   </div></section>`);
   /* prima di iniziare: cosa preparare fuori dal robot */
   const fuoriList=fuoriDi(r);
@@ -2913,6 +2926,8 @@ function buildDeck(){
   deckTrack.innerHTML=slides.join('');
   const hft=document.getElementById('hfToggle');
   if(hft)hft.onclick=()=>{ handsFree=!handsFree; hft.setAttribute('aria-pressed',handsFree?'true':'false'); save('mambo:manilibere',handsFree); };
+  const vsel=document.getElementById('voiceSel');
+  if(vsel)vsel.onchange=()=>{ voiceURI=vsel.value; save('mambo:voce',voiceURI); pickVoice(); speak('Ciao, questa è la voce che leggerà i passaggi.'); };
   deckDots.innerHTML=slides.map((_,i)=>`<i data-goto="${i}"></i>`).join('');
   deckDots.querySelectorAll('[data-goto]').forEach(d=>d.onclick=()=>gotoSlide(+d.dataset.goto));
   if(deckN>=deckTotal)deckN=deckTotal-1;
@@ -3310,6 +3325,7 @@ window.addEventListener('hashchange',openFromHash);
   const nix=await load('mambo:noteidx',[]);
   for(const id of nix){const d=await load('mambo:note:'+id,null); if(d)S.note[id]=d;}
   handsFree=await load('mambo:manilibere',false);
+  voiceURI=await load('mambo:voce','');
   fsIdx=Math.max(0,Math.min(FS_LEVELS.length-1, await load('mambo:testosize',0)));   /* TESTO GRANDE (rimovibile) */
   render();
   openFromHash();
