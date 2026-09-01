@@ -307,6 +307,12 @@ ul.ing .n i{font-style:normal;color:var(--muted);font-size:11.5px;margin-left:6p
 
 .steps{counter-reset:s;display:flex;flex-direction:column;gap:11px;margin-top:12px}
 .step{background:var(--surf);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.steps[data-robot="mambo"]{--rc:59,130,246}
+.steps[data-robot="bimby"]{--rc:55,181,106}
+.steps[data-robot="monsieur"]{--rc:145,99,224}
+.steps[data-robot] .step{background:linear-gradient(0deg,rgba(var(--rc),.08),rgba(var(--rc),.08)),var(--surf);border-color:rgba(var(--rc),.30)}
+.steps[data-robot] .step .n{color:rgb(var(--rc));border-color:rgba(var(--rc),.42)}
+.steps[data-robot] .step .dials{border-top-color:rgba(var(--rc),.22)}
 .step .txt{padding:16px 16px 14px;display:flex;gap:13px;font-size:16px;line-height:1.45}
 .step .n{
   counter-increment:s;flex:none;width:26px;height:26px;border-radius:999px;
@@ -2585,7 +2591,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const durata=m=>m<60?m+' min':(m/60).toFixed(1).replace('.0','').replace('.',',')+' h';
 const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati. Contenuti e funzionalità protetti: vietata la copia o la clonazione.';
 const BUG_EMAIL='tony.bondreview@gmail.com';
-const APP_VER='v23 · 01-09';
+const APP_VER='v24 · 01-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 const view=document.getElementById('view');
@@ -2836,7 +2842,7 @@ function vDett(){
     <div class="robotsel" role="group" aria-label="Scegli il robot">${Object.keys(ROBOTS).map(k=>`<button data-robot="${k}" aria-pressed="${S.robot===k}">${ROBOTS[k].short}</button>`).join('')}</div>
     ${S.robot!=='mambo'?`<p class="robotnote">I passaggi restano descritti per il Mambo; qui sotto trovi i parametri equivalenti per <b>${ROBOTS[S.robot].nome}</b>${S.robot==='monsieur'?' (stessa scala del Bimby)':''}. Verifica sempre in cottura.</p>`:''}
     <h3 class="sec">${ROBOTS[S.robot].head} <span>${r.steps.length} passaggi</span></h3>
-    <div class="steps">${(()=>{const add=assegnaIng(r);return r.steps.map((s,idx)=>{const has=s.t!=='—'||s.v!=='—';const k=stepKey(r.id,idx);const sf=S.stepfoto[k];
+    <div class="steps" data-robot="${S.robot}">${(()=>{const add=assegnaIng(r);return r.steps.map((s,idx)=>{const has=s.t!=='—'||s.v!=='—';const k=stepKey(r.id,idx);const sf=S.stepfoto[k];
       return `<div class="step">
         ${sf?`<img class="stepmedia" loading="lazy" decoding="async" src="${esc(sf)}" alt="Passaggio ${idx+1}">`:''}
         <div class="txt"><span class="n"></span><span>${esc(s.x)}${
