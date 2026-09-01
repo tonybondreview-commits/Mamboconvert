@@ -2509,7 +2509,7 @@ const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').re
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const durata=m=>m<60?m+' min':(m/60).toFixed(1).replace('.0','').replace('.',',')+' h';
 const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati. Contenuti e funzionalità protetti: vietata la copia o la clonazione.';
-const APP_VER='v11 · 01-09';
+const APP_VER='v12 · 01-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const view=document.getElementById('view');
 
@@ -2837,15 +2837,22 @@ function relWake(){ try{ wakeLock&&wakeLock.release(); }catch(e){} wakeLock=null
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&deck.classList.contains('open'))reqWake(); });
 let activeTimers=[];
 function clearTimers(){ activeTimers.forEach(id=>clearInterval(id)); activeTimers=[]; }
-function beep(){ try{const A=window.AudioContext||window.webkitAudioContext; if(!A)return; const a=new A();
-  const o=a.createOscillator(),g=a.createGain(); o.connect(g); g.connect(a.destination);
-  g.gain.value=.25; o.type='sine'; o.start(); let n=0;
-  const iv=setInterval(()=>{ o.frequency.value=n%2?988:660; if(++n>7){clearInterval(iv);o.stop();a.close();} },170);
+let _actx=null;
+function audioCtx(){ try{ const A=window.AudioContext||window.webkitAudioContext; if(!A)return null;
+  if(!_actx)_actx=new A(); if(_actx.state==='suspended')_actx.resume(); return _actx; }catch(e){ return null; } }
+function beep(){ const a=audioCtx(); if(!a)return; try{
+  const now=a.currentTime;
+  for(let i=0;i<3;i++){ const t=now+i*0.45; const o=a.createOscillator(),g=a.createGain();
+    o.connect(g); g.connect(a.destination); o.type='square';
+    o.frequency.setValueAtTime(880,t); o.frequency.setValueAtTime(1175,t+0.11);
+    g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(0.5,t+0.02);
+    g.gain.exponentialRampToValueAtTime(0.0001,t+0.34); o.start(t); o.stop(t+0.36); }
  }catch(e){} }
 function buzz(){ try{ navigator.vibrate&&navigator.vibrate([250,120,250,120,250]); }catch(e){} }
 const timerState=new WeakMap();
 document.addEventListener('click',e=>{
   const btn=e.target.closest('.tbtn'); if(!btn)return;
+  audioCtx(); /* sblocca l'audio ora che c'e' un tocco, cosi il beep suonera' a fine timer */
   const box=btn.closest('.timer'), disp=box.querySelector('.tdisp');
   let st=timerState.get(box); if(!st){ st={rem:+box.dataset.sec, id:null}; timerState.set(box,st); }
   if(st.id){ clearInterval(st.id); st.id=null; box.classList.remove('run'); btn.lastChild.textContent='Riprendi'; return; }
