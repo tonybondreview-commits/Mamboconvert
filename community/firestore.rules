@@ -1,0 +1,49 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /* Metti qui il TUO UID di amministratore (lo trovi dopo il primo accesso,
+       vedi SETUP.md). Solo tu potrai leggere le proposte e pubblicare. */
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.uid == 'INCOLLA_QUI_IL_TUO_UID_ADMIN';
+    }
+    function loggato() { return request.auth != null; }
+
+    /* Controlli minimi su una ricetta proposta: campi presenti e non enormi. */
+    function ricettaValida(r) {
+      return r.size() <= 40
+        && r.nome is string && r.nome.size() >= 2 && r.nome.size() <= 80
+        && r.steps is list && r.steps.size() >= 1 && r.steps.size() <= 40
+        && r.ing is list && r.ing.size() <= 60;
+    }
+
+    /* PROPOSTE: chiunque (anche anonimo) può inviarne, ma leggerle,
+       approvarle o cancellarle può solo l'amministratore. */
+    match /proposte/{id} {
+      allow create: if loggato()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.stato == 'in_attesa'
+        && ricettaValida(request.resource.data.recipe)
+        && request.resource.data.autore is string
+        && request.resource.data.autore.size() <= 40;
+      allow read, update, delete: if isAdmin();
+    }
+
+    /* RICETTE PUBBLICHE: le legge chiunque, le scrive solo l'amministratore
+       (è qui che finiscono dopo la tua approvazione). */
+    match /ricette/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+
+      /* VOTI (stelle): un voto per utente, ognuno modifica solo il proprio. */
+      match /voti/{uid} {
+        allow read: if true;
+        allow write: if loggato() && request.auth.uid == uid
+          && request.resource.data.stelle is int
+          && request.resource.data.stelle >= 1
+          && request.resource.data.stelle <= 5;
+      }
+    }
+  }
+}
