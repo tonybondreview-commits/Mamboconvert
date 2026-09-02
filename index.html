@@ -2795,7 +2795,7 @@ const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati.
 const BUG_EMAIL='tony.bondreview@gmail.com';
 /* Link PayPal per le donazioni. Finche' e' vuoto la sezione non compare. */
 const PAYPAL_URL='https://www.paypal.me/ACesare422';
-const APP_VER='v40 · 02-09';
+const APP_VER='v41 · 02-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 /* ---- App nativa Android (Capacitor): riconoscimento ---- */
@@ -3349,11 +3349,20 @@ async function vCommunity(){
   view.innerHTML=`<div class="panel">
     <div class="edhead"><button class="fab" data-compagina="back" aria-label="Indietro">←</button>
       <h2 class="sec" style="margin:0">Community</h2></div>
-    <p class="muted" style="font-size:13.5px;line-height:1.45;margin:4px 2px 14px">Ricette proposte dagli utenti e approvate. Toccale per aprirle, cucinarle e votarle con le stelle.</p>
+    <p class="muted" style="font-size:13.5px;line-height:1.45;margin:4px 2px 10px">Ricette proposte dagli utenti e approvate. Toccale per aprirle, cucinarle e votarle con le stelle.</p>
+    <div id="comdiag" class="card pad" style="font-size:12.5px;word-break:break-all;margin-bottom:12px">Connessione…</div>
     <div id="comlist"><div class="empty">Carico…</div></div>
   </div>`;
-  const box=document.getElementById('comlist');
-  if(!comOn()){ box.innerHTML='<div class="empty">La community non è disponibile su questo dispositivo.</div>'; return; }
+  const box=document.getElementById('comlist'), diag=document.getElementById('comdiag');
+  if(!comOn()){ diag.textContent=''; box.innerHTML='<div class="empty">La community non è disponibile su questo dispositivo.</div>'; return; }
+  try{ await Community.ready; }
+  catch(e){ const c=(e&&(e.code||e.message))||'errore';
+    diag.innerHTML='<b style="color:var(--tomato)">Accesso a Firebase non riuscito</b><br>'+esc(c)+
+      '<br><span class="muted">Se dice "operation-not-allowed" o "configuration-not-found": in Firebase → Authentication → Sign-in method, abilita <b>Anonimo</b>.</span>';
+    box.innerHTML=''; return; }
+  diag.innerHTML='Il tuo ID admin:<br><b id="uidHere">'+esc(Community.uid()||'—')+'</b> <button class="mini" id="copiaUid2">copia</button>';
+  const cp=document.getElementById('copiaUid2');
+  if(cp)cp.onclick=async()=>{ try{ await navigator.clipboard.writeText(Community.uid()||''); cp.textContent='copiato ✓'; }catch(e){} };
   try{
     const list=await Community.publicList();
     S.com=list.map(x=>Object.assign({}, x.recipe, {com:true, autore:x.autore||'', comId:x.docId}));
@@ -3361,7 +3370,8 @@ async function vCommunity(){
     box.innerHTML = S.com.length
       ? `<div class="grid" data-cols="${S.cols}">${S.com.map(r=>tile(r)).join('')}</div>`
       : '<div class="empty">Ancora nessuna ricetta della community.<br>Crea la tua e proponila!</div>';
-  }catch(e){ box.innerHTML='<div class="empty">Non riesco a caricare la community adesso.<br>Controlla la connessione e riprova.</div>'; }
+  }catch(e){ const c=(e&&(e.code||e.message))||'';
+    box.innerHTML='<div class="empty">Ricette non ancora leggibili'+(c?' ('+esc(c)+')':'')+'.<br>È normale finché non pubblichi le regole col tuo ID.<br>Intanto copia l\'ID qui sopra e mandalo.</div>'; }
 }
 
 async function vModera(){
