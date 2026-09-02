@@ -633,6 +633,15 @@ body.bimby-on .bimby{display:block}
   font-size:11.5px;font-weight:700;letter-spacing:.02em;color:#241108;
   background:linear-gradient(96deg,var(--saffron),var(--tomato));box-shadow:0 4px 12px -6px rgba(255,91,54,.9)}
 .tile .miatag{background:linear-gradient(96deg,#37b56a,#1f9a54);color:#fff}
+.tile .comtag{background:linear-gradient(96deg,#8b5cd6,#6d3fc4);color:#fff}
+.ratingcard{margin-top:16px}
+.ratingcard .rhd{font-size:13px;color:var(--muted);margin-bottom:8px}
+.stars{display:flex;align-items:center;gap:2px;flex-wrap:wrap}
+.stars .star{font-size:26px;line-height:1;color:var(--line-2);background:none;padding:2px}
+.stars .star.on{color:var(--saffron)}
+.stars .rn{margin-left:10px;font-size:13px;color:var(--muted)}
+.mini{font:inherit;font-size:12px;font-weight:600;color:var(--saffron);background:var(--surf2);
+  border:1px solid var(--line);border-radius:8px;padding:3px 9px;margin-left:4px}
 /* editor ricette */
 .edhead{display:flex;align-items:center;gap:12px;margin:6px 0 4px}
 .edhead .fab{position:static;width:38px;height:38px}
@@ -752,6 +761,7 @@ footer{padding:28px 0 6px;font-size:12px;color:var(--muted);line-height:1.65}
 <input type="file" id="impFile" accept="application/json,.json" aria-label="Scegli il file di backup" hidden>
 <!-- foto predefinite dei piatti (generato dallo strumento di revisione); assente = nessuna, si usano le illustrazioni -->
 <script src="foto.js" onerror="window.FOTODEF=window.FOTODEF||{}"></script>
+<script src="community.js" onerror="window.Community=window.Community||{configured:false}"></script>
 <script>
 /* ============================================================
    DATI RICETTE — 30 ricette (blocco 1)
@@ -2730,7 +2740,7 @@ function mini(o,grad){
    foto     : foto reale del piatto  (id -> url|dataURL)
    stepfoto : foto reale del passaggio (id#indice -> url|dataURL)
    ============================================================ */
-const S={porz:4,tab:'ricette',q:'',cat:'Tutte',filtri:[],open:null,frigo:[],spesa:[],bimby:false,robot:'mambo',mie:[],editing:false,draft:null,
+const S={porz:4,tab:'ricette',q:'',cat:'Tutte',filtri:[],open:null,frigo:[],spesa:[],bimby:false,robot:'mambo',mie:[],editing:false,draft:null,com:[],pagina:null,
   foto:{},stepfoto:{},accfoto:{},note:{},pref:[],cols:1,tema:'giorno',ord:'cons'};
 /* filtri combinabili (AND) con categoria e ricerca */
 const FILTRI=[
@@ -2785,7 +2795,7 @@ const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati.
 const BUG_EMAIL='tony.bondreview@gmail.com';
 /* Link PayPal per le donazioni. Finche' e' vuoto la sezione non compare. */
 const PAYPAL_URL='https://www.paypal.me/ACesare422';
-const APP_VER='v39 · 02-09';
+const APP_VER='v40 · 02-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 /* ---- App nativa Android (Capacitor): riconoscimento ---- */
@@ -2840,13 +2850,17 @@ function render(){
   const pb=document.getElementById('prBadge'); pb.hidden=!S.pref.length; pb.textContent=S.pref.length;
   applyTema();
   document.querySelectorAll('nav.tabs button').forEach(t=>t.setAttribute('aria-selected',t.dataset.tab===S.tab));
-  if(S.editing){vEditor();window.scrollTo(0,0);}else if(S.open){vDett();}else{({ricette:vRic,frigo:vFrigo,spesa:vSpesa,conv:vConv,pref:vPref})[S.tab]();window.scrollTo(0,0);}
+  if(S.pagina==='community'){vCommunity();window.scrollTo(0,0);}
+  else if(S.pagina==='moderazione'){vModera();window.scrollTo(0,0);}
+  else if(S.editing){vEditor();window.scrollTo(0,0);}
+  else if(S.open){vDett();}
+  else{({ricette:vRic,frigo:vFrigo,spesa:vSpesa,conv:vConv,pref:vPref})[S.tab]();window.scrollTo(0,0);}
 }
 function tile(r,badge){
   const hab=r.caraffa==='Habana';
   const cam=S.foto[r.id]?'':'<span class="camtag" aria-hidden="true">📷</span>';
   const nota=(S.note[r.id]&&S.note[r.id].trim())?'<span class="notetag" aria-hidden="true">📝</span>':'';
-  const nuova=r.mia?'<span class="newtag miatag">Mia</span>':(isNuova(r)?'<span class="newtag">Novità</span>':'');
+  const nuova=r.mia?'<span class="newtag miatag">Mia</span>':(r.com?'<span class="newtag comtag">Community</span>':(isNuova(r)?'<span class="newtag">Novità</span>':''));
   return `<button class="tile" data-open="${r.id}" data-search="${esc(norm(r.nome+' '+r.ing.map(i=>i.n).join(' ')+' '+(r.tag||[]).join(' ')))}">${tileMedia(r)}${badge||''}${cam}${nota}${nuova}
     <span class="fav" data-fav="${r.id}" role="button" aria-pressed="${S.pref.includes(r.id)}" aria-label="Preferito">${S.pref.includes(r.id)?'♥':'♡'}</span>
     <span class="lay"><span class="nm">${esc(r.nome)}</span>
@@ -3043,6 +3057,7 @@ function vDett(){
         <div class="sub">${esc(r.cat)} &nbsp;|&nbsp; ${durata(r.tempo)} &nbsp;|&nbsp; ${r.acc.length} accessori</div></div>
     </div>
     ${(()=>{const fl=fuoriDi(r);return fl.length?`<div class="fuori"><div class="fuori-h"><span class="ic">\u{1F373}</span>Prima di iniziare \u2014 da preparare a parte</div><ul>${fl.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>`:'';})()}
+    ${r.com?`<div class="card pad ratingcard"><div class="rhd">\u2b50 Voto della community${r.autore?` \u00b7 di <b>${esc(r.autore)}</b>`:''}</div><div id="stars" class="stars">…</div></div>`:''}
     <div class="photobar">
       <span class="plab">${camSvg}Foto del piatto</span>
       <input class="url" id="fotoUrl" placeholder="Incolla un link immagine (https://…)" value="${hasFoto&&/^https?:/.test(S.foto[r.id])?esc(S.foto[r.id]):''}">
@@ -3099,6 +3114,7 @@ function vDett(){
     render(); };
   const nt=document.getElementById('notaTa');
   if(nt)nt.oninput=()=>salvaNota(r.id,nt.value);
+  if(r.com)wireRating(r);
 }
 
 /* ============================================================
@@ -3325,6 +3341,82 @@ async function importData(file){
 }
 
 /* ---------- PREFERITI ---------- */
+/* ---------- COMMUNITY: viste e helper (guardati: se Firebase non c'è, nulla) ---------- */
+function comOn(){ return !!(window.Community && Community.configured); }
+function syncCom(){ for(let i=RICETTE.length-1;i>=0;i--) if(RICETTE[i].com) RICETTE.splice(i,1); RICETTE.push(...S.com); }
+
+async function vCommunity(){
+  view.innerHTML=`<div class="panel">
+    <div class="edhead"><button class="fab" data-compagina="back" aria-label="Indietro">←</button>
+      <h2 class="sec" style="margin:0">Community</h2></div>
+    <p class="muted" style="font-size:13.5px;line-height:1.45;margin:4px 2px 14px">Ricette proposte dagli utenti e approvate. Toccale per aprirle, cucinarle e votarle con le stelle.</p>
+    <div id="comlist"><div class="empty">Carico…</div></div>
+  </div>`;
+  const box=document.getElementById('comlist');
+  if(!comOn()){ box.innerHTML='<div class="empty">La community non è disponibile su questo dispositivo.</div>'; return; }
+  try{
+    const list=await Community.publicList();
+    S.com=list.map(x=>Object.assign({}, x.recipe, {com:true, autore:x.autore||'', comId:x.docId}));
+    save('mambo:comcache',S.com); syncCom();
+    box.innerHTML = S.com.length
+      ? `<div class="grid" data-cols="${S.cols}">${S.com.map(r=>tile(r)).join('')}</div>`
+      : '<div class="empty">Ancora nessuna ricetta della community.<br>Crea la tua e proponila!</div>';
+  }catch(e){ box.innerHTML='<div class="empty">Non riesco a caricare la community adesso.<br>Controlla la connessione e riprova.</div>'; }
+}
+
+async function vModera(){
+  view.innerHTML=`<div class="panel">
+    <div class="edhead"><button class="fab" data-compagina="back" aria-label="Indietro">←</button>
+      <h2 class="sec" style="margin:0">Moderazione</h2></div>
+    <div id="modlist"><div class="empty">Carico…</div></div></div>`;
+  const box=document.getElementById('modlist');
+  if(!comOn()){ box.innerHTML='<div class="empty">Community non disponibile.</div>'; return; }
+  try{
+    const ps=await Community.pending();
+    if(!ps.length){ box.innerHTML='<div class="empty">Nessuna proposta in attesa. 👍</div>'; return; }
+    box.innerHTML=ps.map(p=>{ const r=p.recipe;
+      return `<div class="card pad" style="margin-bottom:14px">
+        <b style="font-size:16px;color:var(--cream)">${esc(r.nome)}</b>
+        <div class="muted" style="font-size:12.5px;margin:3px 0 9px">${esc(r.cat)} · ${(r.steps||[]).length} passaggi · ${(r.ing||[]).length} ingredienti · proposta da <b>${esc(p.autore||'anonimo')}</b></div>
+        <div class="muted" style="font-size:13px;line-height:1.55;max-height:150px;overflow:auto;border-left:2px solid var(--line);padding-left:10px">${(r.steps||[]).map((s,i)=>(i+1)+'. '+esc(s.x)).join('<br>')}</div>
+        <div class="acts" style="margin-top:12px">
+          <button class="btn" data-approva="${p.propId}">Approva e pubblica</button>
+          <button class="btn ghost" data-rifiuta="${p.propId}" style="color:var(--tomato)">Rifiuta</button></div>
+      </div>`; }).join('');
+  }catch(e){ box.innerHTML='<div class="empty">Non riesco a caricare le proposte.<br>Sei tu l’amministratore configurato?</div>'; }
+}
+
+/* riquadro Community dentro la scheda Preferiti */
+async function wireCommunityPref(){
+  const box=document.getElementById('comAdmin'); if(!box)return;
+  if(!comOn()){ box.innerHTML='<p class="muted" style="font-size:12.5px;margin:10px 0 0">Community non configurata su questo dispositivo.</p>'; return; }
+  try{
+    await Community.ready;
+    let html='<p class="muted" style="font-size:12px;margin:12px 0 0;word-break:break-all">Il tuo ID: <b id="mioUid">'+esc(Community.uid()||'—')+'</b> <button class="mini" id="copiaUid">copia</button></p>';
+    if(Community.isAdmin()){
+      let n=0; try{ n=(await Community.pending()).length; }catch(e){}
+      html='<div class="acts" style="margin-top:12px"><button class="btn" data-compagina="moderazione">Moderazione'+(n?' · '+n+' in attesa':'')+'</button></div>'+html;
+    }
+    box.innerHTML=html;
+    const cp=document.getElementById('copiaUid');
+    if(cp)cp.onclick=async()=>{ try{ await navigator.clipboard.writeText(Community.uid()||''); cp.textContent='copiato ✓'; }catch(e){} };
+  }catch(e){ box.innerHTML='<p class="muted" style="font-size:12.5px;margin:10px 0 0">Community non raggiungibile ora (offline?).</p>'; }
+}
+
+/* stelle di voto nella scheda di una ricetta della community */
+async function wireRating(r){
+  const box=document.getElementById('stars'); if(!box||!comOn())return;
+  const id=r.comId||r.id;
+  const draw=(mio,media,n)=>{ box.innerHTML=[1,2,3,4,5].map(s=>`<button class="star${s<=Math.round(media)?' on':''}" data-star="${s}" aria-label="${s} stelle">★</button>`).join('')
+    +`<span class="rn">${n?media.toFixed(1)+' ('+n+')':'nessun voto'}${mio?' · tuo '+mio+'★':''}</span>`; };
+  try{ const g=await Community.ratings(id); draw(g.mio,g.media,g.n);
+    box.onclick=async e=>{ const b=e.target.closest('[data-star]'); if(!b)return;
+      try{ await Community.rate(id,+b.dataset.star); const g2=await Community.ratings(id); draw(g2.mio,g2.media,g2.n); }catch(_){}
+    };
+  }catch(e){ box.innerHTML='<span class="rn">voti non disponibili ora</span>'; }
+}
+
+
 /* ============================================================
    LE MIE RICETTE — editor personale (tutto sul dispositivo)
    ============================================================ */
@@ -3363,7 +3455,14 @@ function salvaEditor(){ leggiForm(); const d=S.draft;
 function eliminaMia(id){ const d=id?S.mie.find(r=>r.id===id):(S.draft);
   if(!d)return; if(!confirm('Eliminare "'+(d.nome||'questa ricetta')+'"? Non si può annullare.'))return;
   S.mie=S.mie.filter(r=>r.id!==d.id); salvaMie(); S.editing=false; S.draft=null; S.open=null; render(); }
-function proponiRicetta(id){ const r=RICETTE.find(x=>x.id===id); if(!r)return;
+async function proponiRicetta(id){ const r=RICETTE.find(x=>x.id===id); if(!r)return;
+  if(window.Community && Community.configured){
+    const autore=(prompt('Con che nome vuoi firmare la ricetta? (vuoto = anonimo)','')||'').trim();
+    try{ await Community.propose(r, autore);
+      alert('Proposta inviata \u2713  Verr\u00e0 pubblicata dopo l\u2019approvazione. La tua copia resta comunque sul telefono.');
+    }catch(e){ alert('Non riesco a inviare la proposta ora: '+((e&&e.message)||'')+'\nRiprova quando sei online.'); }
+    return;
+  }
   try{
     const pacco={app:'mamboconvert-ricetta', v:1, data:new Date().toISOString(), recipe:r};
     const blob=new Blob([JSON.stringify(pacco,null,2)],{type:'application/json'});
@@ -3447,6 +3546,12 @@ function vPref(){
       <div class="acts" style="margin-top:${S.mie.length?'14px':'0'}"><button class="btn" data-editact="new">\uFF0B Crea una ricetta</button></div>
     </div>
     <div class="card pad" style="margin-top:24px">
+      <h3 class="sec2" style="margin:0 0 4px">Community</h3>
+      <p class="muted" style="font-size:13.5px;line-height:1.45;margin:0 0 13px">Sfoglia le ricette proposte e approvate. Per proporre le tue, aprile e usa "Proponi per il catalogo".</p>
+      <div class="acts"><button class="btn" data-compagina="community">Ricette della community</button></div>
+      <div id="comAdmin"></div>
+    </div>
+    <div class="card pad" style="margin-top:24px">
       <h3 class="sec2" style="margin:0 0 4px">Dati e backup</h3>
       <p class="muted" style="font-size:13.5px;line-height:1.45;margin:0 0 13px">Preferiti, note e foto sono salvati solo su questo dispositivo. Esporta un file per non perderli, o per spostarli su un altro telefono. Il file resta sul tuo dispositivo, non viene inviato a nessun server.</p>
       <div class="acts">
@@ -3458,6 +3563,7 @@ function vPref(){
   const eb=document.getElementById('expData'); if(eb)eb.onclick=exportData;
   const ib=document.getElementById('impData'), ifl=document.getElementById('impFile');
   if(ib&&ifl){ ib.onclick=()=>ifl.click(); ifl.onchange=()=>{ const f=ifl.files&&ifl.files[0]; if(f)importData(f); ifl.value=''; }; }
+  wireCommunityPref();
 }
 
 /* ---------- FRIGO ---------- */
@@ -3693,7 +3799,7 @@ function segnalaBug(){
 }
 
 /* ---------- EVENTI ---------- */
-document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;S.open=null;render();});
+document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;S.open=null;S.pagina=null;S.editing=false;render();});
 document.getElementById('layout').onclick=()=>{
   S.cols = S.cols===1?2:1; save('mambo:cols',S.cols); applyLayout(); };
 document.getElementById('tema').onclick=()=>{
@@ -3722,6 +3828,12 @@ document.addEventListener('click',e=>{
   const rob=e.target.closest('[data-robot]'); if(rob){ S.robot=rob.dataset.robot; save('mambo:robot',S.robot); if(S.open)vDett(); else render(); return; }
   if(e.target.closest('[data-bimby]')){S.bimby=!S.bimby;save('mambo:bimby',S.bimby);render();}
   const sh=e.target.closest('[data-share]'); if(sh){ const r=RICETTE.find(x=>x.id===sh.dataset.share); if(r)condividiRicetta(r); return; }
+  const cpag=e.target.closest('[data-compagina]'); if(cpag){ const v=cpag.dataset.compagina;
+    S.pagina = v==='back' ? null : v; if(v==='back'){S.tab='pref';} render(); return; }
+  const apr=e.target.closest('[data-approva]'); if(apr){ apr.disabled=true; apr.textContent='Pubblico…';
+    Community.approve(apr.dataset.approva).then(()=>vModera()).catch(err=>{ apr.disabled=false; apr.textContent='Approva e pubblica'; alert('Errore: '+((err&&err.message)||'')); }); return; }
+  const rif=e.target.closest('[data-rifiuta]'); if(rif){ if(!confirm('Rifiutare e cancellare questa proposta?'))return;
+    rif.disabled=true; Community.reject(rif.dataset.rifiuta).then(()=>vModera()).catch(()=>{ rif.disabled=false; }); return; }
   const em=e.target.closest('[data-editmia]'); if(em){ apriEditor(em.dataset.editmia); return; }
   const dm=e.target.closest('[data-delmia]'); if(dm){ eliminaMia(dm.dataset.delmia); return; }
   const pr=e.target.closest('[data-proponi]'); if(pr){ proponiRicetta(pr.dataset.proponi); return; }
@@ -3745,6 +3857,7 @@ window.addEventListener('hashchange',openFromHash);
   S.tema=await load('mambo:tema','giorno'); S.robot=await load('mambo:robot','mambo');
   S.ord=await load('mambo:ord','cons');
   S.mie=await load('mambo:mieric',[]); syncMie();
+  S.com=await load('mambo:comcache',[]); syncCom();
   const ix=await load('mambo:fotoidx',[]);
   for(const id of ix){const d=await load('mambo:foto:'+id,null); if(d)S.foto[id]=d;}
   const six=await load('mambo:stepidx',[]);

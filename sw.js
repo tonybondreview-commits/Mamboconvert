@@ -1,9 +1,9 @@
 /* Service worker: network-first per l'app (nuove ricette da sole quando sei online),
    cache-first per le foto dei piatti (anche remote, es. Pexels) così restano offline
    dopo la prima volta che le vedi. Cambia CACHE per forzare la pulizia dell'app. */
-const CACHE = 'cucina-mambo-v29';
+const CACHE = 'cucina-mambo-v30';
 const IMG_CACHE = 'mambo-fotos-v2';   /* persistente; il nome cambia solo per svuotare cache guaste */
-const ASSETS = ['./', './index.html', './manifest.webmanifest', './logo.png', './foto.js',
+const ASSETS = ['./', './index.html', './manifest.webmanifest', './logo.png', './foto.js', './community.js',
   './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
