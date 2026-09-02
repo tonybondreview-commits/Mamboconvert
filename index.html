@@ -55,6 +55,7 @@ body.giorno{
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--bg)}
+html{height:100%}
 /* nasconde il badge iniettato dall'host (niente salti di layout) */
 #nl-badge-frame,#netlify-badge,.netlify-badge{display:none!important}
 body::before{
@@ -67,10 +68,14 @@ body::before{
 body.giorno::before{background:none}
 body{
   color:var(--cream);font-family:var(--sans);font-size:16px;line-height:1.5;
-  -webkit-font-smoothing:antialiased;padding-bottom:calc(74px + env(safe-area-inset-bottom));
-  overflow-x:hidden;min-height:100vh;min-height:100dvh;
+  -webkit-font-smoothing:antialiased;
+  /* Schema "app shell": intestazione e barra restano fuori dall'area che
+     scorre, cosi' non sono elementi fissi e Safari non puo' sfasarli. */
+  height:100%;height:100dvh;display:flex;flex-direction:column;overflow:hidden;
   touch-action:manipulation; /* niente doppio-tap-zoom, resta scroll e tap */
 }
+main#view{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;overscroll-behavior-y:contain}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 input,select{font:inherit;color:inherit}
 h1,h2,h3{margin:0;font-weight:500;line-height:1.15}
@@ -103,7 +108,7 @@ body.giorno .card,body.giorno ul.ing,body.giorno .step,body.giorno .crow,body.gi
 .themeb.spin svg{animation:spin .9s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 header{
-  position:sticky;top:0;z-index:40;background:#17110E;
+  flex:none;z-index:40;background:#17110E;
   border-bottom:1px solid var(--line);
   padding:11px 0 11px;padding-top:calc(11px + env(safe-area-inset-top));
 }
@@ -130,11 +135,8 @@ header{
 
 /* ---------- tab bar ---------- */
 nav.tabs{
-  position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;
+  flex:none;z-index:50;display:flex;
   background:#17110E;
-  /* Livello grafico dedicato: su iOS evita che la barra resti indietro
-     mentre si scorre e finisca in mezzo alla pagina. */
-  transform:translateZ(0);will-change:transform;
   border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)
 }
 nav.tabs button{flex:1;padding:14px 4px 7px;display:flex;flex-direction:column;align-items:center;gap:4px;
@@ -196,12 +198,12 @@ body.giorno .hero{box-shadow:0 10px 30px -18px rgba(40,30,20,.45)}
 .toolrow{display:flex;gap:9px;align-items:center;margin-top:13px}
 .toolrow .chips{flex:1;min-width:0;padding-top:0;padding-bottom:0}
 .cols{display:flex;gap:3px;background:var(--surf2);border-radius:11px;padding:3px;flex:none}
-.totop{position:fixed;right:16px;bottom:calc(86px + env(safe-area-inset-bottom));z-index:45;transform:translateZ(0);
+.totop{position:fixed;right:16px;bottom:calc(90px + env(safe-area-inset-bottom));z-index:45;
   width:46px;height:46px;border-radius:999px;display:grid;place-items:center;
   background:var(--surf2);color:var(--cream);border:1px solid var(--line-2);
   box-shadow:0 10px 26px -12px rgba(0,0,0,.7);transition:opacity .2s,transform .2s}
 .totop svg{width:20px;height:20px}
-.totop:active{transform:translateZ(0) scale(.92)}
+.totop:active{transform:scale(.92)}
 body.giorno .totop{background:#FFFFFF;box-shadow:0 8px 22px -12px rgba(74,45,28,.6)}
 .caffe{display:flex;gap:14px;align-items:flex-start;margin-top:16px;padding:16px;border-radius:16px;
   background:linear-gradient(135deg,rgba(255,180,36,.14),rgba(216,88,61,.10));border:1px solid rgba(255,180,36,.34)}
@@ -2710,7 +2712,7 @@ const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati.
 const BUG_EMAIL='tony.bondreview@gmail.com';
 /* Link PayPal per le donazioni. Finche' e' vuoto la sezione non compare. */
 const PAYPAL_URL='https://www.paypal.me/ACesare422';
-const APP_VER='v32 · 02-09';
+const APP_VER='v33 · 02-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 /* ---- App nativa Android (Capacitor): riconoscimento ---- */
@@ -2765,7 +2767,7 @@ function render(){
   const pb=document.getElementById('prBadge'); pb.hidden=!S.pref.length; pb.textContent=S.pref.length;
   applyTema();
   document.querySelectorAll('nav.tabs button').forEach(t=>t.setAttribute('aria-selected',t.dataset.tab===S.tab));
-  if(S.open){vDett();}else{({ricette:vRic,frigo:vFrigo,spesa:vSpesa,conv:vConv,pref:vPref})[S.tab]();window.scrollTo(0,0);}
+  if(S.open){vDett();}else{({ricette:vRic,frigo:vFrigo,spesa:vSpesa,conv:vConv,pref:vPref})[S.tab]();view.scrollTop=0;}
 }
 function tile(r,badge){
   const hab=r.caraffa==='Habana';
@@ -2952,7 +2954,7 @@ function condividiRicetta(r){
   fallback().then(ok=>alert(ok?'Link copiato \u2713  Incollalo dove vuoi (WhatsApp, messaggi\u2026)':('Condividi questo link:\n'+url)));
 }
 function openFromHash(){ const m=(location.hash||'').match(/^#r=([\w-]+)$/);
-  if(m){ const r=RICETTE.find(x=>x.id===m[1]); if(r){ S.tab='ricette'; S.open=r.id; render(); window.scrollTo(0,0); return true; } } return false; }
+  if(m){ const r=RICETTE.find(x=>x.id===m[1]); if(r){ S.tab='ricette'; S.open=r.id; render(); view.scrollTop=0; return true; } } return false; }
 function vDett(){
   const r=RICETTE.find(x=>x.id===S.open), f=S.porz/r.porz, vol=r.vol*f;
   const inSp=S.spesa.some(s=>s.id===r.id), hasFoto=!!S.foto[r.id];
@@ -3519,7 +3521,7 @@ document.addEventListener('click',e=>{
   if(fv){ e.stopPropagation(); const id=fv.dataset.fav;
     if(S.pref.includes(id))S.pref=S.pref.filter(x=>x!==id); else S.pref.push(id);
     save('mambo:pref',S.pref); render(); return; }
-  const o=e.target.closest('[data-open]'); if(o){S.open=o.dataset.open;render();window.scrollTo(0,0);return;}
+  const o=e.target.closest('[data-open]'); if(o){S.open=o.dataset.open;render();view.scrollTop=0;return;}
   if(e.target.closest('[data-back]')){S.open=null;render();return;}
   const sp=e.target.closest('[data-spesa]');
   if(sp){const id=sp.dataset.spesa;
@@ -3592,44 +3594,25 @@ if(!IS_NATIVE && 'serviceWorker' in navigator){
   });
 }
 
-/* ---- Barra in basso: resta attaccata allo schermo anche se la pagina e' zoomata.
-   Con lo zoom di Safari gli elementi fissi si ancorano alla pagina e la barra
-   finisce a meta' schermo: qui la riallineiamo al riquadro davvero visibile.
-   A zoom normale non tocca nulla. ---- */
-(function(){
-  const nav=document.querySelector('nav.tabs'), vv=window.visualViewport;
-  if(!nav||!vv) return;
-  let attivo=false;
-  const sistema=()=>{
-    if(vv.scale>1.02){
-      const off=(vv.height+vv.offsetTop)-window.innerHeight;
-      nav.style.transform='translateZ(0) translateY('+Math.round(off)+'px)';
-      attivo=true;
-    } else if(attivo){ nav.style.transform=''; attivo=false; }
-  };
-  vv.addEventListener('resize',sistema);
-  vv.addEventListener('scroll',sistema);
-  sistema();
-})();
-
 /* ---- Pulsante "torna su" nelle liste lunghe ---- */
 (function(){
   const btn=document.getElementById('toTop'); if(!btn)return;
   const deckEl=document.getElementById('deck');
-  let ultimaY=window.scrollY, timer=null;
+  const sc=document.getElementById('view'); if(!sc)return;
+  let ultimaY=sc.scrollTop, timer=null;
   const nascondi=()=>{ btn.hidden=true; };
   const mostra=()=>{ btn.hidden=false; clearTimeout(timer); timer=setTimeout(nascondi,4000); };
   const aggiorna=()=>{
-    const y=window.scrollY, versoIlBasso=y>ultimaY; ultimaY=y;
+    const y=sc.scrollTop, versoIlBasso=y>ultimaY; ultimaY=y;
     if(deckEl&&deckEl.classList.contains('open')){ nascondi(); return; }
-    const lunga=(document.documentElement.scrollHeight-window.innerHeight)>1500;
+    const lunga=(sc.scrollHeight-sc.clientHeight)>1500;
     if(lunga && y>900 && versoIlBasso) mostra();
     else if(!lunga || y<=900 || !versoIlBasso){ clearTimeout(timer); nascondi(); }
   };
-  window.addEventListener('scroll',aggiorna,{passive:true});
+  sc.addEventListener('scroll',aggiorna,{passive:true});
   btn.addEventListener('click',()=>{
     const dolce=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    window.scrollTo({top:0,behavior:dolce?'smooth':'auto'});
+    sc.scrollTo({top:0,behavior:dolce?'smooth':'auto'});
   });
   aggiorna();
 })();
