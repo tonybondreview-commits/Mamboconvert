@@ -2796,7 +2796,7 @@ const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati.
 const BUG_EMAIL='tony.bondreview@gmail.com';
 /* Link PayPal per le donazioni. Finche' e' vuoto la sezione non compare. */
 const PAYPAL_URL='https://www.paypal.me/ACesare422';
-const APP_VER='v44 · 02-09';
+const APP_VER='v45 · 02-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 /* ---- App nativa Android (Capacitor): riconoscimento ---- */
@@ -3058,7 +3058,7 @@ function vDett(){
         <div class="sub">${esc(r.cat)} &nbsp;|&nbsp; ${durata(r.tempo)} &nbsp;|&nbsp; ${r.acc.length} accessori</div></div>
     </div>
     ${(()=>{const fl=fuoriDi(r);return fl.length?`<div class="fuori"><div class="fuori-h"><span class="ic">\u{1F373}</span>Prima di iniziare \u2014 da preparare a parte</div><ul>${fl.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>`:'';})()}
-    ${r.com?`<div class="card pad ratingcard"><div class="rhd">\u2b50 Voto della community${r.autore?` \u00b7 di <b>${esc(r.autore)}</b>`:''}</div><div id="stars" class="stars">…</div></div>`:''}
+    ${r.com?`<div class="card pad ratingcard"><div class="rhd">\u2b50 Voto della community${r.autore?` \u00b7 di <b>${esc(r.autore)}</b>`:''}</div><div id="stars" class="stars">…</div>${(comOn()&&Community.isAdmin&&Community.isAdmin()&&r.comId)?`<button class="pbtn rm" data-rimuovicom="${esc(r.comId)}" style="margin-top:12px">\u{1F5D1}\uFE0F Rimuovi dalla community</button>`:''}</div>`:''}
     <div class="photobar">
       <span class="plab">${camSvg}Foto del piatto</span>
       <input class="url" id="fotoUrl" placeholder="Incolla un link immagine (https://…)" value="${hasFoto&&/^https?:/.test(S.foto[r.id])?esc(S.foto[r.id]):''}">
@@ -3855,6 +3855,10 @@ document.addEventListener('click',e=>{
     Community.approve(apr.dataset.approva).then(()=>vModera()).catch(err=>{ apr.disabled=false; apr.textContent='Approva e pubblica'; alert('Errore: '+((err&&err.message)||'')); }); return; }
   const rif=e.target.closest('[data-rifiuta]'); if(rif){ if(!confirm('Rifiutare e cancellare questa proposta?'))return;
     rif.disabled=true; Community.reject(rif.dataset.rifiuta).then(()=>vModera()).catch(()=>{ rif.disabled=false; }); return; }
+  const rmc=e.target.closest('[data-rimuovicom]'); if(rmc){ if(!confirm('Rimuovere definitivamente questa ricetta dalla community? L\'azione non si può annullare.'))return;
+    rmc.disabled=true; rmc.textContent='Rimuovo…';
+    Community.removePublic(rmc.dataset.rimuovicom).then(()=>{ S.com=(S.com||[]).filter(x=>x.comId!==rmc.dataset.rimuovicom); save('mambo:comcache',S.com); syncCom(); S.open=null; S.pagina='community'; render(); })
+      .catch(err=>{ rmc.disabled=false; rmc.textContent='🗑️ Rimuovi dalla community'; alert('Errore: '+((err&&err.message)||'')); }); return; }
   const em=e.target.closest('[data-editmia]'); if(em){ apriEditor(em.dataset.editmia); return; }
   const dm=e.target.closest('[data-delmia]'); if(dm){ eliminaMia(dm.dataset.delmia); return; }
   const pr=e.target.closest('[data-proponi]'); if(pr){ proponiRicetta(pr.dataset.proponi); return; }
