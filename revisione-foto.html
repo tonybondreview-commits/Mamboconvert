@@ -66,9 +66,10 @@ textarea{width:100%;height:240px;background:var(--bg);color:var(--ink);border:1p
 <header><div class="wrap">
   <h1 class="brand"><em>Mambo</em>convert · revisione foto</h1>
   <div class="controls">
-    <input class="key" id="key" type="password" placeholder="Incolla qui la tua chiave API Pexels" autocomplete="off">
+    <input class="key" id="key" type="text" inputmode="text" placeholder="Incolla qui la tua chiave API Pexels" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
     <button id="saveKey">Salva chiave</button>
     <button id="testKey">Verifica chiave</button>
+    <div id="esito" class="hint" style="width:100%;margin:6px 0 0"></div>
     <button class="pri" id="searchAll">Cerca e scegli tutte</button>
     <button id="export">Esporta foto.js</button>
     <button class="pri" id="zip">Scarica pacchetto offline (.zip)</button>
@@ -118,17 +119,29 @@ function pulisciErrori(){
 function keyVal(){ return ($('#key').value||'')
   .replace(/^\s*(Bearer\s+)?/i,'').replace(/^["']|["']$/g,'').replace(/\s+/g,'').trim(); }
 $('#saveKey').onclick=()=>{localStorage.setItem(KKEY,keyVal());pulisciErrori();status.textContent='Chiave salvata ✓';setTimeout(()=>status.textContent='',1500);};
+const esito=$('#esito');
+function mostraEsito(t,ok){ esito.innerHTML=t; esito.style.color = ok===true ? '#37b56a' : ok===false ? '#e2553a' : ''; }
 $('#testKey').onclick=async()=>{
   const k=keyVal();
-  if(!k){ status.textContent='Prima incolla la chiave.'; return; }
-  status.textContent='Verifico… (chiave di '+k.length+' caratteri)';
+  if(!k){ mostraEsito('Prima incolla la chiave nel campo qui sopra.',false); return; }
+  const impronta = k.length+' caratteri · inizia con <b>'+k.slice(0,4)+'</b> · finisce con <b>'+k.slice(-4)+'</b>';
+  mostraEsito('Verifico… ('+impronta+')');
   try{
     const res=await fetch('https://api.pexels.com/v1/search?per_page=1&query=pasta',{headers:{Authorization:k}});
-    if(res.status===200){ localStorage.setItem(KKEY,k); pulisciErrori(); status.textContent='Chiave valida ✓ salvata — ora premi “Cerca e scegli tutte”'; }
-    else if(res.status===401) status.textContent='✗ Pexels rifiuta la chiave (401): non è attiva. Generane una nuova su pexels.com/api';
-    else if(res.status===429) status.textContent='La chiave è buona ma hai esaurito le richieste per ora (429). Riprova più tardi.';
-    else status.textContent='Risposta inattesa da Pexels: '+res.status;
-  }catch(e){ status.textContent='Non riesco a contattare Pexels: '+e.message+' (connessione o blocco del browser)'; }
+    let corpo=''; try{ corpo=(await res.text()).slice(0,160); }catch(e){}
+    if(res.status===200){
+      localStorage.setItem(KKEY,k); pulisciErrori();
+      mostraEsito('Chiave valida ✓ salvata ('+impronta+'). Ora premi “Cerca e scegli tutte”.',true);
+    } else if(res.status===401){
+      mostraEsito('✗ Pexels rifiuta questa chiave (401).<br>Sto usando: '+impronta+
+        '<br>Confronta questi caratteri con la chiave sulla tua pagina Pexels: se non combaciano, nel campo c\'è ancora quella vecchia.'+
+        (corpo?'<br><small>Risposta: '+corpo.replace(/</g,'&lt;')+'</small>':''),false);
+    } else if(res.status===429){
+      mostraEsito('La chiave va bene ma hai esaurito le richieste per ora (429). Riprova tra un po\'.',false);
+    } else {
+      mostraEsito('Risposta inattesa da Pexels: '+res.status+(corpo?'<br><small>'+corpo.replace(/</g,'&lt;')+'</small>':''),false);
+    }
+  }catch(e){ mostraEsito('Non riesco a contattare Pexels: '+e.message,false); }
 };
 
 function refreshMeta(){
