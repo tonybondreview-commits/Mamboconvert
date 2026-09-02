@@ -2796,7 +2796,7 @@ const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati.
 const BUG_EMAIL='tony.bondreview@gmail.com';
 /* Link PayPal per le donazioni. Finche' e' vuoto la sezione non compare. */
 const PAYPAL_URL='https://www.paypal.me/ACesare422';
-const APP_VER='v46 · 02-09';
+const APP_VER='v47 · 02-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 /* ---- App nativa Android (Capacitor): riconoscimento ---- */
@@ -3059,12 +3059,6 @@ function vDett(){
     </div>
     ${(()=>{const fl=fuoriDi(r);return fl.length?`<div class="fuori"><div class="fuori-h"><span class="ic">\u{1F373}</span>Prima di iniziare \u2014 da preparare a parte</div><ul>${fl.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>`:'';})()}
     ${r.com?`<div class="card pad ratingcard"><div class="rhd">\u2b50 Voto della community${r.autore?` \u00b7 di <b>${esc(r.autore)}</b>`:''}</div><div id="stars" class="stars">…</div>${(comOn()&&Community.isAdmin&&Community.isAdmin()&&r.comId)?`<button class="pbtn rm" data-rimuovicom="${esc(r.comId)}" style="margin-top:12px">\u{1F5D1}\uFE0F Rimuovi dalla community</button>`:''}</div>`:''}
-    <div class="photobar">
-      <span class="plab">${camSvg}Foto del piatto</span>
-      <input class="url" id="fotoUrl" placeholder="Incolla un link immagine (https://…)" value="${hasFoto&&/^https?:/.test(S.foto[r.id])?esc(S.foto[r.id]):''}">
-      <button class="pbtn" data-picfoto="${r.id}">${camSvg}Carica</button>
-      ${hasFoto?`<button class="pbtn rm" data-rmfoto="${r.id}">Rimuovi</button>`:''}
-    </div>
     <div class="card">
       <div class="row"><div class="k">Ti serve</div><div class="v"><div class="accgrid">
         <span class="accitem">${accIco('Caraffa')}<span>${r.caraffa==='Habana'?'Caraffa Habana':'Caraffa acciaio'}<small>${USO[r.caraffa]}</small></span></span>
@@ -3108,11 +3102,6 @@ function vDett(){
       <button class="btn ghost" data-delmia="${r.id}" style="color:var(--tomato)">Elimina</button></div>`:''}
     ${S.robot==='mambo'?`<button class="toggle" data-bimby aria-pressed="${S.bimby}"><span class="sw"></span>Mostra i parametri Bimby originali</button>`:''}
   </div>`;
-  const fu=document.getElementById('fotoUrl');
-  if(fu)fu.onchange=()=>{const v=fu.value.trim();
-    if(!v){ if(S.foto[r.id]&&/^https?:/.test(S.foto[r.id]))delFoto({tipo:'ric',id:r.id}); }
-    else if(/^https?:\/\/.+/i.test(v)) setFoto({tipo:'ric',id:r.id},v);
-    render(); };
   const nt=document.getElementById('notaTa');
   if(nt)nt.oninput=()=>salvaNota(r.id,nt.value);
   if(r.com)wireRating(r);
