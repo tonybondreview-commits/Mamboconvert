@@ -69,6 +69,7 @@ textarea{width:100%;height:240px;background:var(--bg);color:var(--ink);border:1p
     <input class="key" id="key" type="text" inputmode="text" placeholder="Incolla qui la tua chiave API Pexels" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
     <button id="saveKey">Salva chiave</button>
     <button id="testKey">Verifica chiave</button>
+    <button id="diag">Diagnosi</button>
     <div id="esito" class="hint" style="width:100%;margin:6px 0 0"></div>
     <button class="pri" id="searchAll">Cerca e scegli tutte</button>
     <button id="export">Esporta foto.js</button>
@@ -249,6 +250,33 @@ document.addEventListener('click',e=>{
   sel[id]={url:u, thumb:u};
   saveSel(); refreshMeta(); render();
 });
+$('#diag').onclick=async()=>{
+  const k=keyVal();
+  if(!k){ mostraEsito('Manca la chiave nel campo.',false); return; }
+  const prove=[
+    ['pasta','prova neutra'],
+    ['Soffritto base','ricetta vecchia'],
+    ['Riso alla cantonese','ricetta nuova'],
+    ['fried rice','stessa ricetta, in inglese']
+  ];
+  let out='<b>Diagnosi</b> — stessa chiave ('+impronta()+')<br>';
+  mostraEsito(out+'attendo…');
+  for(const p of prove){
+    const q=p[0], eti=p[1];
+    const url='https://api.pexels.com/v1/search?per_page=6&orientation=landscape&locale=it-IT&query='+encodeURIComponent(q);
+    let riga;
+    try{
+      const r=await fetch(url,{headers:{Authorization:k}});
+      let corpo=''; if(!r.ok){ try{ corpo=(await r.text()).slice(0,90); }catch(e){} }
+      riga=(r.ok?'\u2713 ':'\u2717 ')+r.status+' \u2014 \u201c'+q+'\u201d ('+eti+')'
+           +(corpo?'<br><small>'+corpo.replace(/</g,'&lt;')+'</small>':'');
+    }catch(e){ riga='\u2717 rete \u2014 \u201c'+q+'\u201d: '+e.message; }
+    out+=riga+'<br>';
+    mostraEsito(out);
+    await new Promise(x=>setTimeout(x,500));
+  }
+  mostraEsito(out+'<br><small>Tutte \u2713 = funziona, era un problema passeggero. Tutte \u2717 = chiave o limite. Alcune \u2713 e altre \u2717 = dipende dalla singola ricerca.</small>');
+};
 $('#onlyMissing').onchange=render;
 
 $('#searchAll').onclick=async()=>{
