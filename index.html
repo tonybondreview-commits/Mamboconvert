@@ -200,6 +200,20 @@ body.giorno .hero{box-shadow:0 10px 30px -18px rgba(40,30,20,.45)}
 .totop svg{width:20px;height:20px}
 .totop:active{transform:scale(.92)}
 body.giorno .totop{background:#FFFFFF;box-shadow:0 8px 22px -12px rgba(74,45,28,.6)}
+.caffe{display:flex;gap:14px;align-items:flex-start;margin-top:16px;padding:16px;border-radius:16px;
+  background:linear-gradient(135deg,rgba(255,180,36,.14),rgba(216,88,61,.10));border:1px solid rgba(255,180,36,.34)}
+.caffe .ctazza{font-size:30px;line-height:1;flex:none;margin-top:2px}
+.caffe .ctxt{min-width:0}
+.caffe b{display:block;font-size:15.5px;color:var(--cream);margin-bottom:5px}
+.caffe p{margin:0 0 12px;font-size:13.5px;line-height:1.5;color:var(--muted)}
+.caffe .cbtn{display:inline-block;padding:11px 18px;border-radius:12px;font-size:14.5px;font-weight:700;
+  color:#241108;text-decoration:none;background:linear-gradient(96deg,var(--saffron),var(--tomato));
+  box-shadow:0 8px 20px -10px rgba(255,91,54,.85)}
+.caffe .cnota{display:block;margin-top:9px;font-size:12px;color:var(--muted);opacity:.85}
+.caffelink{color:var(--saffron);font-weight:600;text-decoration:none}
+.qclear{flex:none;width:28px;height:28px;margin-left:2px;border-radius:999px;display:grid;place-items:center;
+  font-size:13px;line-height:1;color:var(--muted);background:var(--surf2);border:1px solid var(--line)}
+.qclear:active{transform:scale(.9)}
 .ordsel{flex:none;font:inherit;font-size:13px;font-weight:600;color:var(--cream);background:var(--surf2);
   border:1px solid var(--line);border-radius:11px;padding:9px 10px;-webkit-appearance:none;appearance:none;max-width:44vw}
 .cols button{width:34px;height:30px;border-radius:9px;display:grid;place-items:center;color:var(--muted);transition:transform .12s}
@@ -659,6 +673,7 @@ footer{padding:28px 0 6px;font-size:12px;color:var(--muted);line-height:1.65}
 <header><div class="wrap"><div class="hrow">
   <div class="logo"><img class="logomk" src="logo.png" alt="Mamboconvert" width="128" height="128"><span>Mambo<em>convert</em></span></div>
   <button class="themeb" id="updTop" aria-label="Controlla aggiornamenti" title="Controlla aggiornamenti"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-.6 4"/><path d="M20 4v6h-6"/></svg></button>
+  <button class="themeb" id="layout" aria-label="Cambia disposizione delle schede" aria-pressed="false"></button>
   <button class="themeb" id="tema" aria-label="Cambia tema">🌙</button>
 </div></div></header>
 
@@ -2684,7 +2699,9 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const durata=m=>m<60?m+' min':(m/60).toFixed(1).replace('.0','').replace('.',',')+' h';
 const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati. Contenuti e funzionalità protetti: vietata la copia o la clonazione.';
 const BUG_EMAIL='tony.bondreview@gmail.com';
-const APP_VER='v28 · 02-09';
+/* Link PayPal per le donazioni. Finche' e' vuoto la sezione non compare. */
+const PAYPAL_URL='';
+const APP_VER='v29 · 02-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 /* ---- App nativa Android (Capacitor): riconoscimento ---- */
@@ -2709,6 +2726,14 @@ function tileMedia(r){
   return src?`<img class="art" loading="lazy" decoding="async" src="${esc(src)}" alt="${esc(r.nome)}">`:`<div class="art">${art(r)}</div>`;
 }
 
+const ICO_1='<svg viewBox="0 0 16 16" width="17" height="17" fill="currentColor"><rect x="1" y="2" width="14" height="5" rx="1.5"/><rect x="1" y="9" width="14" height="5" rx="1.5"/></svg>';
+const ICO_2='<svg viewBox="0 0 16 16" width="17" height="17" fill="currentColor"><rect x="1" y="2" width="6" height="6" rx="1.5"/><rect x="9" y="2" width="6" height="6" rx="1.5"/><rect x="1" y="10" width="6" height="4" rx="1.5"/><rect x="9" y="10" width="6" height="4" rx="1.5"/></svg>';
+function applyLayout(){
+  const b=document.getElementById('layout'); if(!b)return;
+  b.innerHTML = S.cols===1 ? ICO_1 : ICO_2;
+  b.setAttribute('aria-pressed', S.cols===2?'true':'false');
+  const g=document.getElementById('grid'); if(g)g.setAttribute('data-cols',S.cols);
+}
 function applyTema(){
   document.body.classList.toggle('giorno',S.tema==='giorno');
   document.getElementById('tema').textContent=S.tema==='giorno'?'☀️':'🌙';
@@ -2725,6 +2750,7 @@ function applyPorz(){
 }
 function render(){
   applyPorz();
+  applyLayout();
   document.body.classList.toggle('bimby-on',S.bimby);
   const b=document.getElementById('spBadge'); b.hidden=!S.spesa.length; b.textContent=S.spesa.length;
   const pb=document.getElementById('prBadge'); pb.hidden=!S.pref.length; pb.textContent=S.pref.length;
@@ -2761,13 +2787,10 @@ function vRic(){
   else if(S.ord==='nuove') f=f.slice().sort((a,b)=>(Date.parse(b.agg||0)||0)-(Date.parse(a.agg||0)||0));
   view.innerHTML=`<div class="panel">
     <div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <input id="q" type="search" aria-label="Cerca un piatto o un ingrediente" placeholder="Cerca piatto o ingrediente" value="${esc(S.q)}"></div>
+      <input id="q" type="text" aria-label="Cerca un piatto o un ingrediente" placeholder="Cerca piatto o ingrediente" value="${esc(S.q)}">
+      <button id="qClear" class="qclear" aria-label="Cancella la ricerca"${S.q?'':' hidden'}>✕</button></div>
     <div class="toolrow">
       <div class="chips">${cats.map(c=>`<button class="chip" data-cat="${esc(c)}" aria-pressed="${c===S.cat}">${esc(c)}</button>`).join('')}</div>
-      <div class="cols">
-        <button data-cols="1" aria-pressed="${S.cols===1}" aria-label="Una per riga"><svg viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="5" rx="1.5"/><rect x="1" y="9" width="14" height="5" rx="1.5"/></svg></button>
-        <button data-cols="2" aria-pressed="${S.cols===2}" aria-label="Due per riga"><svg viewBox="0 0 16 16"><rect x="1" y="2" width="6" height="6" rx="1.5"/><rect x="9" y="2" width="6" height="6" rx="1.5"/><rect x="1" y="10" width="6" height="4" rx="1.5"/><rect x="9" y="10" width="6" height="4" rx="1.5"/></svg></button>
-      </div>
       <select id="ord" class="ordsel" aria-label="Ordina le ricette">
         <option value="cons"${S.ord==='cons'?' selected':''}>Ordine consigliato</option>
         <option value="tempo"${S.ord==='tempo'?' selected':''}>Più veloci</option>
@@ -2777,14 +2800,15 @@ function vRic(){
     <div class="chips filtri">${FILTRI.map(fl=>`<button class="chip fl" data-filtro="${fl.id}" aria-pressed="${S.filtri.includes(fl.id)}">${esc(fl.lab)}</button>`).join('')}${S.filtri.length?`<button class="chip clr" data-clrfiltri>Azzera ✕</button>`:''}</div>
     ${f.length?`<div class="grid" id="grid" data-cols="${S.cols}">${f.map((r,i)=>tile(r).replace('class="tile"',`class="tile" style="animation-delay:${Math.min(i*32,320)}ms"`)).join('')}</div><div class="empty" id="noRes" hidden></div>`
       :`<div class="empty">Nessun piatto con questi filtri.<br>Togli un filtro o cambia categoria.</div>`}
-    <footer><span id="cnt">${f.length}</span> di ${RICETTE.length} ricette. Classici italiani con i parametri convertiti per Mambo Touch. Apri una ricetta per “Cucina passo-passo” col timer, le foto e le tue note.<br><br><span class="avviso">${AVVISO_FOTO}</span><br><br>${CREDITO}<br><span style="opacity:.55">versione ${APP_VER}</span></footer></div>`;
-  const i=document.getElementById('q');
-  if(i)i.oninput=e=>{ S.q=e.target.value; filterTiles(); };
+    <footer><span id="cnt">${f.length}</span> di ${RICETTE.length} ricette. Classici italiani con i parametri convertiti per Mambo Touch. Apri una ricetta per “Cucina passo-passo” col timer, le foto e le tue note.<br><br><span class="avviso">${AVVISO_FOTO}</span><br><br>${CREDITO}<br><span style="opacity:.55">versione ${APP_VER}</span>${PAYPAL_URL?`<br><br><a class="caffelink" href="${esc(PAYPAL_URL)}" target="_blank" rel="noopener">\u2615 Offrimi un caffè</a>`:''}</footer></div>`;
+  const i=document.getElementById('q'), qc=document.getElementById('qClear');
+  const segnaX=()=>{ if(qc)qc.hidden=!(i&&i.value); };
+  if(i)i.oninput=e=>{ S.q=e.target.value; segnaX(); filterTiles(); };
+  if(qc)qc.onclick=()=>{ S.q=''; if(i){ i.value=''; i.focus(); } segnaX(); filterTiles(); };
   view.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{S.cat=b.dataset.cat;render();});
   view.querySelectorAll('[data-filtro]').forEach(b=>b.onclick=()=>{const id=b.dataset.filtro;
     if(S.filtri.includes(id))S.filtri=S.filtri.filter(x=>x!==id);else S.filtri.push(id);render();});
   const clr=view.querySelector('[data-clrfiltri]'); if(clr)clr.onclick=()=>{S.filtri=[];render();};
-  view.querySelectorAll('.cols button').forEach(b=>b.onclick=()=>{S.cols=+b.dataset.cols;save('mambo:cols',S.cols);render();});
   const os=document.getElementById('ord');
   if(os)os.onchange=()=>{S.ord=os.value;save('mambo:ord',S.ord);render();};
   filterTiles();
@@ -3376,6 +3400,7 @@ function vConv(){
       </div>
       <button class="btn ghost" id="bugBtn" style="width:100%;margin-top:12px;justify-content:center;gap:8px">\u{1F41E} Segnala un problema</button>
     </div>
+    ${caffeCard()}
 
     <h2 class="sec">Convertitore rapido</h2>
     <p class="muted" style="font-size:14px;margin:8px 0 0">Se preferisci, traduci un singolo passaggio scegliendo dai menu.</p>
@@ -3438,6 +3463,18 @@ function vConv(){
   const bb=document.getElementById('bugBtn');
   if(bb)bb.onclick=segnalaBug;
 }
+function caffeCard(){
+  if(!PAYPAL_URL) return '';
+  return `<div class="caffe">
+    <div class="ctazza">\u2615</div>
+    <div class="ctxt">
+      <b>Offrimi un caffè</b>
+      <p>Mamboconvert è gratis, senza pubblicità e senza account. Se ti fa risparmiare tempo ai fornelli, puoi offrirmi un caffè: aiuta a tenerla online e ad aggiungere nuove ricette.</p>
+      <a class="cbtn" href="${esc(PAYPAL_URL)}" target="_blank" rel="noopener">Offrimi un caffè su PayPal</a>
+      <span class="cnota">Del tutto facoltativo — l'app resta gratis per tutti.</span>
+    </div>
+  </div>`;
+}
 function segnalaBug(){
   const nl='\n';
   const info=['','--- Info utili (lascia qui sotto, aiutano a capire) ---',
@@ -3453,6 +3490,8 @@ function segnalaBug(){
 
 /* ---------- EVENTI ---------- */
 document.querySelectorAll('nav.tabs button').forEach(b=>b.onclick=()=>{S.tab=b.dataset.tab;S.open=null;render();});
+document.getElementById('layout').onclick=()=>{
+  S.cols = S.cols===1?2:1; save('mambo:cols',S.cols); applyLayout(); };
 document.getElementById('tema').onclick=()=>{
   S.tema=S.tema==='giorno'?'notte':'giorno'; save('mambo:tema',S.tema); applyTema(); };
 document.getElementById('updTop').onclick=function(){ this.classList.add('spin'); controllaAggiornamenti(null); };
@@ -3547,8 +3586,15 @@ if(!IS_NATIVE && 'serviceWorker' in navigator){
 (function(){
   const btn=document.getElementById('toTop'); if(!btn)return;
   const deckEl=document.getElementById('deck');
-  const aggiorna=()=>{ const giu=window.scrollY>700 && !(deckEl&&deckEl.classList.contains('open'));
-    btn.hidden=!giu; };
+  let ultimaY=window.scrollY, timer=null;
+  const nascondi=()=>{ btn.hidden=true; };
+  const mostra=()=>{ btn.hidden=false; clearTimeout(timer); timer=setTimeout(nascondi,4000); };
+  const aggiorna=()=>{
+    const y=window.scrollY, versoIlBasso=y>ultimaY; ultimaY=y;
+    if(deckEl&&deckEl.classList.contains('open')){ nascondi(); return; }
+    if(y>700 && versoIlBasso) mostra();
+    else if(y<=700 || !versoIlBasso){ clearTimeout(timer); nascondi(); }
+  };
   window.addEventListener('scroll',aggiorna,{passive:true});
   btn.addEventListener('click',()=>{
     const dolce=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
