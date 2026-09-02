@@ -185,12 +185,20 @@ async function search(id){
   const q=($('#q-'+id)?$('#q-'+id).value:'')||'';
   const box=$('#th-'+id); if(box)box.innerHTML='<span style="color:var(--muted);font-size:12px">Cerco…</span>';
   try{
-    const res=await fetch('https://api.pexels.com/v1/search?per_page=6&orientation=landscape&locale=it-IT&query='+encodeURIComponent(q),
-      {headers:{Authorization:k}});
-    if(res.status===401){ if(er)er.textContent='Pexels rifiuta la chiave (401).';
-      mostraEsito('✗ Pexels rifiuta la chiave (401). Sto usando: '+impronta()+'<br>Confronta con la chiave sulla tua pagina Pexels.',false);
-      if(box)box.innerHTML=''; return false; }
-    if(res.status===429){if(er)er.textContent='Limite Pexels raggiunto: riprova tra un po’.';if(box)box.innerHTML='';return 'rate';}
+    const url='https://api.pexels.com/v1/search?per_page=6&orientation=landscape&locale=it-IT&query='+encodeURIComponent(q);
+    const res=await fetch(url,{headers:{Authorization:k}});
+    if(!res.ok){
+      let corpo=''; try{ corpo=(await res.text()).slice(0,200); }catch(e){}
+      const lim=res.headers.get('X-Ratelimit-Remaining');
+      const dett='Errore '+res.status+' su “'+q+'”'
+        + (lim!==null?' · richieste rimaste: '+lim:'')
+        + (corpo?'<br><small>Risposta: '+corpo.replace(/</g,'&lt;')+'</small>':'')
+        + '<br><small>Chiave usata: '+impronta()+'</small>';
+      if(er)er.textContent='Errore '+res.status+(corpo?' — '+corpo.slice(0,80):'');
+      mostraEsito(dett,false);
+      if(box)box.innerHTML='';
+      return res.status===429?'rate':false;
+    }
     const data=await res.json();
     const ph=data.photos||[];
     if(!ph.length){if(box)box.innerHTML='<span style="color:var(--muted);font-size:12px">Nessun risultato. Cambia la query.</span>';return false;}
