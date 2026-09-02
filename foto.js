@@ -1,156 +1,13 @@
 /* Foto predefinite dei piatti — generato da revisione-foto.html.
-   Fonte: Pexels (licenza Pexels, uso libero). 150 foto.
+   Fonte: Pexels (licenza Pexels, uso libero). 154 foto.
    Crediti:
-   -   Soffritto base: foto di Laura oliveira (Pexels)
-   -   Besciamella: foto di Lauren Diaz (Pexels)
-   -   Sugo di pomodoro semplice: foto di Polina Tankilevitch (Pexels)
-   -   Ragù alla bolognese: foto di Lucio Panerai (Pexels)
-   -   Pesto alla genovese: foto di Elle Hughes (Pexels)
-   -   Maionese: foto di Hiure Gomes Fernandes (Pexels)
-   -   Brodo vegetale: foto di Gundula Vogel (Pexels)
-   -   Brodo di carne: foto di Valeria Boltneva (Pexels)
-   -   Dado vegetale fatto in casa: foto di Sabine Fischer (Pexels)
-   -   Ragù bianco: foto di Paolo Galuppo (Pexels)
-   -   Salsa tonnata: foto di Nadin Sh (Pexels)
-   -   Salsa verde: foto di thecactusena ‎ (Pexels)
-   -   Pesto rosso alla trapanese: foto di Federico  Ramirez (Pexels)
-   -   Ragù d’anatra: foto di Daniela Elena Tentis (Pexels)
-   -   Salsa ai funghi: foto di Vincenzo Malagoli (Pexels)
-   -   Risotto ai funghi porcini: foto di Adriano Bragi (Pexels)
-   -   Risotto alla milanese: foto di Burak Eroglu 🇹🇷 (Pexels)
-   -   Minestrone di verdure: foto di Gu Ko (Pexels)
-   -   Vellutata di zucca: foto di Nataliya Vaitkevich (Pexels)
-   -   Zuppa di lenticchie: foto di Meruyert Gonullu (Pexels)
-   -   Pasta e patate: foto di Change C.C (Pexels)
-   -   Impasto per gnocchi di patate: foto di Erna Daalman (Pexels)
-   -   Impasto per pizza: foto di Willians Huerta (Pexels)
-   -   Pasta zucchine e gamberetti: foto di Anna Guerrero (Pexels)
-   -   Risotto zucchine e gamberetti: foto di Adriano Bragi (Pexels)
-   -   Spaghetti alla carbonara: foto di Adriano Bragi (Pexels)
-   -   Bucatini all’amatriciana: foto di Ahmad  salisu jaafar (Pexels)
-   -   Penne all’arrabbiata: foto di Change C.C (Pexels)
-   -   Spaghetti aglio, olio e peperoncino: foto di Satyam Verma (Pexels)
-   -   Pasta alla Norma: foto di Ron Lach (Pexels)
-   -   Spaghetti cacio e pepe: foto di Takeshi Arai (Pexels)
-   -   Spaghetti alle vongole: foto di Alex Favali (Pexels)
-   -   Pasta alla puttanesca: foto di Ron Lach (Pexels)
-   -   Pasta al tonno e pomodoro: foto di Jess  Ho (Pexels)
-   -   Pasta e ceci: foto di İdil Ceren Çelikler (Pexels)
-   -   Gnocchi alla sorrentina: foto di https://kaboompics.com/ (Pexels)
-   -   Lasagne alla bolognese: foto di Augusto Carneiro Junior (Pexels)
-   -   Risotto ai frutti di mare: foto di Nadin Sh (Pexels)
-   -   Risotto radicchio e taleggio: foto di Micheile Henderson (Pexels)
-   -   Risotto zafferano e salsiccia: foto di Burak Eroglu 🇹🇷 (Pexels)
-   -   Risotto al limone: foto di Alesia  Kozik (Pexels)
-   -   Risi e bisi: foto di Alesia  Kozik (Pexels)
-   -   Impasto per pasta fresca all’uovo: foto di Klaus Nielsen (Pexels)
-   -   Pasta e fagioli: foto di Engin Akyurt (Pexels)
-   -   Pasta con i broccoli arriminati: foto di Livilla Latini (Pexels)
-   -   Orecchiette con cime di rapa: foto di Novkov Visuals (Pexels)
-   -   Zuppa di farro e verdure: foto di Victor Cayke (Pexels)
-   -   Crema di funghi: foto di Farhad Ibrahimzade (Pexels)
-   -   Crema di piselli e menta: foto di Farhad Ibrahimzade (Pexels)
-   -   Passato di verdura: foto di Farhad Ibrahimzade (Pexels)
-   -   Stracciatella in brodo: foto di Mimmo Lusito (Pexels)
-   -   Risotto agli asparagi: foto di minchephoto photography (Pexels)
-   -   Risotto alla zucca: foto di Jana Ohajdova (Pexels)
-   -   Risotto pere e gorgonzola: foto di Polina Tankilevitch (Pexels)
-   -   Gnocchi al gorgonzola: foto di https://kaboompics.com/ (Pexels)
-   -   Pasta al forno: foto di Ronmar Lacamiento (Pexels)
-   -   Tortellini in brodo: foto di Change C.C (Pexels)
-   -   Polenta: foto di Alex Favali (Pexels)
-   -   Gnocchi burro e salvia: foto di Guillermo Berlin (Pexels)
-   -   Pasta ai quattro formaggi: foto di Engin Akyurt (Pexels)
-   -   Pasta alla boscaiola: foto di Ron Lach (Pexels)
-   -   Pasta salmone e panna: foto di Polina Tankilevitch (Pexels)
-   -   Pasta e lenticchie: foto di Pavel Danilyuk (Pexels)
-   -   Pasta e piselli: foto di Felipe Bittencourt (Pexels)
-   -   Gnocchi alla romana: foto di https://kaboompics.com/ (Pexels)
-   -   Risotto al parmigiano: foto di Burak Eroglu 🇹🇷 (Pexels)
-   -   Risotto al nero di seppia: foto di Adriano Bragi (Pexels)
-   -   Risotto primavera: foto di Alesia  Kozik (Pexels)
-   -   Minestra di riso e patate: foto di Victor Cayke (Pexels)
-   -   Vellutata di carote e zenzero: foto di Polina Tankilevitch (Pexels)
-   -   Vellutata di patate e porri: foto di Pixabay (Pexels)
-   -   Zuppa di cipolle: foto di Maria Isabelle Warren (Pexels)
-   -   Zuppa di legumi misti: foto di Change C.C (Pexels)
-   -   Linguine agli scampi: foto di Marian Florinel Condruz (Pexels)
-   -   Spaghetti alla bottarga: foto di Amanda Hemphill (Pexels)
-   -   Paccheri al ragù napoletano: foto di tomateoignons (Pexels)
-   -   Polpette al sugo: foto di ERIVELTO Martins (Pexels)
-   -   Spezzatino di manzo con patate: foto di Nicu Cobasnean (Pexels)
-   -   Salmone al vapore con patate: foto di Gu Ko (Pexels)
-   -   Pollo al limone: foto di Shameel mukkath (Pexels)
-   -   Baccalà mantecato: foto di Toni Canaj (Pexels)
-   -   Scaloppine al limone: foto di Mahmoud Salem (Pexels)
-   -   Scaloppine al marsala: foto di Mahmoud Salem (Pexels)
-   -   Pollo alla cacciatora: foto di Samer Daboul (Pexels)
-   -   Spezzatino di pollo con piselli: foto di Muhammad  Khawar Nazir (Pexels)
-   -   Arrosto di vitello: foto di Joseba  Garcia Moya (Pexels)
-   -   Brasato al Barolo: foto di AMANDA LIM (Pexels)
-   -   Polpettone in umido: foto di Zoltan Istella (Pexels)
-   -   Frittata di zucchine al forno: foto di Kally Dru (Pexels)
-   -   Parmigiana di melanzane: foto di Melanie Dompierre (Pexels)
-   -   Peperoni ripieni: foto di Lena Ti (Pexels)
-   -   Seppie con piselli: foto di ROMAN ODINTSOV (Pexels)
-   -   Impepata di cozze: foto di cottonbro studio (Pexels)
-   -   Orata all’acqua pazza: foto di Engin Akyurt (Pexels)
-   -   Filetti di platessa al vapore: foto di Change C.C (Pexels)
-   -   Pollo arrosto con patate: foto di Rinat Askarov (Pexels)
-   -   Ossobuco alla milanese: foto di pedro furtado (Pexels)
-   -   Coniglio in umido alle olive: foto di Enrique (Pexels)
-   -   Salsicce e fagioli: foto di cottonbro studio (Pexels)
-   -   Polpette di tonno: foto di ERIVELTO Martins (Pexels)
-   -   Frittata di patate al forno: foto di Maxi Gagliano (Pexels)
-   -   Uova al pomodoro: foto di Boryslav Shoot (Pexels)
-   -   Calamari ripieni: foto di Nadine Ginzel (Pexels)
-   -   Merluzzo in umido con patate: foto di Kindel Media (Pexels)
-   -   Spezzatino di vitello ai funghi: foto di Mahmoud Salem (Pexels)
-   -   Involtini di carne al sugo: foto di Gu Ko (Pexels)
-   -   Cotolette al forno: foto di Anna Guerrero (Pexels)
-   -   Gamberi in guazzetto: foto di Valeria Boltneva (Pexels)
-   -   Tonno fresco e cipolle: foto di Gonzalo Guzmán García (Pexels)
-   -   Purè di patate: foto di IARA MELO (Pexels)
-   -   Peperonata: foto di Lena Ti (Pexels)
-   -   Verdure miste al vapore: foto di Ravi Sharma (Pexels)
-   -   Caponata siciliana: foto di Phinley Sperrer (Pexels)
-   -   Patate al forno: foto di Horizon Content (Pexels)
-   -   Fagiolini all’olio e limone: foto di Fidel Hajj (Pexels)
-   -   Funghi trifolati: foto di Jess Loiterton (Pexels)
-   -   Finocchi gratinati: foto di Meliha Ljaljic (Pexels)
-   -   Cipolline in agrodolce: foto di Yang Hao (Pexels)
-   -   Zucchine trifolate: foto di Toa Heftiba Şinca (Pexels)
-   -   Broccoli ripassati in padella: foto di Milton Das (Pexels)
-   -   Cavolfiore gratinato: foto di Meliha Ljaljic (Pexels)
-   -   Melanzane a funghetto: foto di Daniel Dan (Pexels)
-   -   Spinaci al burro: foto di Kiran More (Pexels)
-   -   Insalata russa: foto di Nadin Sh (Pexels)
-   -   Crema pasticcera: foto di Anete Lusina (Pexels)
-   -   Crema al mascarpone per tiramisù: foto di Alejandro Aznar (Pexels)
-   -   Torta allo yogurt: foto di Flo Dahm (Pexels)
-   -   Panna cotta: foto di Shameel mukkath (Pexels)
-   -   Marmellata di fragole: foto di K Zoltan (Pexels)
-   -   Cioccolata calda densa: foto di Sena (Pexels)
-   -   Pasta frolla: foto di Djordje Vezilic (Pexels)
-   -   Ciambellone soffice: foto di Lucas D'Jesus (Pexels)
-   -   Pan di Spagna: foto di Cats Coming (Pexels)
-   -   Plumcake allo yogurt: foto di Gu Ko (Pexels)
-   -   Budino al cioccolato: foto di Shameel mukkath (Pexels)
-   -   Zabaione: foto di Susanne Jutzeler, suju-foto (Pexels)
-   -   Crema al limone (lemon curd): foto di Jo Macabre (Pexels)
-   -   Castagnaccio: foto di Brett Jordan (Pexels)
-   -   Torta di mele: foto di Nonik Yench (Pexels)
-   -   Torta caprese: foto di Pixabay (Pexels)
-   -   Mousse al cioccolato: foto di José Antonio Otegui Auzmendi (Pexels)
-   -   Crema fredda al caffè: foto di saeed basseri (Pexels)
-   -   Confettura di albicocche: foto di Jonathan Borba (Pexels)
-   -   Biscotti frollini: foto di Lynn Elder (Pexels)
-   -   Yogurt fatto in casa: foto di Cats Coming (Pexels)
-   -   Latte di mandorla: foto di Pegah Sharifi (Pexels)
-   -   Pancake: foto di ClickerHappy (Pexels)
-   -   Crema spalmabile alle nocciole: foto di Gülşah Aydoğan (Pexels)
-   -   Frullato di frutta: foto di Kindel Media (Pexels)
-   -   Porridge d’avena: foto di Alexey Demidov (Pexels)
+   -   Maionese: foto di Shameel mukkath (Pexels)
+   -   Salsa tonnata: foto di Ömer Kayan (Pexels)
+   -   Salsa ai funghi: foto di Patrick (Pexels)
+   -   Risotto allo zafferano: foto di Joao Sócola (Pexels)
+   -   Risotto zucchine e scamorza: foto di Willians Huerta (Pexels)
+   -   Cosce di pollo stufate: foto di Project of food (Pexels)
+   -   Pollo alle mandorle: foto di Yang Hao (Pexels)
 */
 window.FOTODEF = {
   "soffritto": "https://images.pexels.com/photos/34705702/pexels-photo-34705702.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
@@ -158,16 +15,16 @@ window.FOTODEF = {
   "sugo-pomodoro": "https://images.pexels.com/photos/5419339/pexels-photo-5419339.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "ragu": "https://images.pexels.com/photos/3908197/pexels-photo-3908197.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "pesto": "https://images.pexels.com/photos/4094001/pexels-photo-4094001.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
-  "maionese": "https://images.pexels.com/photos/11094170/pexels-photo-11094170.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
+  "maionese": "https://images.pexels.com/photos/6271896/pexels-photo-6271896.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200",
   "brodo-vegetale": "https://images.pexels.com/photos/28913739/pexels-photo-28913739.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "brodo-carne": "https://images.pexels.com/photos/1247675/pexels-photo-1247675.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "dado-vegetale": "https://images.pexels.com/photos/19052916/pexels-photo-19052916.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "ragu-bianco": "https://images.pexels.com/photos/36853437/pexels-photo-36853437.png?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
-  "salsa-tonnata": "https://images.pexels.com/photos/13806702/pexels-photo-13806702.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
+  "salsa-tonnata": "https://images.pexels.com/photos/14909390/pexels-photo-14909390.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200",
   "salsa-verde": "https://images.pexels.com/photos/28935581/pexels-photo-28935581.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "pesto-rosso": "https://images.pexels.com/photos/12006395/pexels-photo-12006395.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "ragu-anatra": "https://images.pexels.com/photos/725990/pexels-photo-725990.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
-  "salsa-funghi": "https://images.pexels.com/photos/8917285/pexels-photo-8917285.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
+  "salsa-funghi": "https://images.pexels.com/photos/20809056/pexels-photo-20809056.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200",
   "risotto-funghi": "https://images.pexels.com/photos/31779539/pexels-photo-31779539.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "risotto-milanese": "https://images.pexels.com/photos/35476016/pexels-photo-35476016.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "minestrone": "https://images.pexels.com/photos/37261926/pexels-photo-37261926.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
@@ -229,6 +86,8 @@ window.FOTODEF = {
   "linguine-scampi": "https://images.pexels.com/photos/30820134/pexels-photo-30820134.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "spaghetti-bottarga": "https://images.pexels.com/photos/7440361/pexels-photo-7440361.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "paccheri-ragu": "https://images.pexels.com/photos/3821950/pexels-photo-3821950.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
+  "risotto-zafferano": "https://images.pexels.com/photos/6763277/pexels-photo-6763277.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200",
+  "risotto-zucchine-scamorza": "https://images.pexels.com/photos/36430159/pexels-photo-36430159.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200",
   "polpette": "https://images.pexels.com/photos/34314421/pexels-photo-34314421.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "spezzatino": "https://images.pexels.com/photos/19748955/pexels-photo-19748955.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "salmone-vapore": "https://images.pexels.com/photos/37332337/pexels-photo-37332337.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
@@ -262,6 +121,8 @@ window.FOTODEF = {
   "cotolette-forno": "https://images.pexels.com/photos/4078178/pexels-photo-4078178.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "gamberi-guazzetto": "https://images.pexels.com/photos/679454/pexels-photo-679454.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "tonno-cipolle": "https://images.pexels.com/photos/38681231/pexels-photo-38681231.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
+  "cosce-pollo-stufate": "https://images.pexels.com/photos/36997454/pexels-photo-36997454.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200",
+  "pollo-mandorle": "https://images.pexels.com/photos/10692530/pexels-photo-10692530.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200",
   "pure": "https://images.pexels.com/photos/30635680/pexels-photo-30635680.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "peperonata": "https://images.pexels.com/photos/39206892/pexels-photo-39206892.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "verdure-vapore": "https://images.pexels.com/photos/7515403/pexels-photo-7515403.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
