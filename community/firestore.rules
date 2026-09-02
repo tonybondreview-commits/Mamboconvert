@@ -6,7 +6,7 @@ service cloud.firestore {
        vedi SETUP.md). Solo tu potrai leggere le proposte e pubblicare. */
     function isAdmin() {
       return request.auth != null
-        && request.auth.uid == 'INCOLLA_QUI_IL_TUO_UID_ADMIN';
+        && request.auth.uid == 'oa4dOu8HZLYH5nKsV0P65bWCI6J3';
     }
     function loggato() { return request.auth != null; }
 

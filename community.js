@@ -16,7 +16,7 @@
   /* Dopo il primo avvio metti qui il TUO UID (lo trovi nella scheda Community,
      "Il tuo ID"): abilita il pannello di moderazione solo per te.
      Ricordati di metterlo anche in community/firestore.rules e pubblicare. */
-  const ADMIN_UID = "";
+  const ADMIN_UID = "oa4dOu8HZLYH5nKsV0P65bWCI6J3";
 
   const V = "10.12.2";
   const BASE = "https://www.gstatic.com/firebasejs/"+V+"/";
