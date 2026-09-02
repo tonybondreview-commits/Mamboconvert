@@ -170,6 +170,10 @@ function render(){
         ${s?`<button class="mini" data-clear="${r.id}">Togli</button>`:''}
         <span class="state${s?' ok':''}" id="st-${r.id}">${s?'✓ scelta':''}</span>
       </div>
+      <div class="chd" style="margin-top:6px">
+        <input class="q" id="u-${r.id}" placeholder="…oppure incolla qui il link di una foto" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <button class="mini" data-usa="${r.id}">Usa</button>
+      </div>
       <div class="thumbs" id="th-${r.id}"></div>
       <div class="err" id="er-${r.id}"></div>
     </div>`;
@@ -235,6 +239,15 @@ main.addEventListener('click',e=>{
     $('#card-'+id).classList.add('done');
     refreshMeta();
   }
+});
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-usa]'); if(!b) return;
+  const id=b.dataset.usa, campo=$('#u-'+id), er=$('#er-'+id);
+  const u=(campo?campo.value:'').trim();
+  if(er)er.textContent='';
+  if(!/^https?:\/\/\S+$/i.test(u)){ if(er)er.textContent='Incolla un indirizzo che inizia con http.'; return; }
+  sel[id]={url:u, thumb:u};
+  saveSel(); refreshMeta(); render();
 });
 $('#onlyMissing').onchange=render;
 
