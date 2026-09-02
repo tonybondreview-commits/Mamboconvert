@@ -734,6 +734,7 @@ footer{padding:28px 0 6px;font-size:12px;color:var(--muted);line-height:1.65}
   <button role="tab" data-tab="frigo" aria-selected="false"><svg viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="2.5"/><path d="M6 11h12M9 7v1.5M9 14v2"/></svg>Frigo</button>
   <button role="tab" data-tab="spesa" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M5 8h14l-1.2 11a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8Z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>Spesa<span class="badge" id="spBadge" hidden>0</span></button>
   <button role="tab" data-tab="pref" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-9.3A3.9 3.9 0 0 1 12 8a3.9 3.9 0 0 1 7 2.7C19 15.6 12 20 12 20Z"/></svg>Preferiti<span class="badge" id="prBadge" hidden>0</span></button>
+  <button role="tab" data-tab="hub" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M12 3 4 7v6c0 4 3.5 6.5 8 8 4.5-1.5 8-4 8-8V7Z"/><path d="M9 12l2 2 4-4"/></svg>Community</button>
   <button role="tab" data-tab="conv" aria-selected="false"><svg viewBox="0 0 24 24"><path d="M4 7h11M4 17h11"/><path d="m17 4 3 3-3 3M17 14l3 3-3 3"/></svg>Conversioni</button>
 </nav>
 
@@ -2795,7 +2796,7 @@ const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati.
 const BUG_EMAIL='tony.bondreview@gmail.com';
 /* Link PayPal per le donazioni. Finche' e' vuoto la sezione non compare. */
 const PAYPAL_URL='https://www.paypal.me/ACesare422';
-const APP_VER='v43 · 02-09';
+const APP_VER='v44 · 02-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 /* ---- App nativa Android (Capacitor): riconoscimento ---- */
@@ -2854,7 +2855,7 @@ function render(){
   else if(S.pagina==='moderazione'){vModera();window.scrollTo(0,0);}
   else if(S.editing){vEditor();window.scrollTo(0,0);}
   else if(S.open){vDett();}
-  else{({ricette:vRic,frigo:vFrigo,spesa:vSpesa,conv:vConv,pref:vPref})[S.tab]();window.scrollTo(0,0);}
+  else{({ricette:vRic,frigo:vFrigo,spesa:vSpesa,conv:vConv,pref:vPref,hub:vHub})[S.tab]();window.scrollTo(0,0);}
 }
 function tile(r,badge){
   const hab=r.caraffa==='Habana';
@@ -3557,18 +3558,6 @@ function vPref(){
       <div class="grid" data-cols="${S.cols}">${f.map((r,i)=>tile(r).replace('class="tile"',`class="tile" style="animation-delay:${Math.min(i*32,320)}ms"`)).join('')}</div>`
     :`<div class="empty">Nessun preferito ancora.<br>Tocca il cuore in alto a destra su una ricetta e la ritrovi qui.</div>`}
     <div class="card pad" style="margin-top:24px">
-      <h3 class="sec2" style="margin:0 0 4px">Le mie ricette</h3>
-      <p class="muted" style="font-size:13.5px;line-height:1.45;margin:0 0 13px">Crea le tue ricette: compaiono nella lista insieme alle altre, con i quadranti, la cottura passo-passo e nel backup. Restano su questo dispositivo.</p>
-      ${S.mie.length?`<div class="grid" data-cols="${S.cols}">${S.mie.map(r=>tile(r)).join('')}</div>`:''}
-      <div class="acts" style="margin-top:${S.mie.length?'14px':'0'}"><button class="btn" data-editact="new">\uFF0B Crea una ricetta</button></div>
-    </div>
-    <div class="card pad" style="margin-top:24px">
-      <h3 class="sec2" style="margin:0 0 4px">Community</h3>
-      <p class="muted" style="font-size:13.5px;line-height:1.45;margin:0 0 13px">Sfoglia le ricette proposte e approvate. Per proporre le tue, aprile e usa "Proponi per il catalogo".</p>
-      <div class="acts"><button class="btn" data-compagina="community">Ricette della community</button></div>
-      <div id="comAdmin"></div>
-    </div>
-    <div class="card pad" style="margin-top:24px">
       <h3 class="sec2" style="margin:0 0 4px">Dati e backup</h3>
       <p class="muted" style="font-size:13.5px;line-height:1.45;margin:0 0 13px">Preferiti, note e foto sono salvati solo su questo dispositivo. Esporta un file per non perderli, o per spostarli su un altro telefono. Il file resta sul tuo dispositivo, non viene inviato a nessun server.</p>
       <div class="acts">
@@ -3580,6 +3569,21 @@ function vPref(){
   const eb=document.getElementById('expData'); if(eb)eb.onclick=exportData;
   const ib=document.getElementById('impData'), ifl=document.getElementById('impFile');
   if(ib&&ifl){ ib.onclick=()=>ifl.click(); ifl.onchange=()=>{ const f=ifl.files&&ifl.files[0]; if(f)importData(f); ifl.value=''; }; }
+}
+
+/* ---------- HUB: Le mie ricette + Community (tab dedicato) ---------- */
+function vHub(){
+  view.innerHTML=`<div class="panel">
+    <h2 class="sec" style="margin-top:6px">Le mie ricette</h2>
+    <p class="muted" style="font-size:13.5px;line-height:1.45;margin:8px 2px 0">Crea le tue ricette: compaiono nella lista insieme alle altre, con i quadranti e la cottura passo-passo. Restano su questo dispositivo e finiscono nel backup.</p>
+    ${S.mie.length?`<div class="grid" data-cols="${S.cols}" style="margin-top:16px">${S.mie.map(r=>tile(r)).join('')}</div>`:''}
+    <div class="acts" style="margin-top:16px"><button class="btn" data-editact="new">\uFF0B Crea una ricetta</button></div>
+
+    <h2 class="sec" style="margin-top:30px">Community</h2>
+    <p class="muted" style="font-size:13.5px;line-height:1.45;margin:8px 2px 0">Sfoglia le ricette proposte dagli utenti e approvate. Per proporre le tue, aprile e usa \u201cProponi per il catalogo\u201d.</p>
+    <div class="acts" style="margin-top:14px"><button class="btn" data-compagina="community">Ricette della community</button></div>
+    <div id="comAdmin"></div>
+  </div>`;
   wireCommunityPref();
 }
 
