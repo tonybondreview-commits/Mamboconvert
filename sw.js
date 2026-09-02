@@ -1,8 +1,8 @@
 /* Service worker: network-first per l'app (nuove ricette da sole quando sei online),
    cache-first per le foto dei piatti (anche remote, es. Pexels) così restano offline
    dopo la prima volta che le vedi. Cambia CACHE per forzare la pulizia dell'app. */
-const CACHE = 'cucina-mambo-v26';
-const IMG_CACHE = 'mambo-fotos';   /* persistente: non si svuota agli aggiornamenti */
+const CACHE = 'cucina-mambo-v27';
+const IMG_CACHE = 'mambo-fotos-v2';   /* persistente; il nome cambia solo per svuotare cache guaste */
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './logo.png', './foto.js',
   './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
@@ -21,8 +21,12 @@ self.addEventListener('message', e => {
   if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
+/* Solo le immagini vere. Le chiamate alle API non sono foto: metterle in cache
+   congelerebbe anche le risposte di errore, che poi tornerebbero identiche per
+   sempre (e' successo con Pexels: un 401 di una chiave scaduta restava salvato). */
 function isFoto(req, url) {
-  return req.destination === 'image' || /(^|\.)pexels\.com$/.test(url.hostname)
+  if (/^api\./i.test(url.hostname)) return false;
+  return req.destination === 'image'
     || /\.(jpe?g|png|webp|avif|gif)$/i.test(url.pathname);
 }
 
@@ -35,8 +39,10 @@ self.addEventListener('fetch', e => {
   if (isFoto(req, url)) {
     e.respondWith(
       caches.match(req).then(hit => hit || fetch(req).then(res => {
-        const copy = res.clone();
-        caches.open(IMG_CACHE).then(c => c.put(req, copy)).catch(() => {});
+        if (res && res.ok) {                       /* solo le risposte riuscite */
+          const copy = res.clone();
+          caches.open(IMG_CACHE).then(c => c.put(req, copy)).catch(() => {});
+        }
         return res;
       }).catch(() => Response.error()))
     );
@@ -47,8 +53,10 @@ self.addEventListener('fetch', e => {
   if (url.origin !== location.origin) return;
   e.respondWith(
     fetch(req).then(res => {
-      const copy = res.clone();
-      caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
+      if (res && res.ok) {
+        const copy = res.clone();
+        caches.open(CACHE).then(c => c.put(req, copy)).catch(() => {});
+      }
       return res;
     }).catch(() => caches.match(req).then(r => r || caches.match('./index.html')))
   );
