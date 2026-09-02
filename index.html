@@ -632,6 +632,35 @@ body.bimby-on .bimby{display:block}
 .tile .newtag{position:absolute;top:11px;left:11px;padding:4px 10px;border-radius:999px;
   font-size:11.5px;font-weight:700;letter-spacing:.02em;color:#241108;
   background:linear-gradient(96deg,var(--saffron),var(--tomato));box-shadow:0 4px 12px -6px rgba(255,91,54,.9)}
+.tile .miatag{background:linear-gradient(96deg,#37b56a,#1f9a54);color:#fff}
+/* editor ricette */
+.edhead{display:flex;align-items:center;gap:12px;margin:6px 0 4px}
+.edhead .fab{position:static;width:38px;height:38px}
+.edform .edlab,.edlab{display:flex;flex-direction:column;gap:6px;font-size:12.5px;font-weight:700;
+  letter-spacing:.03em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.edgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.edtxt,.ednum,.edun,.edta,.edlab select,.edlab input,.edparams input,.edparams select{
+  font:inherit;font-size:15px;color:var(--cream);background:var(--surf2);border:1px solid var(--line);
+  border-radius:10px;padding:11px 12px;-webkit-appearance:none;appearance:none;width:100%;text-transform:none;letter-spacing:normal;font-weight:400}
+.edta{line-height:1.45;resize:vertical}
+.edrow{display:flex;gap:7px;align-items:center;margin-bottom:8px}
+.edrow .ednum{width:66px;flex:none;text-align:center}
+.edrow .edun{width:60px;flex:none;text-align:center}
+.edrow .edtxt{flex:1;min-width:0}
+.eddel{width:34px;height:34px;flex:none;border-radius:9px;background:var(--surf2);border:1px solid var(--line);
+  color:var(--muted);font-size:13px}
+.edstep{background:var(--surf2);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}
+.edsthd{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.edsthd .edn{width:24px;height:24px;border-radius:999px;border:1px solid var(--line-2);color:var(--saffron);
+  font-size:12px;font-weight:700;display:grid;place-items:center}
+.edstep .edta{margin-bottom:10px}
+.edparams{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.edparams label{display:flex;flex-direction:column;gap:4px;font-size:11px;font-weight:700;letter-spacing:.03em;
+  text-transform:uppercase;color:var(--muted)}
+.edparams input,.edparams select{padding:8px 10px;font-size:14px}
+.edparams label:last-child{grid-column:1 / -1}
+.edadd{width:100%;margin-top:6px;justify-content:center}
+@media (min-width:520px){ .edparams{grid-template-columns:repeat(4,1fr)} .edparams label:last-child{grid-column:auto} }
 .brow{display:flex;gap:12px;background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:13px 14px;margin-top:10px}
 .brow .bnum{flex:none;width:24px;height:24px;border-radius:999px;border:1px solid var(--line-2);color:var(--saffron);
   font-size:12.5px;font-weight:700;display:grid;place-items:center;font-variant-numeric:tabular-nums}
@@ -2701,7 +2730,7 @@ function mini(o,grad){
    foto     : foto reale del piatto  (id -> url|dataURL)
    stepfoto : foto reale del passaggio (id#indice -> url|dataURL)
    ============================================================ */
-const S={porz:4,tab:'ricette',q:'',cat:'Tutte',filtri:[],open:null,frigo:[],spesa:[],bimby:false,robot:'mambo',
+const S={porz:4,tab:'ricette',q:'',cat:'Tutte',filtri:[],open:null,frigo:[],spesa:[],bimby:false,robot:'mambo',mie:[],editing:false,draft:null,
   foto:{},stepfoto:{},accfoto:{},note:{},pref:[],cols:1,tema:'giorno',ord:'cons'};
 /* filtri combinabili (AND) con categoria e ricerca */
 const FILTRI=[
@@ -2756,7 +2785,7 @@ const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati.
 const BUG_EMAIL='tony.bondreview@gmail.com';
 /* Link PayPal per le donazioni. Finche' e' vuoto la sezione non compare. */
 const PAYPAL_URL='https://www.paypal.me/ACesare422';
-const APP_VER='v38 · 02-09';
+const APP_VER='v39 · 02-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 /* ---- App nativa Android (Capacitor): riconoscimento ---- */
@@ -2811,13 +2840,13 @@ function render(){
   const pb=document.getElementById('prBadge'); pb.hidden=!S.pref.length; pb.textContent=S.pref.length;
   applyTema();
   document.querySelectorAll('nav.tabs button').forEach(t=>t.setAttribute('aria-selected',t.dataset.tab===S.tab));
-  if(S.open){vDett();}else{({ricette:vRic,frigo:vFrigo,spesa:vSpesa,conv:vConv,pref:vPref})[S.tab]();window.scrollTo(0,0);}
+  if(S.editing){vEditor();window.scrollTo(0,0);}else if(S.open){vDett();}else{({ricette:vRic,frigo:vFrigo,spesa:vSpesa,conv:vConv,pref:vPref})[S.tab]();window.scrollTo(0,0);}
 }
 function tile(r,badge){
   const hab=r.caraffa==='Habana';
   const cam=S.foto[r.id]?'':'<span class="camtag" aria-hidden="true">📷</span>';
   const nota=(S.note[r.id]&&S.note[r.id].trim())?'<span class="notetag" aria-hidden="true">📝</span>':'';
-  const nuova=isNuova(r)?'<span class="newtag">Novità</span>':'';
+  const nuova=r.mia?'<span class="newtag miatag">Mia</span>':(isNuova(r)?'<span class="newtag">Novità</span>':'');
   return `<button class="tile" data-open="${r.id}" data-search="${esc(norm(r.nome+' '+r.ing.map(i=>i.n).join(' ')+' '+(r.tag||[]).join(' ')))}">${tileMedia(r)}${badge||''}${cam}${nota}${nuova}
     <span class="fav" data-fav="${r.id}" role="button" aria-pressed="${S.pref.includes(r.id)}" aria-label="Preferito">${S.pref.includes(r.id)?'♥':'♡'}</span>
     <span class="lay"><span class="nm">${esc(r.nome)}</span>
@@ -3046,7 +3075,7 @@ function vDett(){
         <div class="txt"><span class="n"></span><span>${esc(s.x)}${
         S.robot==='mambo'&&s.a&&s.a!=='—'?`<span class="accpill">${accIco(s.a)}${esc(s.a)}</span>`:''}${isFuori(s)?'<span class="outpill">\u{1F373} fuori dal robot</span>':''}${dosiHTML(add[idx],r)}</span></div>
       ${quadriFor(s)}
-      ${S.robot==='mambo'?`<div class="bimby">Sul Bimby era <b>${esc(s.b)}</b></div>`:''}
+      ${S.robot==='mambo'&&s.b&&s.b!=='—'?`<div class="bimby">Sul Bimby era <b>${esc(s.b)}</b></div>`:''}
       <button class="stepcam" data-picstep="${r.id}" data-i="${idx}">${camSvg}${sf?'Cambia foto del passaggio':'Aggiungi foto del passaggio'}</button>
       </div>`;}).join('')})()}</div>
     ${r.note&&r.note.length?`<h3 class="sec">Note di conversione</h3>${r.note.map(n=>`<div class="note">${esc(n)}</div>`).join('')}`:''}
@@ -3057,6 +3086,10 @@ function vDett(){
       <button class="btn ${inSp?'on':''}" data-spesa="${r.id}">${inSp?'✓ Nella spesa':'Aggiungi alla spesa'}</button>
       <button class="btn ghost" data-share="${r.id}"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin-right:6px"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>Condividi</button>
       <button class="btn ghost" data-back>Chiudi</button></div>
+    ${r.mia?`<div class="acts" style="margin-top:10px">
+      <button class="btn ghost" data-editmia="${r.id}">\u270E Modifica</button>
+      <button class="btn ghost" data-proponi="${r.id}">\u2197 Proponi per il catalogo</button>
+      <button class="btn ghost" data-delmia="${r.id}" style="color:var(--tomato)">Elimina</button></div>`:''}
     ${S.robot==='mambo'?`<button class="toggle" data-bimby aria-pressed="${S.bimby}"><span class="sw"></span>Mostra i parametri Bimby originali</button>`:''}
   </div>`;
   const fu=document.getElementById('fotoUrl');
@@ -3260,7 +3293,7 @@ deckTrack.addEventListener('touchend',e=>{if(tx0===null)return;const dx=e.change
 function collectData(){
   return { app:'mamboconvert', v:1, date:new Date().toISOString(), data:{
     pref:S.pref, note:S.note, foto:S.foto, stepfoto:S.stepfoto, accfoto:S.accfoto,
-    frigo:S.frigo, spesa:S.spesa, porz:S.porz, tema:S.tema, cols:S.cols } };
+    frigo:S.frigo, spesa:S.spesa, porz:S.porz, tema:S.tema, cols:S.cols, mie:S.mie } };
 }
 function exportData(){
   try{
@@ -3287,10 +3320,119 @@ async function importData(file){
   if(typeof d.porz==='number'){ S.porz=d.porz; save('mambo:porz',S.porz); }
   if(d.tema){ S.tema=d.tema; save('mambo:tema',S.tema); applyTema(); }
   if(typeof d.cols==='number'){ S.cols=d.cols; save('mambo:cols',S.cols); }
+  if(Array.isArray(d.mie)){ const ids=new Set(S.mie.map(r=>r.id)); d.mie.forEach(r=>{ if(r&&r.id&&!ids.has(r.id)){S.mie.push(r);ids.add(r.id);} }); salvaMie(); }
   alert('Backup importato \u2713'); render();
 }
 
 /* ---------- PREFERITI ---------- */
+/* ============================================================
+   LE MIE RICETTE — editor personale (tutto sul dispositivo)
+   ============================================================ */
+const CAT_ORD=['Basi e salse','Primi','Secondi','Contorni','Dolci','Colazione'];
+const ACCESSORI=['—','Lame','MamboMix','Farfalla','Cestello','Vaporiera'];
+function mieId(){ return 'mia-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+function ricettaVuota(){ return {id:mieId(), mia:true, nome:'', cat:'Primi', tempo:20, porz:4, vol:1000,
+  caraffa:'Acciaio', acc:[], tag:[], ing:[{q:'',u:'g',n:''}],
+  steps:[{x:'',t:'',v:'',T:'',P:'',a:'—',b:'—'}], note:[]}; }
+function syncMie(){ for(let i=RICETTE.length-1;i>=0;i--) if(RICETTE[i].mia) RICETTE.splice(i,1); RICETTE.push(...S.mie); }
+function salvaMie(){ save('mambo:mieric',S.mie); syncMie(); }
+function apriEditor(id){ const r=id&&S.mie.find(x=>x.id===id);
+  S.draft=r?JSON.parse(JSON.stringify(r)):ricettaVuota(); S.editing=true; S.open=null; render(); }
+
+function leggiForm(){ const d=S.draft; if(!d)return; const g=id=>{const e=document.getElementById(id);return e?e.value:'';};
+  d.nome=g('ed-nome').trim(); d.cat=g('ed-cat')||'Primi'; d.tempo=Math.max(1,+g('ed-tempo')||1);
+  d.porz=Math.min(12,Math.max(1,+g('ed-porz')||1)); d.caraffa=g('ed-caraffa')||'Acciaio';
+  d.note=g('ed-note').split('\n').map(s=>s.trim()).filter(Boolean);
+  d.ing=d.ing.map((_,i)=>({q:parseFloat((g('ing-q-'+i)||'').replace(',','.'))||0, u:(g('ing-u-'+i)||'g').trim()||'g', n:(g('ing-n-'+i)||'').trim()}));
+  d.steps=d.steps.map((_,i)=>({x:(g('st-x-'+i)||'').trim(),
+    t:(g('st-t-'+i)||'').trim()||'—', v:(g('st-v-'+i)||'').trim()||'—',
+    T:(g('st-T-'+i)||'').trim()||'—', P:(g('st-P-'+i)||'').trim()||'—',
+    a:g('st-a-'+i)||'—', b:'—'}));
+  d.acc=[...new Set(d.steps.map(s=>s.a).filter(a=>a&&a!=='—'))];
+  d.vol=Math.max(300,Math.round(d.ing.reduce((s,i)=>s+(i.q||0),0)/50)*50);
+}
+function salvaEditor(){ leggiForm(); const d=S.draft;
+  if(!d.nome){ alert('Dai un nome alla ricetta.'); return; }
+  d.steps=d.steps.filter(s=>s.x);
+  if(!d.steps.length){ alert('Scrivi almeno un passaggio.'); return; }
+  d.ing=d.ing.filter(i=>i.n);
+  const i=S.mie.findIndex(r=>r.id===d.id);
+  if(i>=0) S.mie[i]=d; else S.mie.push(d);
+  salvaMie(); S.editing=false; const nid=d.id; S.draft=null; S.open=nid; render();
+}
+function eliminaMia(id){ const d=id?S.mie.find(r=>r.id===id):(S.draft);
+  if(!d)return; if(!confirm('Eliminare "'+(d.nome||'questa ricetta')+'"? Non si può annullare.'))return;
+  S.mie=S.mie.filter(r=>r.id!==d.id); salvaMie(); S.editing=false; S.draft=null; S.open=null; render(); }
+function proponiRicetta(id){ const r=RICETTE.find(x=>x.id===id); if(!r)return;
+  try{
+    const pacco={app:'mamboconvert-ricetta', v:1, data:new Date().toISOString(), recipe:r};
+    const blob=new Blob([JSON.stringify(pacco,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob), a=document.createElement('a');
+    a.href=url; a.download='ricetta-'+r.id+'.json'; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1500);
+    alert('Ricetta salvata come file. Inviala a chi cura Mamboconvert (con "Segnala un problema" o allegandola a una mail) e, se adatta, verrà aggiunta al catalogo ufficiale.');
+  }catch(e){ alert('Non riesco a creare il file su questo dispositivo.'); }
+}
+
+function ingRow(it,i){ return `<div class="edrow" data-ingrow="${i}">
+    <input id="ing-q-${i}" class="ednum" inputmode="decimal" placeholder="q.tà" value="${esc(it.q===''||it.q==null?'':it.q)}">
+    <input id="ing-u-${i}" class="edun" placeholder="g" value="${esc(it.u||'')}">
+    <input id="ing-n-${i}" class="edtxt" placeholder="ingrediente" value="${esc(it.n||'')}">
+    <button class="eddel" data-editact="delIng" data-i="${i}" aria-label="Togli ingrediente">✕</button>
+  </div>`; }
+function stepRow(s,i){ return `<div class="edstep" data-strow="${i}">
+    <div class="edsthd"><span class="edn">${i+1}</span>
+      <button class="eddel" data-editact="delStep" data-i="${i}" aria-label="Togli passaggio">✕</button></div>
+    <textarea id="st-x-${i}" class="edta" rows="2" placeholder="Cosa fare in questo passaggio">${esc(s.x||'')}</textarea>
+    <div class="edparams">
+      <label>tempo<input id="st-t-${i}" placeholder="5 min" value="${esc(s.t&&s.t!=='—'?s.t:'')}"></label>
+      <label>vel.<input id="st-v-${i}" inputmode="decimal" placeholder="1" value="${esc(s.v&&s.v!=='—'?s.v:'')}"></label>
+      <label>gradi<input id="st-T-${i}" inputmode="numeric" placeholder="120" value="${esc(s.T&&s.T!=='—'?String(s.T).replace(/[^0-9]/g,''):'')}"></label>
+      <label>pot.<input id="st-P-${i}" inputmode="numeric" placeholder="8" value="${esc(s.P&&s.P!=='—'?s.P:'')}"></label>
+      <label>accessorio<select id="st-a-${i}">${ACCESSORI.map(a=>`<option${(s.a||'—')===a?' selected':''}>${a}</option>`).join('')}</select></label>
+    </div>
+  </div>`; }
+
+function vEditor(){ const d=S.draft; if(!d){ S.editing=false; render(); return; }
+  const nuova=!S.mie.some(r=>r.id===d.id);
+  view.innerHTML=`<div class="panel">
+    <div class="edhead"><button class="fab" data-editact="cancel" aria-label="Annulla">←</button>
+      <h2 class="sec" style="margin:0">${nuova?'Nuova ricetta':'Modifica ricetta'}</h2></div>
+    <div class="card pad edform">
+      <label class="edlab">Nome del piatto<input id="ed-nome" class="edtxt" placeholder="Es. La mia pasta al forno" value="${esc(d.nome)}"></label>
+      <div class="edgrid">
+        <label class="edlab">Categoria<select id="ed-cat">${CAT_ORD.map(c=>`<option${d.cat===c?' selected':''}>${c}</option>`).join('')}</select></label>
+        <label class="edlab">Caraffa<select id="ed-caraffa"><option${d.caraffa==='Acciaio'?' selected':''}>Acciaio</option><option${d.caraffa==='Habana'?' selected':''}>Habana</option></select></label>
+        <label class="edlab">Minuti<input id="ed-tempo" inputmode="numeric" class="ednum" value="${esc(d.tempo)}"></label>
+        <label class="edlab">Persone<input id="ed-porz" inputmode="numeric" class="ednum" value="${esc(d.porz)}"></label>
+      </div>
+    </div>
+
+    <h3 class="sec2" style="margin:22px 2px 8px">Ingredienti</h3>
+    <div class="card pad">
+      <div id="ed-ings">${d.ing.map(ingRow).join('')}</div>
+      <button class="btn ghost edadd" data-editact="addIng">＋ Aggiungi ingrediente</button>
+    </div>
+
+    <h3 class="sec2" style="margin:22px 2px 8px">Passaggi sul Mambo</h3>
+    <div class="card pad">
+      <div id="ed-steps">${d.steps.map(stepRow).join('')}</div>
+      <button class="btn ghost edadd" data-editact="addStep">＋ Aggiungi passaggio</button>
+      <p class="muted" style="font-size:12.5px;line-height:1.45;margin:12px 2px 0">Lascia vuoti i campi che non servono (es. i gradi se non c'è cottura). I semicerchi si disegnano da soli.</p>
+    </div>
+
+    <h3 class="sec2" style="margin:22px 2px 8px">Note <span class="muted" style="font-weight:400;font-size:13px">(facoltative, una per riga)</span></h3>
+    <div class="card pad"><textarea id="ed-note" class="edta" rows="3" placeholder="Consigli, varianti, trucchi…">${esc((d.note||[]).join('\n'))}</textarea></div>
+
+    <div class="acts" style="margin-top:22px">
+      <button class="btn" data-editact="save">Salva la ricetta</button>
+      <button class="btn ghost" data-editact="cancel">Annulla</button>
+      ${!nuova?`<button class="btn ghost" data-editact="del" data-i="${esc(d.id)}" style="color:var(--tomato)">Elimina</button>`:''}
+    </div>
+  </div>`;
+}
+
+
 function vPref(){
   const f=RICETTE.filter(r=>S.pref.includes(r.id));
   view.innerHTML=`<div class="panel">
@@ -3298,6 +3440,12 @@ function vPref(){
     ${f.length?`<p class="muted" style="font-size:14px;margin:8px 0 0">${f.length} ${f.length===1?'ricetta salvata':'ricette salvate'}. Tocca di nuovo il cuore per togliere.</p>
       <div class="grid" data-cols="${S.cols}">${f.map((r,i)=>tile(r).replace('class="tile"',`class="tile" style="animation-delay:${Math.min(i*32,320)}ms"`)).join('')}</div>`
     :`<div class="empty">Nessun preferito ancora.<br>Tocca il cuore in alto a destra su una ricetta e la ritrovi qui.</div>`}
+    <div class="card pad" style="margin-top:24px">
+      <h3 class="sec2" style="margin:0 0 4px">Le mie ricette</h3>
+      <p class="muted" style="font-size:13.5px;line-height:1.45;margin:0 0 13px">Crea le tue ricette: compaiono nella lista insieme alle altre, con i quadranti, la cottura passo-passo e nel backup. Restano su questo dispositivo.</p>
+      ${S.mie.length?`<div class="grid" data-cols="${S.cols}">${S.mie.map(r=>tile(r)).join('')}</div>`:''}
+      <div class="acts" style="margin-top:${S.mie.length?'14px':'0'}"><button class="btn" data-editact="new">\uFF0B Crea una ricetta</button></div>
+    </div>
     <div class="card pad" style="margin-top:24px">
       <h3 class="sec2" style="margin:0 0 4px">Dati e backup</h3>
       <p class="muted" style="font-size:13.5px;line-height:1.45;margin:0 0 13px">Preferiti, note e foto sono salvati solo su questo dispositivo. Esporta un file per non perderli, o per spostarli su un altro telefono. Il file resta sul tuo dispositivo, non viene inviato a nessun server.</p>
@@ -3574,6 +3722,19 @@ document.addEventListener('click',e=>{
   const rob=e.target.closest('[data-robot]'); if(rob){ S.robot=rob.dataset.robot; save('mambo:robot',S.robot); if(S.open)vDett(); else render(); return; }
   if(e.target.closest('[data-bimby]')){S.bimby=!S.bimby;save('mambo:bimby',S.bimby);render();}
   const sh=e.target.closest('[data-share]'); if(sh){ const r=RICETTE.find(x=>x.id===sh.dataset.share); if(r)condividiRicetta(r); return; }
+  const em=e.target.closest('[data-editmia]'); if(em){ apriEditor(em.dataset.editmia); return; }
+  const dm=e.target.closest('[data-delmia]'); if(dm){ eliminaMia(dm.dataset.delmia); return; }
+  const pr=e.target.closest('[data-proponi]'); if(pr){ proponiRicetta(pr.dataset.proponi); return; }
+  const ea=e.target.closest('[data-editact]'); if(ea){ const act=ea.dataset.editact, i=+ea.dataset.i;
+    if(act==='new'){ apriEditor(null); }
+    else if(act==='cancel'){ S.editing=false; S.draft=null; render(); }
+    else if(act==='save'){ salvaEditor(); }
+    else if(act==='del'){ eliminaMia(ea.dataset.i); }
+    else if(act==='addIng'){ leggiForm(); S.draft.ing.push({q:'',u:'g',n:''}); vEditor(); }
+    else if(act==='delIng'){ leggiForm(); S.draft.ing.splice(i,1); if(!S.draft.ing.length)S.draft.ing.push({q:'',u:'g',n:''}); vEditor(); }
+    else if(act==='addStep'){ leggiForm(); S.draft.steps.push({x:'',t:'',v:'',T:'',P:'',a:'—',b:'—'}); vEditor(); }
+    else if(act==='delStep'){ leggiForm(); S.draft.steps.splice(i,1); if(!S.draft.steps.length)S.draft.steps.push({x:'',t:'',v:'',T:'',P:'',a:'—',b:'—'}); vEditor(); }
+    return; }
 });
 window.addEventListener('hashchange',openFromHash);
 (async()=>{
@@ -3583,6 +3744,7 @@ window.addEventListener('hashchange',openFromHash);
   S.pref=await load('mambo:pref',[]); S.cols=await load('mambo:cols',1);
   S.tema=await load('mambo:tema','giorno'); S.robot=await load('mambo:robot','mambo');
   S.ord=await load('mambo:ord','cons');
+  S.mie=await load('mambo:mieric',[]); syncMie();
   const ix=await load('mambo:fotoidx',[]);
   for(const id of ix){const d=await load('mambo:foto:'+id,null); if(d)S.foto[id]=d;}
   const six=await load('mambo:stepidx',[]);
