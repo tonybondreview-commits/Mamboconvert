@@ -2335,6 +2335,55 @@ const BIMBYPDF = [
   {x:'Unisci pepe, sale, prezzemolo e la scamorza a cubetti.', t:'1 min', v:'0', T:'80°C', P:'2', a:'MamboMix', b:'1 min · vel 1 antiorario'},
   {x:'Impiatta e spolvera con il parmigiano.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
  note:['La velocità 2 antiorario delle zucchine diventa velocità 1 con il MamboMix: a 2 con le lame si sfalderebbero.','La mantecatura finale con la scamorza va a 80 °C e potenza 2: sopra, il formaggio fila invece di sciogliersi.','Un minuto in più di tostatura rispetto all’originale, per compensare la temperatura più bassa del Bimby in quel passaggio.','Fonte dei parametri Bimby: ricetteperbimby.it (testo e conversione riscritti).']}
+,
+
+{id:'orata-patate-varoma', nome:'Orata con patate a Varoma', cat:'Secondi', tempo:40, porz:2, vol:1100, agg:'2026-09-02',
+ caraffa:'Acciaio', acc:['Vaporiera'], tag:['pesce','vapore'],
+ ing:[{q:2,u:'pz',n:'orate intere e pulite'},{q:3,u:'pz',n:'patate a fette'},{q:2,u:'spicchi',n:'aglio',s:'s'},{q:1000,u:'ml',n:'acqua',b:1},{q:1,u:'ciuffo',n:'prezzemolo tritato',s:'s'},{q:20,u:'ml',n:'olio extravergine',s:'s',b:1},{q:5,u:'g',n:'sale',s:'s',b:1}],
+ steps:[
+  {x:'Metti le orate nel piano alto della vaporiera, con uno spicchio d’aglio ciascuna e il sale.', t:'—', v:'—', T:'—', P:'—', a:'Vaporiera', b:'—'},
+  {x:'Disponi le patate a fette sul piano basso, su carta forno bagnata e strizzata, e sala.', t:'—', v:'—', T:'—', P:'—', a:'Vaporiera', b:'—'},
+  {x:'Metti l’acqua in caraffa, chiudi la vaporiera e cuoci.', t:'32 min', v:'0', T:'120°C', P:'10', a:'Vaporiera', b:'30 min · Varoma · vel 1'},
+  {x:'Impiatta orate e patate, cospargi di prezzemolo e completa con un filo d’olio.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Conversione semplice: qui il Varoma è vapore vero, non rosolatura, quindi restano 120 °C e potenza 10 senza modifiche.','Due minuti in più: la vaporiera del Mambo ha una superficie leggermente diversa e il pesce intero ci mette un filo in più a cuocere fino alla lisca.','Ricetta per 2 persone: raddoppiando per 4, controlla che le orate entrino nel piano senza sovrapporsi, altrimenti cuoci in due riprese.','Fonte dei parametri Bimby: ricetteperbimby.it (testo e conversione riscritti).']},
+
+{id:'patate-carciofi-verde', nome:'Patate e carciofi al verde', cat:'Contorni', tempo:30, porz:2, vol:900, agg:'2026-09-02',
+ caraffa:'Acciaio', acc:['Lame','MamboMix','Cestello'], tag:['vegetariano'],
+ ing:[{q:200,u:'g',n:'carciofi puliti a pezzi'},{q:350,u:'g',n:'patate a dadini'},{q:1,u:'spicchio',n:'aglio',s:'s'},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'},{q:40,u:'ml',n:'olio extravergine',s:'s',b:1},{q:330,u:'ml',n:'acqua',b:1},{q:5,u:'g',n:'sale',s:'s',b:1},{q:1,u:'pizzico',n:'pepe',s:'s',b:1}],
+ steps:[
+  {x:'Trita aglio e prezzemolo con l’olio.', t:'5 sec', v:'6', T:'—', P:'—', a:'Lame', b:'5 sec · vel 6'},
+  {x:'Riunisci sul fondo con la spatola e scalda.', t:'4 min', v:'1', T:'100°C', P:'5', a:'MamboMix', b:'4 min · 100° · vel 1'},
+  {x:'Metti carciofi e patate nel cestello con sale e pepe, versa l’acqua e cala il cestello in caraffa.', t:'22 min', v:'0', T:'120°C', P:'9', a:'Cestello', b:'20 min · Varoma · vel 1'},
+  {x:'Impiatta, irrora con il fondo di cottura della caraffa e un filo d’olio.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Il cestello nella caraffa, con il trito di aglio e olio sotto, funziona come un vapore aromatizzato: il Mambo lo regge bene con potenza alta e velocità 0, l’acqua bolle sotto e il cestello resta fermo.','Due minuti in più rispetto all’originale: il cestello del Mambo è leggermente più capiente e il vapore impiega un filo di più a distribuirsi.','Fonte dei parametri Bimby: ricetteperbimby.it (testo e conversione riscritti).']},
+
+{id:'torta-cioccolato-fondente', nome:'Torta al cioccolato fondente', cat:'Dolci', tempo:70, porz:8, vol:900, agg:'2026-09-02',
+ caraffa:'Acciaio', acc:['Lame'], tag:['vegetariano','forno'],
+ ing:[{q:180,u:'g',n:'zucchero semolato'},{q:1,u:'pz',n:'scorza di arancia',s:'s'},{q:150,u:'g',n:'cioccolato fondente'},{q:170,u:'g',n:'burro'},{q:3,u:'pz',n:'uova'},{q:160,u:'ml',n:'latte'},{q:30,u:'g',n:'cacao amaro'},{q:200,u:'g',n:'farina 00',b:1},{q:1,u:'pizzico',n:'sale',s:'s',b:1},{q:1,u:'bustina',n:'lievito per dolci',s:'s',b:1},{q:20,u:'g',n:'zucchero a velo',s:'s',b:1}],
+ steps:[
+  {x:'Polverizza lo zucchero con la scorza d’arancia.', t:'15 sec', v:'10', T:'—', P:'—', a:'Lame', b:'15 sec · vel 10'},
+  {x:'Riunisci sul fondo, aggiungi il cioccolato a pezzi e trita.', t:'5 sec', v:'8', T:'—', P:'—', a:'Lame', b:'5 sec · vel 8'},
+  {x:'Unisci il burro a tocchetti e sciogli dolcemente.', t:'6 min', v:'2', T:'55°C', P:'2', a:'Lame', b:'6 min · 50° · vel 2'},
+  {x:'Lascia raffreddare 15 minuti senza coperchio, poi amalgama.', t:'10 sec', v:'4', T:'—', P:'—', a:'Lame', b:'10 sec · vel 4'},
+  {x:'Aggiungi le uova.', t:'40 sec', v:'4', T:'—', P:'—', a:'Lame', b:'40 sec · vel 4'},
+  {x:'Aggiungi il latte.', t:'30 sec', v:'4', T:'—', P:'—', a:'Lame', b:'30 sec · vel 4'},
+  {x:'Unisci cacao, farina e sale.', t:'1 min', v:'4', T:'—', P:'—', a:'Lame', b:'1 min · vel 4'},
+  {x:'Aggiungi il lievito e amalgama appena.', t:'20 sec', v:'3', T:'—', P:'—', a:'Lame', b:'20 sec · vel 4'},
+  {x:'Versa nello stampo da 24 cm imburrato e infarinato e livella.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Inforna in forno statico preriscaldato e fai la prova stecchino.', t:'40 min', v:'—', T:'forno 180°C', P:'—', a:'—', b:'forno 180°C · 40 min'},
+  {x:'Sforna, lascia raffreddare e spolvera di zucchero a velo.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['Dosi per uno stampo da 24 cm.','La temperatura di scioglimento sale a 55 °C ma con potenza 2, non 3: sul Mambo il burro con il cioccolato già tritato brucia più in fretta del Bimby a parità di grado se la potenza è troppo alta.','Il forno resta invariato: la conversione riguarda solo l’impasto in caraffa.','L’ultimo passaggio col lievito scende a velocità 3: a 4 il lievito chimico si attiva troppo in fretta e la torta rischia di sgonfiarsi prima di infornare.','Fonte dei parametri Bimby: ricetteperbimby.it (testo e conversione riscritti).']},
+
+{id:'verdure-miste', nome:'Verdure miste in caraffa', cat:'Contorni', tempo:35, porz:4, vol:1300, agg:'2026-09-02',
+ caraffa:'Acciaio', acc:['Lame','MamboMix','Farfalla'], tag:['vegetariano'],
+ ing:[{q:1,u:'pz',n:'cipolla'},{q:1,u:'pz',n:'carote'},{q:1,u:'pz',n:'patate'},{q:1,u:'pz',n:'melanzane'},{q:1,u:'pz',n:'zucchine'},{q:100,u:'g',n:'piselli'},{q:100,u:'g',n:'fagiolini'},{q:10,u:'pz',n:'pomodori ciliegino'},{q:10,u:'pz',n:'olive verdi',s:'s'},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:30,u:'ml',n:'vino bianco',s:'s'},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'},{q:5,u:'g',n:'sale',s:'s',b:1},{q:1,u:'pizzico',n:'pepe',s:'s',b:1}],
+ steps:[
+  {x:'Trita la cipolla a pezzetti.', t:'5 sec', v:'7', T:'—', P:'—', a:'Lame', b:'5 sec · vel 7'},
+  {x:'Riunisci sul fondo e aggiungi l’olio.', t:'3 min', v:'1', T:'100°C', P:'6', a:'MamboMix', b:'3 min · 100° · vel 1'},
+  {x:'Monta la farfalla e unisci tutte le altre verdure a tocchetti, le olive intere, il prezzemolo, il vino, sale e pepe.', t:'22 min', v:'0', T:'100°C', P:'5', a:'Farfalla', b:'20 min · 100° · vel Soft antiorario'},
+  {x:'Controlla la cottura e, se serve, prosegui qualche minuto.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'},
+  {x:'Impiatta e servi.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
+ note:['La farfalla sostituisce il MamboMix: con tante verdure diverse a tocchetti tiene meglio la forma di melanzane e zucchine, che con il MamboMix si romperebbero.','Due minuti in più: la farfalla del Mambo muove il contenuto con meno vigore del senso antiorario del Bimby, utile per non spappolare le verdure ma richiede qualche istante in più per uniformare la cottura.','Fonte dei parametri Bimby: ricetteperbimby.it (testo e conversione riscritti).']}
 
 ];
 RICETTE.push(...BIMBYPDF);
@@ -2707,7 +2756,7 @@ const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati.
 const BUG_EMAIL='tony.bondreview@gmail.com';
 /* Link PayPal per le donazioni. Finche' e' vuoto la sezione non compare. */
 const PAYPAL_URL='https://www.paypal.me/ACesare422';
-const APP_VER='v37 · 02-09';
+const APP_VER='v38 · 02-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 /* ---- App nativa Android (Capacitor): riconoscimento ---- */
