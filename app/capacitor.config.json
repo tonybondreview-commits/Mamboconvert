@@ -1,0 +1,23 @@
+{
+  "appId": "com.mamboconvert.app",
+  "appName": "Mamboconvert",
+  "webDir": "www",
+  "android": {
+    "backgroundColor": "#F1F0EE",
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 900,
+      "backgroundColor": "#F1F0EE",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false,
+      "androidSpinnerStyle": "small",
+      "splashFullScreen": false,
+      "splashImmersive": false
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    }
+  }
+}

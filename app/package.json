@@ -1,0 +1,20 @@
+{
+  "name": "mamboconvert-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Guscio nativo Android di Mamboconvert (Capacitor)",
+  "scripts": {
+    "sync:www": "node scripts/copy-www.js",
+    "build": "npm run sync:www && npx cap sync android",
+    "open": "npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.1",
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/cli": "^8.5.1",
+    "@capacitor/core": "^8.5.1",
+    "@capacitor/push-notifications": "^8.1.2",
+    "@capacitor/splash-screen": "^8.0.2",
+    "@capacitor/status-bar": "^8.0.3"
+  }
+}

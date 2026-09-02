@@ -1,0 +1,17 @@
+# dipendenze
+node_modules/
+
+# www e' una copia rigenerabile del sito (npm run sync:www)
+www/
+
+# build Android
+android/build/
+android/app/build/
+android/.gradle/
+android/local.properties
+android/.idea/
+android/app/release/
+*.apk
+*.aab
+*.keystore
+!android/gradle/wrapper/gradle-wrapper.jar

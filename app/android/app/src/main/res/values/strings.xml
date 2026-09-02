@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Mamboconvert</string>
+    <string name="title_activity_main">Mamboconvert</string>
+    <string name="package_name">com.mamboconvert.app</string>
+    <string name="custom_url_scheme">com.mamboconvert.app</string>
+</resources>
