@@ -95,7 +95,7 @@ body.giorno .head,body.giorno .tbl th{background:rgba(74,45,28,.04)}
 body.giorno .card,body.giorno ul.ing,body.giorno .step,body.giorno .crow,body.giorno .conv,body.giorno .tile{
   box-shadow:0 1px 2px rgba(74,45,28,.06),0 8px 24px -18px rgba(74,45,28,.5)}
 .themeb{
-  width:40px;height:40px;border-radius:999px;flex:none;display:grid;place-items:center;
+  width:38px;height:38px;border-radius:999px;flex:none;display:grid;place-items:center;
   background:var(--surf2);font-size:17px;transition:transform .5s var(--ease),background .2s
 }
 .themeb:active{transform:rotate(-40deg) scale(.9)}
@@ -109,11 +109,11 @@ header{
 }
 .hrow{display:flex;align-items:center;gap:12px}
 .logo{
-  font-family:var(--serif);font-size:19px;letter-spacing:-.015em;flex:1;min-width:0;
-  display:flex;align-items:center;gap:9px
+  font-family:var(--sans);font-size:clamp(15.5px,4.3vw,19px);font-weight:750;letter-spacing:-.03em;flex:1;min-width:0;
+  display:flex;align-items:center;gap:8px
 }
 .logo span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
-.logomk{width:44px;height:44px;flex:none;border-radius:50%;object-fit:cover}
+.logomk{width:38px;height:38px;flex:none;border-radius:50%;object-fit:cover}
 .logo em{font-style:normal;background:linear-gradient(96deg,var(--saffron),var(--tomato));
   -webkit-background-clip:text;background-clip:text;color:transparent}
 .inghead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
@@ -2707,7 +2707,7 @@ const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati.
 const BUG_EMAIL='tony.bondreview@gmail.com';
 /* Link PayPal per le donazioni. Finche' e' vuoto la sezione non compare. */
 const PAYPAL_URL='https://www.paypal.me/ACesare422';
-const APP_VER='v34 · 02-09';
+const APP_VER='v35 · 02-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 /* ---- App nativa Android (Capacitor): riconoscimento ---- */
