@@ -112,28 +112,34 @@ const $=s=>document.querySelector(s);
 const main=$('#main'), fill=$('#fill'), status=$('#status');
 $('#key').value=localStorage.getItem(KKEY)||'';
 $('#nTot').textContent=RECIPES.length;
+setTimeout(()=>{ if(keyVal()) mostraEsito('Chiave in memoria: '+impronta()+' — premi “Verifica chiave”.'); },0);
 
 function pulisciErrori(){
   document.querySelectorAll('[id^="er-"]').forEach(e=>e.textContent='');
 }
 function keyVal(){ return ($('#key').value||'')
-  .replace(/^\s*(Bearer\s+)?/i,'').replace(/^["']|["']$/g,'').replace(/\s+/g,'').trim(); }
+  .replace(/^\s*(Bearer\s+)?/i,'').replace(/^["']|["']$/g,'')
+  .replace(/[^\x21-\x7E]/g,'')   /* via spazi e caratteri invisibili incollati */
+  .trim(); }
 $('#saveKey').onclick=()=>{localStorage.setItem(KKEY,keyVal());pulisciErrori();status.textContent='Chiave salvata ✓';setTimeout(()=>status.textContent='',1500);};
 const esito=$('#esito');
+function impronta(){ const k=keyVal(); if(!k) return 'nessuna chiave nel campo';
+  const att = k.length===56 ? '' : ' \u26a0\ufe0f le chiavi Pexels sono di <b>56</b> caratteri';
+  return '<b>'+k.length+'</b> caratteri · inizia con <b>'+k.slice(0,4)+'</b> · finisce con <b>'+k.slice(-4)+'</b>'+att; }
 function mostraEsito(t,ok){ esito.innerHTML=t; esito.style.color = ok===true ? '#37b56a' : ok===false ? '#e2553a' : ''; }
 $('#testKey').onclick=async()=>{
   const k=keyVal();
   if(!k){ mostraEsito('Prima incolla la chiave nel campo qui sopra.',false); return; }
-  const impronta = k.length+' caratteri · inizia con <b>'+k.slice(0,4)+'</b> · finisce con <b>'+k.slice(-4)+'</b>';
-  mostraEsito('Verifico… ('+impronta+')');
+  const imp = impronta();
+  mostraEsito('Verifico… ('+imp+')');
   try{
     const res=await fetch('https://api.pexels.com/v1/search?per_page=1&query=pasta',{headers:{Authorization:k}});
     let corpo=''; try{ corpo=(await res.text()).slice(0,160); }catch(e){}
     if(res.status===200){
       localStorage.setItem(KKEY,k); pulisciErrori();
-      mostraEsito('Chiave valida ✓ salvata ('+impronta+'). Ora premi “Cerca e scegli tutte”.',true);
+      mostraEsito('Chiave valida ✓ salvata ('+imp+'). Ora premi “Cerca e scegli tutte”.',true);
     } else if(res.status===401){
-      mostraEsito('✗ Pexels rifiuta questa chiave (401).<br>Sto usando: '+impronta+
+      mostraEsito('✗ Pexels rifiuta questa chiave (401).<br>Sto usando: '+imp+
         '<br>Confronta questi caratteri con la chiave sulla tua pagina Pexels: se non combaciano, nel campo c\'è ancora quella vecchia.'+
         (corpo?'<br><small>Risposta: '+corpo.replace(/</g,'&lt;')+'</small>':''),false);
     } else if(res.status===429){
@@ -181,7 +187,9 @@ async function search(id){
   try{
     const res=await fetch('https://api.pexels.com/v1/search?per_page=6&orientation=landscape&locale=it-IT&query='+encodeURIComponent(q),
       {headers:{Authorization:k}});
-    if(res.status===401){if(er)er.textContent='Pexels rifiuta la chiave (401). Generane una nuova su pexels.com/api.';if(box)box.innerHTML='';return false;}
+    if(res.status===401){ if(er)er.textContent='Pexels rifiuta la chiave (401).';
+      mostraEsito('✗ Pexels rifiuta la chiave (401). Sto usando: '+impronta()+'<br>Confronta con la chiave sulla tua pagina Pexels.',false);
+      if(box)box.innerHTML=''; return false; }
     if(res.status===429){if(er)er.textContent='Limite Pexels raggiunto: riprova tra un po’.';if(box)box.innerHTML='';return 'rate';}
     const data=await res.json();
     const ph=data.photos||[];
