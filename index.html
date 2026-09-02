@@ -193,6 +193,15 @@ body.giorno .hero{box-shadow:0 10px 30px -18px rgba(40,30,20,.45)}
 .toolrow{display:flex;gap:9px;align-items:center;margin-top:13px}
 .toolrow .chips{flex:1;min-width:0;padding-top:0;padding-bottom:0}
 .cols{display:flex;gap:3px;background:var(--surf2);border-radius:11px;padding:3px;flex:none}
+.totop{position:fixed;right:16px;bottom:calc(86px + env(safe-area-inset-bottom));z-index:45;
+  width:46px;height:46px;border-radius:999px;display:grid;place-items:center;
+  background:var(--surf2);color:var(--cream);border:1px solid var(--line-2);
+  box-shadow:0 10px 26px -12px rgba(0,0,0,.7);transition:opacity .2s,transform .2s}
+.totop svg{width:20px;height:20px}
+.totop:active{transform:scale(.92)}
+body.giorno .totop{background:#FFFFFF;box-shadow:0 8px 22px -12px rgba(74,45,28,.6)}
+.ordsel{flex:none;font:inherit;font-size:13px;font-weight:600;color:var(--cream);background:var(--surf2);
+  border:1px solid var(--line);border-radius:11px;padding:9px 10px;-webkit-appearance:none;appearance:none;max-width:44vw}
 .cols button{width:34px;height:30px;border-radius:9px;display:grid;place-items:center;color:var(--muted);transition:transform .12s}
 .cols button:active{transform:scale(.9)}
 .cols button[aria-pressed="true"]{background:var(--surf);color:var(--saffron)}
@@ -600,6 +609,9 @@ body.bimby-on .bimby{display:block}
 .tile .notetag{position:absolute;top:11px;right:11px;width:26px;height:26px;border-radius:999px;
   background:rgba(11,14,8,.6);backdrop-filter:blur(5px);display:grid;place-items:center;font-size:12px}
 .tile .camtag+.notetag{right:43px}
+.tile .newtag{position:absolute;top:11px;left:11px;padding:4px 10px;border-radius:999px;
+  font-size:11.5px;font-weight:700;letter-spacing:.02em;color:#241108;
+  background:linear-gradient(96deg,var(--saffron),var(--tomato));box-shadow:0 4px 12px -6px rgba(255,91,54,.9)}
 .brow{display:flex;gap:12px;background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:13px 14px;margin-top:10px}
 .brow .bnum{flex:none;width:24px;height:24px;border-radius:999px;border:1px solid var(--line-2);color:var(--saffron);
   font-size:12.5px;font-weight:700;display:grid;place-items:center;font-variant-numeric:tabular-nums}
@@ -667,6 +679,9 @@ footer{padding:28px 0 6px;font-size:12px;color:var(--muted);line-height:1.65}
 </nav>
 
 <!-- modalità presentazione / slide -->
+<button id="toTop" class="totop" aria-label="Torna all’inizio" hidden>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+</button>
 <div class="deck" id="deck" role="dialog" aria-modal="true" aria-label="Presentazione ricetta">
   <div class="progline" id="progline"></div>
   <div class="deckbar">
@@ -683,8 +698,8 @@ footer{padding:28px 0 6px;font-size:12px;color:var(--muted);line-height:1.65}
     <button class="nav" id="deckNext" aria-label="Successivo">→</button>
   </div>
 </div>
-<input type="file" id="globalCam" accept="image/*" hidden>
-<input type="file" id="impFile" accept="application/json,.json" hidden>
+<input type="file" id="globalCam" accept="image/*" aria-label="Scegli una foto" hidden>
+<input type="file" id="impFile" accept="application/json,.json" aria-label="Scegli il file di backup" hidden>
 <!-- foto predefinite dei piatti (generato dallo strumento di revisione); assente = nessuna, si usano le illustrazioni -->
 <script src="foto.js" onerror="window.FOTODEF=window.FOTODEF||{}"></script>
 <script>
@@ -2237,7 +2252,7 @@ RICETTE.push(...BLOCCO5, ...BLOCCO6);
 /* ---- 5 ricette convertite dal PDF (fonte: ricetteperbimby.it, testi riscritti) ---- */
 const BIMBYPDF = [
 
-{id:'cosce-pollo-stufate', nome:'Cosce di pollo stufate', cat:'Secondi', tempo:55, porz:2, vol:1200,
+{id:'cosce-pollo-stufate', nome:'Cosce di pollo stufate', cat:'Secondi', tempo:55, porz:2, vol:1200, agg:'2026-09-02',
  caraffa:'Acciaio', acc:['Lame','MamboMix','Vaporiera'], tag:['carne'],
  ing:[{q:4,u:'pz',n:'cosce di pollo'},{q:50,u:'g',n:'cipolla'},{q:70,u:'g',n:'sedano'},{q:70,u:'g',n:'carote'},{q:50,u:'ml',n:'olio extravergine',s:'s',b:1},{q:30,u:'g',n:'farina 00 per infarinare',b:1},{q:1,u:'ciuffo',n:'rosmarino, salvia e timo',s:'s',b:1},{q:100,u:'ml',n:'vino bianco',s:'s'},{q:50,u:'ml',n:'acqua',s:'s',b:1},{q:5,u:'g',n:'sale',s:'s',b:1},{q:1,u:'pizzico',n:'pepe nero',s:'s',b:1}],
  steps:[
@@ -2248,7 +2263,7 @@ const BIMBYPDF = [
   {x:'Impiatta le cosce e irrora con la salsa della caraffa.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
  note:['Piatto unico: dal secondo passaggio metti 500 g di patate a dadini salate nella vaporiera.','La velocità Soft antiorario del Bimby diventa velocità 0 con il MamboMix: le cosce restano intere e il fondo non attacca.','Qui il Varoma non è vapore ma rosolatura: in caraffa 120 °C con potenza alta.','Fonte dei parametri Bimby: ricetteperbimby.it (testo e conversione riscritti).']},
 
-{id:'riso-cantonese', nome:'Riso alla cantonese', cat:'Primi', tempo:35, porz:4, vol:1800,
+{id:'riso-cantonese', nome:'Riso alla cantonese', cat:'Primi', tempo:35, porz:4, vol:1800, agg:'2026-09-02',
  caraffa:'Acciaio', acc:['Cestello','Vaporiera','MamboMix'], tag:['carne','vapore'],
  ing:[{q:300,u:'g',n:'riso basmati'},{q:3,u:'pz',n:'uova'},{q:200,u:'g',n:'piselli surgelati'},{q:200,u:'g',n:'prosciutto cotto a cubetti'},{q:1000,u:'ml',n:'acqua',b:1},{q:20,u:'ml',n:'olio extravergine',s:'s',b:1},{q:5,u:'g',n:'sale',s:'s',b:1},{q:1,u:'pizzico',n:'pepe nero',s:'s',b:1}],
  steps:[
@@ -2260,7 +2275,7 @@ const BIMBYPDF = [
   {x:'Unisci tutto in una zuppiera, taglia la frittata a striscioline e condisci con olio a filo.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
  note:['Conversione non letterale: sul Bimby la velocità 4 muove l’acqua sotto il cestello; sul Mambo, con il cestello inserito, la velocità non serve e il vapore lo fa la potenza 10 (velocità 0).','Servono circa 5 minuti in più: con la caraffa piena d’acqua il vapore del Mambo sale più lentamente.','Variante di mare: 200 g di gamberetti al posto del prosciutto, in vaporiera solo negli ultimi 8 minuti.','Fonte dei parametri Bimby: ricetteperbimby.it (testo e conversione riscritti).']},
 
-{id:'pollo-mandorle', nome:'Pollo alle mandorle', cat:'Secondi', tempo:30, porz:4, vol:1000,
+{id:'pollo-mandorle', nome:'Pollo alle mandorle', cat:'Secondi', tempo:30, porz:4, vol:1000, agg:'2026-09-02',
  caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['carne'],
  ing:[{q:500,u:'g',n:'petto di pollo'},{q:100,u:'g',n:'mandorle pelate'},{q:1,u:'pz',n:'cipollotto'},{q:75,u:'ml',n:'olio di semi di girasole',s:'s',b:1},{q:200,u:'ml',n:'brodo di pollo'},{q:45,u:'ml',n:'salsa di soia',s:'s',b:1},{q:5,u:'g',n:'zenzero grattugiato',s:'s',b:1},{q:20,u:'g',n:'amido di mais',b:1},{q:3,u:'g',n:'sale',s:'s',b:1}],
  steps:[
@@ -2274,7 +2289,7 @@ const BIMBYPDF = [
   {x:'Servi subito: l’amido lega la salsa mentre raffredda.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
  note:['L’originale usa la farfalla per il pollo; sul Mambo la farfalla non regge i bocconcini infarinati sopra i 100 °C, quindi il MamboMix a 120 °C dà una rosolatura vera.','Salsa di soia sempre alla fine: se cuoce a lungo diventa amara e troppo salata.','Fonte dei parametri Bimby: ricetteperbimby.it (testo e conversione riscritti).']},
 
-{id:'risotto-zafferano', nome:'Risotto allo zafferano', cat:'Primi', tempo:35, porz:4, vol:1400,
+{id:'risotto-zafferano', nome:'Risotto allo zafferano', cat:'Primi', tempo:35, porz:4, vol:1400, agg:'2026-09-02',
  caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:[],
  ing:[{q:350,u:'g',n:'riso arborio'},{q:2,u:'bustine',n:'zafferano',s:'s',b:1},{q:1,u:'pz',n:'scalogno'},{q:40,u:'g',n:'burro',s:'s'},{q:50,u:'ml',n:'olio extravergine',s:'s',b:1},{q:100,u:'ml',n:'vino bianco',s:'s'},{q:600,u:'ml',n:'brodo di carne'},{q:50,u:'g',n:'parmigiano',s:'s'},{q:5,u:'g',n:'sale',s:'s',b:1}],
  steps:[
@@ -2287,7 +2302,7 @@ const BIMBYPDF = [
   {x:'Manteca in zuppiera con i restanti 20 g di burro e il parmigiano.', t:'—', v:'—', T:'—', P:'—', a:'—', b:'—'}],
  note:['Il Bimby tosta il riso a 100 °C; sul Mambo conviene salire a 120 °C con potenza 8, così la tostatura sigilla il chicco e il risotto regge meglio la cottura.','Un minuto in più sul brodo, perché il Mambo recupera la temperatura più lentamente quando versi il liquido.','Il brodo deve essere sempre caldo, mai freddo.','Fonte dei parametri Bimby: ricetteperbimby.it (testo e conversione riscritti).']},
 
-{id:'risotto-zucchine-scamorza', nome:'Risotto zucchine e scamorza', cat:'Primi', tempo:30, porz:4, vol:1700,
+{id:'risotto-zucchine-scamorza', nome:'Risotto zucchine e scamorza', cat:'Primi', tempo:30, porz:4, vol:1700, agg:'2026-09-02',
  caraffa:'Acciaio', acc:['Lame','MamboMix'], tag:['vegetariano'],
  ing:[{q:320,u:'g',n:'riso carnaroli'},{q:400,u:'g',n:'zucchine'},{q:100,u:'g',n:'scamorza affumicata'},{q:1,u:'pz',n:'cipollotto'},{q:30,u:'ml',n:'olio extravergine',s:'s',b:1},{q:850,u:'ml',n:'brodo vegetale'},{q:30,u:'g',n:'parmigiano',s:'s'},{q:1,u:'ciuffo',n:'prezzemolo',s:'s'},{q:5,u:'g',n:'sale',s:'s',b:1},{q:1,u:'pizzico',n:'pepe',s:'s',b:1}],
  steps:[
@@ -2617,7 +2632,7 @@ function mini(o,grad){
    stepfoto : foto reale del passaggio (id#indice -> url|dataURL)
    ============================================================ */
 const S={porz:4,tab:'ricette',q:'',cat:'Tutte',filtri:[],open:null,frigo:[],spesa:[],bimby:false,robot:'mambo',
-  foto:{},stepfoto:{},accfoto:{},note:{},pref:[],cols:1,tema:'giorno'};
+  foto:{},stepfoto:{},accfoto:{},note:{},pref:[],cols:1,tema:'giorno',ord:'cons'};
 /* filtri combinabili (AND) con categoria e ricerca */
 const FILTRI=[
   {id:'veloce', lab:'Veloce ≤20′', test:r=>r.tempo<=20},
@@ -2626,7 +2641,8 @@ const FILTRI=[
   {id:'pesce', lab:'Pesce', test:r=>(r.tag||[]).includes('pesce')},
   {id:'carne', lab:'Carne', test:r=>(r.tag||[]).includes('carne')},
   {id:'vapore', lab:'Al vapore', test:r=>r.acc.includes('Vaporiera')||(r.tag||[]).includes('vapore')},
-  {id:'note', lab:'Con le mie note', test:r=>!!(S.note[r.id]&&S.note[r.id].trim())}
+  {id:'note', lab:'Con le mie note', test:r=>!!(S.note[r.id]&&S.note[r.id].trim())},
+  {id:'novita', lab:'Novità', test:r=>isNuova(r)}
 ];
 const mem={};
 // HOST = window.storage SOLO se risponde. Alcuni ambienti lo iniettano ma non
@@ -2659,12 +2675,16 @@ function fmtQ(q){
   if(q>=10) return String(Math.round(q));
   if(q>=1)  return String(Math.round(q*2)/2).replace('.',',');
   return String(Math.round(q*10)/10).replace('.',','); }
+/* Ricette aggiunte di recente: badge e filtro "Novità" (scade da solo). */
+const GG_NUOVA=45;
+function isNuova(r){ if(!r||!r.agg)return false; const t=Date.parse(r.agg);
+  return isFinite(t) && (Date.now()-t) < GG_NUOVA*86400000; }
 const norm=s=>s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\(.*?\)/g,'').replace(/[^a-z\s]/g,' ').trim();
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const durata=m=>m<60?m+' min':(m/60).toFixed(1).replace('.0','').replace('.',',')+' h';
 const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati. Contenuti e funzionalità protetti: vietata la copia o la clonazione.';
 const BUG_EMAIL='tony.bondreview@gmail.com';
-const APP_VER='v27 · 02-09';
+const APP_VER='v28 · 02-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 /* ---- App nativa Android (Capacitor): riconoscimento ---- */
@@ -2716,7 +2736,8 @@ function tile(r,badge){
   const hab=r.caraffa==='Habana';
   const cam=S.foto[r.id]?'':'<span class="camtag" aria-hidden="true">📷</span>';
   const nota=(S.note[r.id]&&S.note[r.id].trim())?'<span class="notetag" aria-hidden="true">📝</span>':'';
-  return `<button class="tile" data-open="${r.id}" data-search="${esc(norm(r.nome+' '+r.ing.map(i=>i.n).join(' ')+' '+(r.tag||[]).join(' ')))}">${tileMedia(r)}${badge||''}${cam}${nota}
+  const nuova=isNuova(r)?'<span class="newtag">Novità</span>':'';
+  return `<button class="tile" data-open="${r.id}" data-search="${esc(norm(r.nome+' '+r.ing.map(i=>i.n).join(' ')+' '+(r.tag||[]).join(' ')))}">${tileMedia(r)}${badge||''}${cam}${nota}${nuova}
     <span class="fav" data-fav="${r.id}" role="button" aria-pressed="${S.pref.includes(r.id)}" aria-label="Preferito">${S.pref.includes(r.id)?'♥':'♡'}</span>
     <span class="lay"><span class="nm">${esc(r.nome)}</span>
     <span class="mt"><span>${durata(r.tempo)}</span><span>${esc(r.cat)}</span>${hab?'<span>caraffa Habana</span>':''}</span></span></button>`;
@@ -2733,17 +2754,26 @@ function filterTiles(){
 function vRic(){
   const cats=['Tutte',...new Set(RICETTE.map(r=>r.cat))], q=norm(S.q);
   const attivi=FILTRI.filter(fl=>S.filtri.includes(fl.id));
-  const f=RICETTE.filter(r=>(S.cat==='Tutte'||r.cat===S.cat)
+  let f=RICETTE.filter(r=>(S.cat==='Tutte'||r.cat===S.cat)
     &&attivi.every(fl=>fl.test(r)));
+  if(S.ord==='tempo') f=f.slice().sort((a,b)=>a.tempo-b.tempo);
+  else if(S.ord==='az') f=f.slice().sort((a,b)=>a.nome.localeCompare(b.nome,'it'));
+  else if(S.ord==='nuove') f=f.slice().sort((a,b)=>(Date.parse(b.agg||0)||0)-(Date.parse(a.agg||0)||0));
   view.innerHTML=`<div class="panel">
     <div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <input id="q" placeholder="Cerca piatto o ingrediente" value="${esc(S.q)}"></div>
+      <input id="q" type="search" aria-label="Cerca un piatto o un ingrediente" placeholder="Cerca piatto o ingrediente" value="${esc(S.q)}"></div>
     <div class="toolrow">
       <div class="chips">${cats.map(c=>`<button class="chip" data-cat="${esc(c)}" aria-pressed="${c===S.cat}">${esc(c)}</button>`).join('')}</div>
       <div class="cols">
         <button data-cols="1" aria-pressed="${S.cols===1}" aria-label="Una per riga"><svg viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="5" rx="1.5"/><rect x="1" y="9" width="14" height="5" rx="1.5"/></svg></button>
         <button data-cols="2" aria-pressed="${S.cols===2}" aria-label="Due per riga"><svg viewBox="0 0 16 16"><rect x="1" y="2" width="6" height="6" rx="1.5"/><rect x="9" y="2" width="6" height="6" rx="1.5"/><rect x="1" y="10" width="6" height="4" rx="1.5"/><rect x="9" y="10" width="6" height="4" rx="1.5"/></svg></button>
-      </div></div>
+      </div>
+      <select id="ord" class="ordsel" aria-label="Ordina le ricette">
+        <option value="cons"${S.ord==='cons'?' selected':''}>Ordine consigliato</option>
+        <option value="tempo"${S.ord==='tempo'?' selected':''}>Più veloci</option>
+        <option value="az"${S.ord==='az'?' selected':''}>Nome A-Z</option>
+        <option value="nuove"${S.ord==='nuove'?' selected':''}>Più recenti</option>
+      </select></div>
     <div class="chips filtri">${FILTRI.map(fl=>`<button class="chip fl" data-filtro="${fl.id}" aria-pressed="${S.filtri.includes(fl.id)}">${esc(fl.lab)}</button>`).join('')}${S.filtri.length?`<button class="chip clr" data-clrfiltri>Azzera ✕</button>`:''}</div>
     ${f.length?`<div class="grid" id="grid" data-cols="${S.cols}">${f.map((r,i)=>tile(r).replace('class="tile"',`class="tile" style="animation-delay:${Math.min(i*32,320)}ms"`)).join('')}</div><div class="empty" id="noRes" hidden></div>`
       :`<div class="empty">Nessun piatto con questi filtri.<br>Togli un filtro o cambia categoria.</div>`}
@@ -2755,6 +2785,8 @@ function vRic(){
     if(S.filtri.includes(id))S.filtri=S.filtri.filter(x=>x!==id);else S.filtri.push(id);render();});
   const clr=view.querySelector('[data-clrfiltri]'); if(clr)clr.onclick=()=>{S.filtri=[];render();};
   view.querySelectorAll('.cols button').forEach(b=>b.onclick=()=>{S.cols=+b.dataset.cols;save('mambo:cols',S.cols);render();});
+  const os=document.getElementById('ord');
+  if(os)os.onchange=()=>{S.ord=os.value;save('mambo:ord',S.ord);render();};
   filterTiles();
 }
 
@@ -3455,6 +3487,7 @@ window.addEventListener('hashchange',openFromHash);
   S.spesa=await load('mambo:spesa',[]); S.bimby=await load('mambo:bimby',false);
   S.pref=await load('mambo:pref',[]); S.cols=await load('mambo:cols',1);
   S.tema=await load('mambo:tema','giorno'); S.robot=await load('mambo:robot','mambo');
+  S.ord=await load('mambo:ord','cons');
   const ix=await load('mambo:fotoidx',[]);
   for(const id of ix){const d=await load('mambo:foto:'+id,null); if(d)S.foto[id]=d;}
   const six=await load('mambo:stepidx',[]);
@@ -3509,6 +3542,20 @@ if(!IS_NATIVE && 'serviceWorker' in navigator){
     });
   });
 }
+
+/* ---- Pulsante "torna su" nelle liste lunghe ---- */
+(function(){
+  const btn=document.getElementById('toTop'); if(!btn)return;
+  const deckEl=document.getElementById('deck');
+  const aggiorna=()=>{ const giu=window.scrollY>700 && !(deckEl&&deckEl.classList.contains('open'));
+    btn.hidden=!giu; };
+  window.addEventListener('scroll',aggiorna,{passive:true});
+  btn.addEventListener('click',()=>{
+    const dolce=!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({top:0,behavior:dolce?'smooth':'auto'});
+  });
+  aggiorna();
+})();
 
 /* ---- Blocco zoom: Chrome Android ignora user-scalable=no, quindi fermiamo il
    pinch a due dita via JS. Lo scorrimento a un dito (touches.length===1) resta intatto. */
