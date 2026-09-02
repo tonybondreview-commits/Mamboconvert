@@ -112,16 +112,19 @@ const main=$('#main'), fill=$('#fill'), status=$('#status');
 $('#key').value=localStorage.getItem(KKEY)||'';
 $('#nTot').textContent=RECIPES.length;
 
+function pulisciErrori(){
+  document.querySelectorAll('[id^="er-"]').forEach(e=>e.textContent='');
+}
 function keyVal(){ return ($('#key').value||'')
   .replace(/^\s*(Bearer\s+)?/i,'').replace(/^["']|["']$/g,'').replace(/\s+/g,'').trim(); }
-$('#saveKey').onclick=()=>{localStorage.setItem(KKEY,keyVal());status.textContent='Chiave salvata ✓';setTimeout(()=>status.textContent='',1500);};
+$('#saveKey').onclick=()=>{localStorage.setItem(KKEY,keyVal());pulisciErrori();status.textContent='Chiave salvata ✓';setTimeout(()=>status.textContent='',1500);};
 $('#testKey').onclick=async()=>{
   const k=keyVal();
   if(!k){ status.textContent='Prima incolla la chiave.'; return; }
   status.textContent='Verifico… (chiave di '+k.length+' caratteri)';
   try{
     const res=await fetch('https://api.pexels.com/v1/search?per_page=1&query=pasta',{headers:{Authorization:k}});
-    if(res.status===200){ localStorage.setItem(KKEY,k); status.textContent='Chiave valida ✓ salvata'; }
+    if(res.status===200){ localStorage.setItem(KKEY,k); pulisciErrori(); status.textContent='Chiave valida ✓ salvata — ora premi “Cerca e scegli tutte”'; }
     else if(res.status===401) status.textContent='✗ Pexels rifiuta la chiave (401): non è attiva. Generane una nuova su pexels.com/api';
     else if(res.status===429) status.textContent='La chiave è buona ma hai esaurito le richieste per ora (429). Riprova più tardi.';
     else status.textContent='Risposta inattesa da Pexels: '+res.status;
