@@ -742,6 +742,13 @@ footer{padding:28px 0 6px;font-size:12px;color:var(--muted);line-height:1.65}
 .instmodal .im-tx em{display:block;font-style:normal;color:var(--muted);font-size:12.5px;margin-top:2px}
 .instmodal .im-si{width:20px;height:20px;color:var(--saffron);flex:none;margin-top:2px}
 .instmodal .im-si svg{width:20px;height:20px}
+/* ---- Menu della settimana ---- */
+.menuli{gap:10px;flex-wrap:wrap}
+.menuli .lbl{cursor:pointer;flex:1;min-width:120px}
+.menuli .daysel{margin-left:auto;background:var(--surf2);border:1px solid var(--line);color:var(--cream);
+  border-radius:9px;font:inherit;font-size:13px;font-weight:600;padding:6px 9px;cursor:pointer}
+.menuli .daysel:focus-visible{outline:2px solid var(--saffron);outline-offset:1px}
+.menuli .rmv{color:var(--tomato);flex:none}
 </style>
 </head>
 <body>
@@ -2992,7 +2999,7 @@ const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati.
 const BUG_EMAIL='tony.bondreview@gmail.com';
 /* Link PayPal per le donazioni. Finche' e' vuoto la sezione non compare. */
 const PAYPAL_URL='https://www.paypal.me/ACesare422';
-const APP_VER='v49 · 03-09';
+const APP_VER='v50 · 03-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 /* ---- App nativa Android (Capacitor): riconoscimento ---- */
@@ -3864,6 +3871,25 @@ function reparto(nome){ const n=norm(nome);
   if(/passat|pelati|concentrat|polpa di pomodor/.test(n)) return 'Dispensa e conserve';
   for(const g of REPARTI){ if(g[1].test(n))return g[0]; } return 'Altro'; }
 const REP_ORDER=['Frutta e verdura','Carne e salumi','Pesce','Latticini e uova','Pasta, riso e pane','Dispensa e conserve','Spezie e aromi','Altro'];
+const GIORNI=[['lun','Lunedì'],['mar','Martedì'],['mer','Mercoledì'],['gio','Giovedì'],['ven','Venerdì'],['sab','Sabato'],['dom','Domenica']];
+function daySelect(e){
+  return `<select class="daysel" data-day="${e.id}" aria-label="Giorno della settimana">
+    <option value=""${!e.day?' selected':''}>— giorno</option>
+    ${GIORNI.map(([k,l])=>`<option value="${k}"${e.day===k?' selected':''}>${l}</option>`).join('')}
+  </select>`;
+}
+function menuSettimana(){
+  const groups={}; S.spesa.forEach(e=>{ (groups[e.day||'']=groups[e.day||'']||[]).push(e); });
+  const order=[...GIORNI.map(g=>g[0]),''];
+  const lab=k=>k===''?'Da assegnare a un giorno':GIORNI.find(g=>g[0]===k)[1];
+  return order.filter(k=>groups[k]&&groups[k].length).map(k=>
+    `<div class="rephead">${lab(k)}</div>`+groups[k].map(e=>{
+      const r=RICETTE.find(x=>x.id===e.id); if(!r)return '';
+      return `<div class="li menuli"><span class="lbl" data-open="${r.id}">${esc(r.nome)}<small>per ${e.porz} ${e.porz===1?'persona':'persone'}</small></span>
+        ${daySelect(e)}<button class="qty rmv" data-rm="${e.id}" aria-label="Togli dal menu">Togli</button></div>`;
+    }).join('')
+  ).join('');
+}
 function vSpesa(){
   const agg={};
   S.spesa.forEach(e=>{const r=RICETTE.find(x=>x.id===e.id);if(!r)return;
@@ -3880,16 +3906,20 @@ function vSpesa(){
   const listHTML=gOrder.map(g=>`<div class="rephead">${g}</div>`+groups[g].map(liHTML).join('')).join('');
   view.innerHTML=`<div class="panel">
     <h2 class="sec" style="margin-top:6px">Menu e spesa della settimana</h2>
-    ${!S.spesa.length?`<div class="empty">Ancora vuota. Apri le ricette che vuoi cucinare e usa “Aggiungi alla spesa”: qui trovi tutti gli ingredienti sommati e ordinati per reparto, con le quantità già scalate sulle persone scelte.</div>`
+    ${!S.spesa.length?`<div class="empty">Costruisci il menu della settimana: apri le ricette che vuoi cucinare e usa “Aggiungi alla spesa”, poi qui assegni a ogni piatto un giorno. La lista della spesa si crea da sola, con gli ingredienti sommati, ordinati per reparto e già scalati sulle persone.</div>
+      <div class="acts"><button class="btn" id="addMenu0">Sfoglia le ricette</button></div>`
     :`<div class="card"><div class="head"><span>${S.spesa.length} ricette · ${it.length} voci</span>
         <button id="clr" style="color:var(--tomato)">Svuota</button></div>
       ${listHTML}</div>
       <div class="acts"><button class="btn" id="cp">Copia la lista</button></div>
-      <h3 class="sec">Il tuo menu <span>toccale per aprirle</span></h3><div class="card">${S.spesa.map(e=>{
-        const r=RICETTE.find(x=>x.id===e.id);
-        return `<div class="li"><span class="lbl">${esc(r.nome)}<small>per ${e.porz} ${e.porz===1?'persona':'persone'}</small></span>
-          <button class="qty" data-rm="${e.id}" style="color:var(--tomato)">Togli</button></div>`;}).join('')}</div>`}
+      <h3 class="sec">Menu della settimana <span>assegna un giorno · tocca per aprire</span></h3>
+      <div class="card">${menuSettimana()}</div>
+      <div class="acts"><button class="btn ghost" id="addMenu">＋ Aggiungi ricette dal catalogo</button></div>`}
   </div>`;
+  view.querySelectorAll('select.daysel').forEach(s=>s.onchange=()=>{
+    const e=S.spesa.find(x=>x.id===s.dataset.day);
+    if(e){ if(s.value)e.day=s.value; else delete e.day; save('mambo:spesa',S.spesa); render(); } });
+  view.querySelectorAll('#addMenu,#addMenu0').forEach(am=>am.onclick=()=>{ S.tab='ricette'; S.open=null; render(); window.scrollTo(0,0); });
   view.querySelectorAll('.li[data-k]').forEach(el=>el.onclick=()=>el.dataset.done=el.dataset.done==='1'?'0':'1');
   const c=document.getElementById('clr'); if(c)c.onclick=()=>{S.spesa=[];save('mambo:spesa',S.spesa);render();};
   const cp=document.getElementById('cp');
