@@ -711,6 +711,37 @@ footer{padding:28px 0 6px;font-size:12px;color:var(--muted);line-height:1.65}
   .dial text{fill:#111}
   .slide .kicker,.slide.cover .eyebrow{color:#c26a12}
 }
+/* ---- Installazione guidata: banner + modale ---- */
+.instbanner{display:flex;align-items:center;gap:12px;margin:0 0 12px;padding:12px 14px;border-radius:16px;
+  border:1px solid var(--line);background:linear-gradient(96deg,rgba(255,180,36,.15),rgba(255,91,54,.12))}
+.instbanner .ib-ic{width:40px;height:40px;border-radius:11px;flex:none;display:grid;place-items:center;color:#20140a;
+  background:linear-gradient(96deg,var(--saffron),var(--tomato))}
+.instbanner .ib-t{flex:1;min-width:0}
+.instbanner .ib-t b{display:block;font-size:14.5px;color:var(--cream)}
+.instbanner .ib-t span{display:block;font-size:12px;color:var(--muted);line-height:1.3}
+.instbanner .ib-go{flex:none;border:0;border-radius:999px;font:inherit;font-weight:700;font-size:13.5px;padding:9px 16px;
+  cursor:pointer;color:#20140a;background:linear-gradient(96deg,var(--saffron),var(--tomato))}
+.instbanner .ib-x{flex:none;border:0;background:transparent;color:var(--muted);font-size:15px;cursor:pointer;padding:6px;border-radius:8px;line-height:1}
+.instbanner .ib-x:hover{color:var(--cream)}
+@media(max-width:430px){ .instbanner .ib-t span{display:none} .instbanner{gap:10px} }
+.instmodal{position:fixed;inset:0;z-index:60;background:rgba(8,5,3,.6);display:flex;align-items:flex-end;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .2s}
+.instmodal.on{opacity:1;pointer-events:auto}
+.instmodal .im-sheet{position:relative;width:100%;max-width:460px;background:var(--surf);border:1px solid var(--line);
+  border-radius:22px 22px 0 0;padding:22px 20px calc(22px + env(safe-area-inset-bottom));box-shadow:0 -20px 60px -20px rgba(0,0,0,.6)}
+.instmodal .im-x{position:absolute;top:14px;right:14px;border:0;background:var(--surf2);color:var(--muted);width:32px;height:32px;
+  border-radius:50%;cursor:pointer;font-size:14px;line-height:1}
+.instmodal .im-head{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-right:36px}
+.instmodal .im-lg{width:44px;height:44px;border-radius:12px;flex:none;display:grid;place-items:center;color:#20140a;
+  background:linear-gradient(96deg,var(--saffron),var(--tomato))}
+.instmodal .im-head b{font-size:16px;color:var(--cream)} .instmodal .im-head span{display:block;font-size:12.5px;color:var(--muted)}
+.instmodal .im-stp{display:flex;gap:12px;align-items:flex-start;background:var(--surf2);border:1px solid var(--line);
+  border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.instmodal .im-n{width:26px;height:26px;border-radius:8px;background:var(--tomato);color:#fff;flex:none;display:grid;place-items:center;font-weight:800;font-size:13px}
+.instmodal .im-tx{flex:1;font-size:14px}.instmodal .im-tx b{color:var(--cream)}
+.instmodal .im-tx em{display:block;font-style:normal;color:var(--muted);font-size:12.5px;margin-top:2px}
+.instmodal .im-si{width:20px;height:20px;color:var(--saffron);flex:none;margin-top:2px}
+.instmodal .im-si svg{width:20px;height:20px}
 </style>
 </head>
 <body>
@@ -2961,12 +2992,66 @@ const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati.
 const BUG_EMAIL='tony.bondreview@gmail.com';
 /* Link PayPal per le donazioni. Finche' e' vuoto la sezione non compare. */
 const PAYPAL_URL='https://www.paypal.me/ACesare422';
-const APP_VER='v48 · 03-09';
+const APP_VER='v49 · 03-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 /* ---- App nativa Android (Capacitor): riconoscimento ---- */
 const CAP=(typeof window!=='undefined'&&window.Capacitor)||null;
 const IS_NATIVE=!!(CAP&&typeof CAP.isNativePlatform==='function'&&CAP.isNativePlatform());
+
+/* ---- Installazione guidata come app (PWA) ---- */
+const IS_IOS=/iphone|ipad|ipod/i.test(navigator.userAgent)&&!window.MSStream;
+function isStandalone(){ return window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true; }
+let deferredPrompt=null;
+function installDisponibile(){ return !IS_NATIVE && !isStandalone(); }
+function bannerHidden(){ try{ return localStorage.getItem('mambo:instHidden')==='1'; }catch(e){ return false; } }
+function nascondiBanner(){ try{ localStorage.setItem('mambo:instHidden','1'); }catch(e){} }
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredPrompt=e;
+  if(!IS_NATIVE && S.tab==='ricette' && !S.open && !S.pagina && !S.editing && !bannerHidden()) render(); });
+window.addEventListener('appinstalled',()=>{ deferredPrompt=null; nascondiBanner(); chiudiInstall();
+  if(S.tab==='ricette') render(); });
+
+function installBanner(){
+  return `<div class="instbanner" role="region" aria-label="Installa l'app">
+    <span class="ib-ic">${camNo(0)}</span>
+    <div class="ib-t"><b>Installa Mamboconvert</b><span>Aggiungila alla Home: apri più in fretta, anche offline.</span></div>
+    <button class="ib-go" data-install>Installa</button>
+    <button class="ib-x" data-instclose aria-label="Non ora">✕</button></div>`;
+}
+/* piccola icona telefono-con-freccia per il banner */
+function camNo(){ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M12 7v7M9 11l3 3 3-3"/></svg>'; }
+
+function ensureInstallModal(){
+  let m=document.getElementById('instModal'); if(m) return m;
+  m=document.createElement('div'); m.id='instModal'; m.className='instmodal'; m.setAttribute('role','dialog'); m.setAttribute('aria-modal','true');
+  m.innerHTML=`<div class="im-sheet"><button class="im-x" data-instx aria-label="Chiudi">✕</button>
+    <div class="im-head"><span class="im-lg">${camNo(0)}</span><div><b>Installa Mamboconvert</b><span id="imSub"></span></div></div>
+    <div id="imBody"></div></div>`;
+  m.addEventListener('click',e=>{ if(e.target===m) chiudiInstall(); });
+  document.body.appendChild(m); return m;
+}
+function chiudiInstall(){ const m=document.getElementById('instModal'); if(m)m.classList.remove('on'); document.body.style.overflow=''; }
+async function apriInstall(){
+  if(deferredPrompt){
+    deferredPrompt.prompt();
+    try{ await deferredPrompt.userChoice; }catch(e){}
+    deferredPrompt=null; return;
+  }
+  const m=ensureInstallModal(), sub=m.querySelector('#imSub'), body=m.querySelector('#imBody');
+  const stp=(n,t,d,ic)=>`<div class="im-stp"><span class="im-n">${n}</span><div class="im-tx"><b>${t}</b><em>${d}</em></div><span class="im-si">${ic}</span></div>`;
+  const shareIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4"/><path d="M8.5 7.5 12 4l3.5 3.5"/><path d="M6 11v7a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-7"/></svg>';
+  const plusIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg>';
+  const dotsIc='<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>';
+  if(IS_IOS){ sub.textContent='iPhone · Safari';
+    body.innerHTML=stp(1,'Tocca Condividi','l’icona quadrata con la freccia, in fondo a Safari',shareIc)
+      +stp(2,'Aggiungi alla schermata Home','scorri l’elenco e tocca la voce con il +',plusIc)
+      +stp(3,'Aggiungi','in alto a destra: l’icona compare sulla Home','✓');
+  } else { sub.textContent='dal menu del browser';
+    body.innerHTML=stp(1,'Apri il menu del browser','i tre puntini in alto o in basso',dotsIc)
+      +stp(2,'Installa app','tocca “Installa app” o “Aggiungi a schermata Home”',plusIc);
+  }
+  m.classList.add('on'); document.body.style.overflow='hidden';
+}
 
 const view=document.getElementById('view');
 
@@ -3050,6 +3135,7 @@ function vRic(){
   else if(S.ord==='az') f=f.slice().sort((a,b)=>a.nome.localeCompare(b.nome,'it'));
   else if(S.ord==='nuove') f=f.slice().sort((a,b)=>(Date.parse(b.agg||0)||0)-(Date.parse(a.agg||0)||0));
   view.innerHTML=`<div class="panel">
+    ${(installDisponibile()&&!bannerHidden())?installBanner():''}
     <div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input id="q" type="text" aria-label="Cerca un piatto o un ingrediente" placeholder="Cerca piatto o ingrediente" value="${esc(S.q)}">
       <button id="qClear" class="qclear" aria-label="Cancella la ricerca"${S.q?'':' hidden'}>✕</button></div>
@@ -3873,13 +3959,14 @@ function vConv(){
       <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
         <div style="flex:1;min-width:150px">
           <b style="font-size:15.5px;color:var(--cream)">Mamboconvert</b>
-          <div class="muted" style="font-size:13px;margin-top:2px">${RICETTE.length} ricette${IS_NATIVE?'':' · installala dalla schermata Home'}</div>
+          <div class="muted" style="font-size:13px;margin-top:2px">${RICETTE.length} ricette</div>
           <div class="muted" style="font-size:12px;margin-top:6px">${CREDITO}</div>
           <div class="muted" style="font-size:12px;margin-top:5px;opacity:.75">versione ${APP_VER}</div>
           <div class="muted" style="font-size:12px;margin-top:6px;line-height:1.4">${AVVISO_AI}</div>
         </div>
         <button class="btn" id="updBtn" style="flex:none;min-width:0;padding:12px 17px">Controlla aggiornamenti</button>
       </div>
+      ${installDisponibile()?`<button class="btn" data-install style="width:100%;margin-top:12px;justify-content:center;gap:8px">📲 Installa l’app sul telefono</button>`:''}
       <button class="btn ghost" id="bugBtn" style="width:100%;margin-top:12px;justify-content:center;gap:8px">\u{1F41E} Segnala un problema</button>
     </div>
     ${caffeCard()}
@@ -3991,6 +4078,9 @@ document.addEventListener('click',e=>{
   if(fv){ e.stopPropagation(); const id=fv.dataset.fav;
     if(S.pref.includes(id))S.pref=S.pref.filter(x=>x!==id); else S.pref.push(id);
     save('mambo:pref',S.pref); render(); return; }
+  if(e.target.closest('[data-install]')){ apriInstall(); return; }
+  if(e.target.closest('[data-instx]')){ chiudiInstall(); return; }
+  if(e.target.closest('[data-instclose]')){ nascondiBanner(); chiudiInstall(); if(S.tab==='ricette'&&!S.open)render(); return; }
   const o=e.target.closest('[data-open]'); if(o){S.open=o.dataset.open;render();window.scrollTo(0,0);return;}
   if(e.target.closest('[data-back]')){S.open=null;render();return;}
   const sp=e.target.closest('[data-spesa]');
