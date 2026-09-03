@@ -749,6 +749,28 @@ footer{padding:28px 0 6px;font-size:12px;color:var(--muted);line-height:1.65}
   border-radius:9px;font:inherit;font-size:13px;font-weight:600;padding:6px 9px;cursor:pointer}
 .menuli .daysel:focus-visible{outline:2px solid var(--saffron);outline-offset:1px}
 .menuli .rmv{color:var(--tomato);flex:none}
+.tglmanc{border:1px solid var(--line2);background:transparent;color:var(--muted);border-radius:999px;font:inherit;font-size:12.5px;font-weight:700;padding:5px 12px;cursor:pointer}
+.tglmanc.on{background:linear-gradient(96deg,var(--saffron),var(--tomato));color:#20140a;border-color:transparent}
+.mancnote{margin-top:10px;font-size:12.5px;color:var(--muted);padding:0 2px}
+/* ---- Diario di cucina ---- */
+.tile .cooktag{position:absolute;top:11px;left:11px;width:26px;height:26px;border-radius:999px;background:#3FCB86;color:#08130c;display:grid;place-items:center;font-weight:900;font-size:14px;z-index:2}
+.tile .cooktag + .newtag{left:47px}
+.diariocard{margin-top:12px}
+.diariocard .dcrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.stars.mine{display:flex;align-items:center;gap:1px}
+.stars.mine .star{font-size:24px}
+.stars.mine .dclbl{margin-left:9px;font-size:12.5px;color:var(--muted);font-weight:600}
+.cookbtn{border:1px solid var(--line-2);background:transparent;color:var(--cream);border-radius:11px;font:inherit;font-weight:700;font-size:13.5px;padding:9px 14px;cursor:pointer;white-space:nowrap}
+.cookbtn.on{background:rgba(63,203,134,.16);border-color:rgba(63,203,134,.45)}
+/* ---- Convertitore unità da cucina ---- */
+.conv .r3{display:flex;gap:10px;flex-wrap:wrap}
+.conv .r3>div{flex:1;min-width:120px}
+.conv .r3>div:first-child{flex:0 1 96px;min-width:80px}
+.conv input{width:100%;background:var(--surf2);border:1px solid var(--line);border-radius:10px;padding:11px;font-size:14.5px;color:var(--cream);font-family:inherit}
+.uout{margin-top:14px}
+.ures{display:flex;align-items:baseline;gap:12px;background:var(--surf2);border:1px solid var(--line);border-radius:11px;padding:14px 16px}
+.ures b{font-size:26px;color:var(--saffron);font-weight:800;line-height:1}
+.ures span{font-size:14px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -2945,7 +2967,7 @@ function mini(o,grad){
    stepfoto : foto reale del passaggio (id#indice -> url|dataURL)
    ============================================================ */
 const S={porz:4,tab:'ricette',q:'',cat:'Tutte',filtri:[],open:null,frigo:[],spesa:[],bimby:false,robot:'mambo',mie:[],editing:false,draft:null,com:[],pagina:null,
-  foto:{},stepfoto:{},accfoto:{},note:{},pref:[],cols:1,tema:'giorno',ord:'cons'};
+  foto:{},stepfoto:{},accfoto:{},note:{},pref:[],cols:1,tema:'giorno',ord:'cons',diario:{},soloMancante:false};
 /* filtri combinabili (AND) con categoria e ricerca */
 const FILTRI=[
   {id:'veloce', lab:'Veloce ≤20′', test:r=>r.tempo<=20},
@@ -2955,6 +2977,7 @@ const FILTRI=[
   {id:'carne', lab:'Carne', test:r=>(r.tag||[]).includes('carne')},
   {id:'vapore', lab:'Al vapore', test:r=>r.acc.includes('Vaporiera')||(r.tag||[]).includes('vapore')},
   {id:'note', lab:'Con le mie note', test:r=>!!(S.note[r.id]&&S.note[r.id].trim())},
+  {id:'fatte', lab:'Già cucinate', test:r=>!!(S.diario[r.id]&&S.diario[r.id].fatta)},
   {id:'novita', lab:'Novità', test:r=>isNuova(r)}
 ];
 const mem={};
@@ -2999,7 +3022,7 @@ const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati.
 const BUG_EMAIL='tony.bondreview@gmail.com';
 /* Link PayPal per le donazioni. Finche' e' vuoto la sezione non compare. */
 const PAYPAL_URL='https://www.paypal.me/ACesare422';
-const APP_VER='v50 · 03-09';
+const APP_VER='v51 · 03-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 /* ---- App nativa Android (Capacitor): riconoscimento ---- */
@@ -3118,8 +3141,9 @@ function tile(r,badge){
   const hab=r.caraffa==='Habana';
   const cam=S.foto[r.id]?'':'<span class="camtag" aria-hidden="true">📷</span>';
   const nota=(S.note[r.id]&&S.note[r.id].trim())?'<span class="notetag" aria-hidden="true">📝</span>':'';
+  const cook=(S.diario[r.id]&&S.diario[r.id].fatta)?'<span class="cooktag" aria-hidden="true" title="Già cucinata">✓</span>':'';
   const nuova=r.mia?'<span class="newtag miatag">Mia</span>':(r.com?'<span class="newtag comtag">Community</span>':(isNuova(r)?'<span class="newtag">Novità</span>':''));
-  return `<button class="tile" data-open="${r.id}" data-search="${esc(norm(r.nome+' '+r.ing.map(i=>i.n).join(' ')+' '+(r.tag||[]).join(' ')))}">${tileMedia(r)}${badge||''}${cam}${nota}${nuova}
+  return `<button class="tile" data-open="${r.id}" data-search="${esc(norm(r.nome+' '+r.ing.map(i=>i.n).join(' ')+' '+(r.tag||[]).join(' ')))}">${tileMedia(r)}${badge||''}${cam}${nota}${cook}${nuova}
     <span class="fav" data-fav="${r.id}" role="button" aria-pressed="${S.pref.includes(r.id)}" aria-label="Preferito">${S.pref.includes(r.id)?'♥':'♡'}</span>
     <span class="lay"><span class="nm">${esc(r.nome)}</span>
     <span class="mt"><span>${durata(r.tempo)}</span><span>${esc(r.cat)}</span>${hab?'<span>caraffa Habana</span>':''}</span></span></button>`;
@@ -3317,6 +3341,7 @@ function vDett(){
     </div>
     ${(()=>{const fl=fuoriDi(r);return fl.length?`<div class="fuori"><div class="fuori-h"><span class="ic">\u{1F373}</span>Prima di iniziare \u2014 da preparare a parte</div><ul>${fl.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>`:'';})()}
     ${r.com?`<div class="card pad ratingcard"><div class="rhd">\u2b50 Voto della community${r.autore?` \u00b7 di <b>${esc(r.autore)}</b>`:''}</div><div id="stars" class="stars">…</div>${(comOn()&&Community.isAdmin&&Community.isAdmin()&&r.comId)?`<button class="pbtn rm" data-rimuovicom="${esc(r.comId)}" style="margin-top:12px">\u{1F5D1}\uFE0F Rimuovi dalla community</button>`:''}</div>`:''}
+    ${diarioCard(r)}
     <div class="card">
       <div class="row"><div class="k">Ti serve</div><div class="v"><div class="accgrid">
         <span class="accitem">${accIco('Caraffa')}<span>${r.caraffa==='Habana'?'Caraffa Habana':'Caraffa acciaio'}<small>${USO[r.caraffa]}</small></span></span>
@@ -3871,6 +3896,22 @@ function reparto(nome){ const n=norm(nome);
   if(/passat|pelati|concentrat|polpa di pomodor/.test(n)) return 'Dispensa e conserve';
   for(const g of REPARTI){ if(g[1].test(n))return g[0]; } return 'Altro'; }
 const REP_ORDER=['Frutta e verdura','Carne e salumi','Pesce','Latticini e uova','Pasta, riso e pane','Dispensa e conserve','Spezie e aromi','Altro'];
+function inFrigo(nome){ const ni=norm(nome);
+  return S.frigo.some(p=>{ const np=norm(p); return np && (ni.includes(np)||np.includes(ni.split(' ')[0])); }); }
+/* ---- Diario di cucina (già cucinata + voto personale) ---- */
+function oggiISO(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function fmtData(iso){ if(!iso)return''; const p=iso.split('-'); return p.length===3?p[2]+'/'+p[1]+'/'+p[0].slice(2):''; }
+function diarioSet(id,patch){ const nx=Object.assign({},S.diario[id]||{},patch);
+  if(!nx.stelle) delete nx.stelle; if(!nx.fatta){ delete nx.fatta; delete nx.date; }
+  if(!nx.fatta && !nx.stelle) delete S.diario[id]; else S.diario[id]=nx;
+  save('mambo:diario',S.diario); }
+function diarioCard(r){
+  const d=S.diario[r.id]||{};
+  return `<div class="card pad diariocard"><div class="dcrow">
+    <div class="stars mine" data-rid="${r.id}">${[1,2,3,4,5].map(s=>`<button class="star${d.stelle>=s?' on':''}" data-mystar="${s}" aria-label="${s} stelle">★</button>`).join('')}<span class="dclbl">${d.stelle?'Il tuo voto':'Dai un voto'}</span></div>
+    <button class="cookbtn${d.fatta?' on':''}" data-cook="${r.id}">${d.fatta?`✓ Cucinata il ${fmtData(d.date)}`:'Segna come cucinata'}</button>
+  </div></div>`;
+}
 const GIORNI=[['lun','Lunedì'],['mar','Martedì'],['mer','Mercoledì'],['gio','Giovedì'],['ven','Venerdì'],['sab','Sabato'],['dom','Domenica']];
 function daySelect(e){
   return `<select class="daysel" data-day="${e.id}" aria-label="Giorno della settimana">
@@ -3897,7 +3938,9 @@ function vSpesa(){
       if(!agg[k])agg[k]={n:i.n,u:i.u,q:0,from:[]};
       agg[k].q+=scala(i,r.porz,e.porz);
       if(!agg[k].from.includes(r.nome))agg[k].from.push(r.nome);});});
-  const it=Object.entries(agg).sort((a,b)=>a[1].n.localeCompare(b[1].n));
+  const itAll=Object.entries(agg).sort((a,b)=>a[1].n.localeCompare(b[1].n));
+  const nascoste=S.soloMancante?itAll.filter(([k,v])=>inFrigo(v.n)).length:0;
+  const it=S.soloMancante?itAll.filter(([k,v])=>!inFrigo(v.n)):itAll;
   const groups={}; it.forEach(([k,v])=>{ const rp=reparto(v.n); (groups[rp]=groups[rp]||[]).push([k,v]); });
   const gOrder=REP_ORDER.filter(g=>groups[g]);
   const liHTML=([k,v])=>`<div class="li" data-done="0" data-k="${esc(k)}"><span class="box">✓</span>
@@ -3909,8 +3952,8 @@ function vSpesa(){
     ${!S.spesa.length?`<div class="empty">Costruisci il menu della settimana: apri le ricette che vuoi cucinare e usa “Aggiungi alla spesa”, poi qui assegni a ogni piatto un giorno. La lista della spesa si crea da sola, con gli ingredienti sommati, ordinati per reparto e già scalati sulle persone.</div>
       <div class="acts"><button class="btn" id="addMenu0">Sfoglia le ricette</button></div>`
     :`<div class="card"><div class="head"><span>${S.spesa.length} ricette · ${it.length} voci</span>
-        <button id="clr" style="color:var(--tomato)">Svuota</button></div>
-      ${listHTML}</div>
+        <div style="display:flex;gap:12px;align-items:center">${S.frigo.length?`<button id="soloManc" class="tglmanc${S.soloMancante?' on':''}">${S.soloMancante?'✓ ':''}Solo il mancante</button>`:''}<button id="clr" style="color:var(--tomato)">Svuota</button></div></div>
+      ${listHTML}${nascoste?`<div class="mancnote">Nascoste ${nascoste} voci che hai già nel frigo.</div>`:''}</div>
       <div class="acts"><button class="btn" id="cp">Copia la lista</button></div>
       <h3 class="sec">Menu della settimana <span>assegna un giorno · tocca per aprire</span></h3>
       <div class="card">${menuSettimana()}</div>
@@ -3921,6 +3964,7 @@ function vSpesa(){
     if(e){ if(s.value)e.day=s.value; else delete e.day; save('mambo:spesa',S.spesa); render(); } });
   view.querySelectorAll('#addMenu,#addMenu0').forEach(am=>am.onclick=()=>{ S.tab='ricette'; S.open=null; render(); window.scrollTo(0,0); });
   view.querySelectorAll('.li[data-k]').forEach(el=>el.onclick=()=>el.dataset.done=el.dataset.done==='1'?'0':'1');
+  const sm=document.getElementById('soloManc'); if(sm)sm.onclick=()=>{S.soloMancante=!S.soloMancante;save('mambo:soloMancante',S.soloMancante);render();};
   const c=document.getElementById('clr'); if(c)c.onclick=()=>{S.spesa=[];save('mambo:spesa',S.spesa);render();};
   const cp=document.getElementById('cp');
   if(cp)cp.onclick=async()=>{
@@ -3967,6 +4011,22 @@ async function controllaAggiornamenti(btn){
   set('Aggiorno…');
   setTimeout(()=>location.reload(),300); // network-first: ricarica prende le ricette più recenti
 }
+/* ---- Convertitore unità da cucina ---- */
+const UMIS=[['cucchiaio','Cucchiaio (15 ml)'],['cucchiaino','Cucchiaino (5 ml)'],['bicchiere','Bicchiere (200 ml)'],['tazza','Tazza (250 ml)'],['ml','Millilitri']];
+const UML={cucchiaio:15,cucchiaino:5,bicchiere:200,tazza:250,ml:1};
+const UDENS=[['acqua','Acqua',1],['latte','Latte',1.03],['olio','Olio',0.91],['farina','Farina 00',0.55],['zucchero','Zucchero',0.85],['zvelo','Zucchero a velo',0.56],['sale','Sale fino',1.2],['miele','Miele',1.42],['panna','Panna',1],['cacao','Cacao amaro',0.45],['riso','Riso',0.85],['pane','Pangrattato',0.4]];
+const UDMAP=Object.fromEntries(UDENS.map(d=>[d[0],d[2]]));
+function wireUnitConv(){
+  const q=document.getElementById('uq'),u=document.getElementById('uu'),i=document.getElementById('ui'),out=document.getElementById('uout');
+  if(!q||!u||!i||!out)return;
+  const nf=x=>String(x).replace('.',',');
+  const upd=()=>{ const n=parseFloat(String(q.value||'').replace(',','.'))||0;
+    const ml=n*(UML[u.value]||0), g=ml*(UDMAP[i.value]||0);
+    const fg=g>=10?Math.round(g):Math.round(g*10)/10, fml=Math.round(ml);
+    out.innerHTML = n>0 ? `<div class="ures"><b>${nf(fg)} g</b><span>circa ${nf(fml)} ml</span></div>`
+      : '<div class="muted" style="font-size:13px;padding:4px 2px">Inserisci una quantità.</div>'; };
+  [q,u,i].forEach(el=>{ el.oninput=upd; el.onchange=upd; }); upd();
+}
 function vConv(){
   const plain=t=>String(t).replace(/<[^>]+>/g,'');
   const rigaVel=([bi,ma,de])=>`<div class="crow">
@@ -4009,6 +4069,14 @@ function vConv(){
       <div><label for="cp2">Cosa stai facendo</label><select id="cp2">${Object.entries(PREP).map(([k,v])=>
         `<option value="${k}">${v.lab}</option>`).join('')}</select></div></div>
       <div id="cout"></div></div>
+
+    <h3 class="sec">Convertitore unità da cucina <span>cucchiai · bicchieri → g/ml</span></h3>
+    <p class="muted" style="font-size:14px;margin:8px 0 0">Quando una ricetta è in cucchiai o bicchieri, converti al volo in grammi e millilitri.</p>
+    <div class="conv"><div class="r3">
+      <div><label for="uq">Quantità</label><input id="uq" type="number" min="0" step="0.5" value="1" inputmode="decimal"></div>
+      <div><label for="uu">Unità</label><select id="uu">${UMIS.map(([k,l])=>`<option value="${k}">${l}</option>`).join('')}</select></div>
+      <div><label for="ui">Ingrediente</label><select id="ui">${UDENS.map(([k,l])=>`<option value="${k}">${l}</option>`).join('')}</select></div>
+    </div><div id="uout" class="uout"></div></div>
 
     <h3 class="sec">I tuoi accessori <span>foto reali</span></h3>
     <p class="muted" style="font-size:14px;margin:8px 0 0">Carica la foto di ogni pezzo del tuo Mambo (dal telefono o un link non serve: scegli il file). Comparirà come immagine reale in “Ti serve”, nei passaggi e nelle slide.</p>
@@ -4056,6 +4124,7 @@ function vConv(){
       <div style="text-align:center;margin-top:12px"><span class="accpill">${p.acc}</span></div>
       <div class="cnote" style="margin-top:12px;border-radius:12px">${p.n}</div>`;};
   cv.onchange=upd;cp2.onchange=upd;upd();
+  wireUnitConv();
 
   const ub=document.getElementById('updBtn');
   if(ub)ub.onclick=()=>controllaAggiornamenti(ub);
@@ -4108,6 +4177,11 @@ document.addEventListener('click',e=>{
   if(fv){ e.stopPropagation(); const id=fv.dataset.fav;
     if(S.pref.includes(id))S.pref=S.pref.filter(x=>x!==id); else S.pref.push(id);
     save('mambo:pref',S.pref); render(); return; }
+  const ck=e.target.closest('[data-cook]'); if(ck){ const id=ck.dataset.cook; const cur=S.diario[id]||{};
+    if(cur.fatta) diarioSet(id,{fatta:false}); else diarioSet(id,{fatta:true,date:oggiISO()});
+    if(S.open===id)vDett(); else render(); return; }
+  const ms=e.target.closest('[data-mystar]'); if(ms){ const box=ms.closest('.stars.mine'); const id=box&&box.dataset.rid;
+    if(id){ const n=+ms.dataset.mystar; const cur=S.diario[id]||{}; diarioSet(id,{stelle:cur.stelle===n?0:n}); if(S.open===id)vDett(); else render(); } return; }
   if(e.target.closest('[data-install]')){ apriInstall(); return; }
   if(e.target.closest('[data-instx]')){ chiudiInstall(); return; }
   if(e.target.closest('[data-instclose]')){ nascondiBanner(); chiudiInstall(); if(S.tab==='ricette'&&!S.open)render(); return; }
@@ -4152,6 +4226,7 @@ window.addEventListener('hashchange',openFromHash);
   S.pref=await load('mambo:pref',[]); S.cols=await load('mambo:cols',1);
   S.tema=await load('mambo:tema','giorno'); S.robot=await load('mambo:robot','mambo');
   S.ord=await load('mambo:ord','cons');
+  S.diario=await load('mambo:diario',{}); S.soloMancante=await load('mambo:soloMancante',false);
   S.mie=await load('mambo:mieric',[]); syncMie();
   S.com=await load('mambo:comcache',[]); syncCom();
   const ix=await load('mambo:fotoidx',[]);
