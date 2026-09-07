@@ -847,6 +847,7 @@ body.cartoon .newtag,body.cartoon .comtag,body.cartoon .miatag,body.cartoon .coo
   <div class="logo"><img class="logomk" src="logo.png" alt="Mamboconvert" width="128" height="128"><span>Mambo<em>convert</em></span></div>
   <button class="themeb" id="updTop" aria-label="Controlla aggiornamenti" title="Controlla aggiornamenti"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-.6 4"/><path d="M20 4v6h-6"/></svg></button>
   <button class="themeb" id="layout" aria-label="Cambia disposizione delle schede" aria-pressed="false"></button>
+  <button class="themeb" id="lang" aria-label="Lingua / Idioma" title="Italiano / Español" style="font-weight:700;font-size:13px">IT</button>
   <button class="themeb" id="tema" aria-label="Cambia tema">🌙</button>
 </div></div></header>
 
@@ -3036,8 +3037,46 @@ function mini(o,grad){
    stepfoto : foto reale del passaggio (id#indice -> url|dataURL)
    ============================================================ */
 const S={porz:4,tab:'ricette',q:'',cat:'Tutte',filtri:[],open:null,frigo:[],spesa:[],bimby:false,robot:'mambo',mie:[],editing:false,draft:null,com:[],pagina:null,
-  foto:{},stepfoto:{},accfoto:{},note:{},pref:[],cols:1,tema:'giorno',ord:'cons',diario:{},soloMancante:false,stile:'normale',diete:[]};
+  foto:{},stepfoto:{},accfoto:{},note:{},pref:[],cols:1,tema:'giorno',ord:'cons',diario:{},soloMancante:false,stile:'normale',diete:[],lang:'it'};
 function applyStile(){ document.body.classList.toggle('cartoon',S.stile!=='normale'); document.body.classList.toggle('pop',S.stile==='pop'); }
+/* ===== Lingua: interfaccia IT/ES (le ricette restano in italiano) ===== */
+const I18N_ES={
+ 'Ricette':'Recetas','Frigo':'Nevera','Spesa':'Compra','Preferiti':'Favoritos','Community':'Comunidad','Conversioni':'Conversiones',
+ 'Cerca piatto o ingrediente':'Busca plato o ingrediente','Cancella la ricerca':'Borrar la búsqueda',
+ 'Tutte':'Todas','Basi e salse':'Bases y salsas','Primi':'Primeros','Secondi':'Segundos','Contorni':'Guarniciones','Dolci':'Postres','Colazione':'Desayuno',
+ 'Veloce ≤20′':'Rápidas ≤20′','Senza forno':'Sin horno','Al vapore':'Al vapor','Con le mie note':'Con mis notas','Già cucinate':'Ya cocinadas','✓ Adatte a me':'✓ Aptas para mí','Novità':'Novedad','Azzera ✕':'Borrar ✕',
+ 'Ordine consigliato':'Orden recomendado','Più veloci':'Más rápidas','Nome A-Z':'Nombre A-Z','Più recenti':'Más recientes',
+ 'Ti serve':'Necesitas','In caraffa':'En el vaso','Ingredienti':'Ingredientes','Aggiungi ora':'Añade ahora','Cucina passo-passo':'Cocina paso a paso','Segna come cucinata':'Marcar como cocinada','Dai un voto':'Puntúa','Il tuo voto':'Tu puntuación',
+ 'caraffa standard':'vaso estándar','caraffa antiaderente':'vaso antiadherente','Caraffa acciaio':'Vaso acero','Caraffa Habana':'Vaso Habana',
+ 'tempo':'tiempo','velocità':'velocidad','gradi':'grados','potenza':'potencia','Rimuovi':'Quitar','Carica foto':'Subir foto','Cambia':'Cambiar','Carica':'Subir',
+ 'Aggiungi foto del passaggio':'Añadir foto del paso','Cambia foto del passaggio':'Cambiar foto del paso','Voto della community':'Voto de la comunidad',
+ 'Cosa ho in frigo':'Qué tengo en la nevera','Aggiungi':'Añadir','Puoi cucinare':'Puedes cocinar','Es. zucchine, gamberetti, uova':'Ej. calabacín, gambas, huevos',
+ 'Menu e spesa della settimana':'Menú y compra de la semana','Copia la lista':'Copiar la lista','Copiata ✓':'Copiada ✓','Svuota':'Vaciar','Solo il mancante':'Solo lo que falta','✓ Solo il mancante':'✓ Solo lo que falta','Menu della settimana':'Menú de la semana','Da assegnare a un giorno':'Por asignar a un día','Togli':'Quitar','+ Aggiungi ricette dal catalogo':'+ Añadir recetas del catálogo','＋ Aggiungi ricette dal catalogo':'＋ Añadir recetas del catálogo','Sfoglia le ricette':'Explora las recetas','— giorno':'— día',
+ 'Lunedì':'Lunes','Martedì':'Martes','Mercoledì':'Miércoles','Giovedì':'Jueves','Venerdì':'Viernes','Sabato':'Sábado','Domenica':'Domingo',
+ 'Le mie ricette':'Mis recetas','Dati e backup':'Datos y copia','Crea una ricetta':'Crear una receta','＋ Crea una ricetta':'＋ Crear una receta','Ricette della community':'Recetas de la comunidad','Moderazione':'Moderación',
+ 'Convertitore rapido':'Conversor rápido','Convertitore unità da cucina':'Conversor de unidades de cocina','I tuoi accessori':'Tus accesorios','Velocità':'Velocidad','Temperatura':'Temperatura','Potenza calorifica':'Potencia calorífica','Accessori':'Accesorios','Limiti della macchina':'Límites de la máquina','Controlla aggiornamenti':'Buscar actualizaciones','🐞 Segnala un problema':'🐞 Reportar un problema','Segnala un problema':'Reportar un problema',
+ "Stile dell'app":'Estilo de la app','Normale':'Normal','Cartoon morbido':'Cartoon suave','Cartoon pop':'Cartoon pop','Allergie e diete':'Alergias y dietas','personalizza':'personaliza',
+ 'Senza glutine':'Sin gluten','Senza lattosio':'Sin lactosa','Senza uova':'Sin huevo','Senza frutta a guscio':'Sin frutos secos','Senza maiale':'Sin cerdo','Senza pesce e crostacei':'Sin pescado y marisco','Senza alcol':'Sin alcohol','Vegetariano':'Vegetariano','Vegano':'Vegano',
+ '📲 Installa l’app sul telefono':'📲 Instala la app en el móvil','Installa Mamboconvert':'Instala Mamboconvert','Installa':'Instalar','Vuoi offrirmi un caffè?':'¿Me invitas a un café?','Sì, ti offro un caffè':'Sí, te invito a un café',
+ 'Quantità':'Cantidad','Unità':'Unidad','Ingrediente':'Ingrediente','anteprima':'vista previa',
+ 'Pesce':'Pescado','Carne':'Carne','foto reali':'fotos reales','il parametro che il Bimby non ha':'el parámetro que el Bimby no tiene','cucchiai · bicchieri → g/ml':'cucharadas · vasos → g/ml',
+ 'Nessuna ricetta trovata':'No se ha encontrado ninguna receta','Prova a cambiare filtri o ricerca':'Prueba a cambiar filtros o búsqueda','La tua lista è vuota':'Tu lista está vacía','Nessun preferito':'Sin favoritos','Il frigo è vuoto':'La nevera está vacía','La community è vuota':'La comunidad está vacía','In caraffa entra tutto':'Todo cabe en el vaso','verifica sempre l’etichetta':'verifica siempre la etiqueta','Salva':'Guardar','Annulla':'Cancelar','Chiudi':'Cerrar','Indietro':'Atrás','Copia':'Copiar','Esporta':'Exportar','Importa':'Importar','Elimina':'Eliminar','Modifica':'Editar','Condividi':'Compartir','Passo':'Paso','Passi':'Pasos','Nota':'Nota','Note':'Notas','Suggerimento':'Consejo','tocca per aprire':'toca para abrir','Robot':'Robot','Preparazione':'Preparación','Procedimento':'Procedimiento'
+};
+const I18N_RE=[[/\bper (\d+) persone\b/g,'para $1 personas'],[/\b(\d+) persone\b/g,'$1 personas'],[/\bpersone\b/g,'personas'],[/\bricette\b/g,'recetas'],[/\bricetta\b/g,'receta'],[/\bminuti\b/g,'minutos'],[/\bvoci\b/g,'artículos'],[/\bin aggiornamento\b/gi,'en actualización'],[/\battive\b/g,'activas']];
+function traduciNodo(tx){
+  const k=tx.trim(); if(!k) return tx;
+  if(I18N_ES[k]) return tx.replace(k,I18N_ES[k]);
+  if(k.length<=34){ let out=tx; for(const [re,rp] of I18N_RE) out=out.replace(re,rp); return out; }
+  return tx;
+}
+function applyLang(){
+  const lb=document.getElementById('lang'); if(lb)lb.textContent=(S.lang==='es'?'ES':'IT');
+  if(S.lang!=='es') return;
+  document.querySelectorAll('[placeholder]').forEach(el=>{ const k=el.getAttribute('placeholder'); if(I18N_ES[k])el.setAttribute('placeholder',I18N_ES[k]); });
+  const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode(n){const p=n.parentNode; if(!p)return 2; const t=p.nodeName; if(t==='SCRIPT'||t==='STYLE'||t==='TEXTAREA')return 2; return n.nodeValue.trim()?1:2;}});
+  const nodes=[]; let n; while(n=w.nextNode())nodes.push(n);
+  for(const nd of nodes){ const nv=traduciNodo(nd.nodeValue); if(nv!==nd.nodeValue)nd.nodeValue=nv; }
+}
 /* filtri combinabili (AND) con categoria e ricerca */
 const FILTRI=[
   {id:'veloce', lab:'Veloce ≤20′', test:r=>r.tempo<=20},
@@ -3093,7 +3132,7 @@ const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati.
 const BUG_EMAIL='tony.bondreview@gmail.com';
 /* Link PayPal per le donazioni. Finche' e' vuoto la sezione non compare. */
 const PAYPAL_URL='https://www.paypal.me/ACesare422';
-const APP_VER='v55 · 07-09';
+const APP_VER='v56 · 07-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 /* ---- App nativa Android (Capacitor): riconoscimento ---- */
@@ -3208,6 +3247,7 @@ function render(){
   else if(S.pagina==='moderazione'){vModera();window.scrollTo(0,0);}
   else if(S.editing){vEditor();window.scrollTo(0,0);}
   else{({ricette:vRic,frigo:vFrigo,spesa:vSpesa,conv:vConv,pref:vPref,hub:vHub})[S.tab]();window.scrollTo(0,0);}
+  applyLang();
 }
 function tile(r,badge){
   const hab=r.caraffa==='Habana';
@@ -4276,6 +4316,8 @@ document.getElementById('layout').onclick=()=>{
   S.cols = S.cols===1?2:1; save('mambo:cols',S.cols); applyLayout(); };
 document.getElementById('tema').onclick=()=>{
   S.tema=S.tema==='giorno'?'notte':'giorno'; save('mambo:tema',S.tema); applyTema(); };
+document.getElementById('lang').onclick=()=>{
+  S.lang=S.lang==='es'?'it':'es'; save('mambo:lang',S.lang); location.reload(); };
 document.getElementById('updTop').onclick=function(){ this.classList.add('spin'); controllaAggiornamenti(null); };
 function bumpN(){const n=document.getElementById('pNum');if(!n)return;n.classList.remove('bump');void n.offsetWidth;n.classList.add('bump');}
 document.addEventListener('click',e=>{
@@ -4347,6 +4389,7 @@ window.addEventListener('hashchange',openFromHash);
   S.diario=await load('mambo:diario',{}); S.soloMancante=await load('mambo:soloMancante',false);
   S.stile=await load('mambo:stile','normale');
   S.diete=await load('mambo:diete',[]);
+  S.lang=await load('mambo:lang','it');
   S.mie=await load('mambo:mieric',[]); syncMie();
   S.com=await load('mambo:comcache',[]); syncCom();
   const ix=await load('mambo:fotoidx',[]);
