@@ -801,6 +801,10 @@ body.cartoon .card,body.cartoon .tile,body.cartoon .search,body.cartoon .robotse
 body.cartoon .btn,body.cartoon .robotsel button,body.cartoon .fab,body.cartoon .pbtn,body.cartoon .cookbtn,body.cartoon .tglmanc,body.cartoon .daysel,body.cartoon .qclear,body.cartoon .mini,body.cartoon input,body.cartoon select,body.cartoon textarea{
   border:var(--cbord) solid var(--line-2);box-shadow:var(--cshad);border-radius:14px}
 body.cartoon .chip{border:var(--cbord) solid var(--line-2);box-shadow:var(--cshad);border-radius:999px}
+/* la ricerca: il bordo/ombra li tiene SOLO il contenitore, non l'input dentro */
+body.cartoon .search{border-radius:999px;padding-left:6px}
+body.cartoon .search input{border:0!important;box-shadow:none!important;border-radius:0;background:transparent}
+body.cartoon .search .qclear{border:0!important;box-shadow:none!important}
 
 /* nav in fondo */
 body.cartoon nav.tabs{background:var(--surf);border-top:var(--cbord) solid var(--line-2);box-shadow:0 -8px 22px -12px rgba(70,45,20,.4)}
@@ -814,14 +818,10 @@ body.cartoon .themeb{border:var(--cbord) solid var(--line-2);box-shadow:var(--cs
 
 /* quadranti: diventano tasselli pastello chunky, numero a pennarello */
 body.cartoon .dials{gap:9px}
-body.cartoon .dial{border:var(--cbord) solid var(--line-2);border-radius:16px;box-shadow:var(--cshad);padding:8px 2px 6px;background:var(--surf2)}
-body.cartoon .dial.t{background:var(--saffron)}
-body.cartoon .dial.v{background:var(--acqua)}
-body.cartoon .dial.g{background:var(--tomato)}
-body.cartoon .dial.p{background:var(--mint)}
-body.cartoon .dial svg circle{display:none}
-body.cartoon .dial text{fill:var(--cream);font-family:var(--serif);font-weight:400}
-body.cartoon .dial .lb{color:var(--cream);opacity:.85}
+/* quadranti: mezze lune INVARIATE, solo il riquadro diventa chunky cartoon */
+body.cartoon .dial{border:var(--cbord) solid var(--line-2);border-radius:16px;box-shadow:var(--cshad);padding:8px 4px 6px;background:var(--surf)}
+body.cartoon .dial text{font-family:var(--serif);font-weight:400}
+body.cartoon .dial .lb{color:var(--muted)}
 
 /* badge / etichette */
 body.cartoon .newtag,body.cartoon .comtag,body.cartoon .miatag,body.cartoon .cooktag{border:2px solid var(--line-2);box-shadow:2px 2px 0 var(--line-2)}
