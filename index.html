@@ -752,6 +752,14 @@ footer{padding:28px 0 6px;font-size:12px;color:var(--muted);line-height:1.65}
 .tglmanc{border:1px solid var(--line2);background:transparent;color:var(--muted);border-radius:999px;font:inherit;font-size:12.5px;font-weight:700;padding:5px 12px;cursor:pointer}
 .tglmanc.on{background:linear-gradient(96deg,var(--saffron),var(--tomato));color:#20140a;border-color:transparent}
 .mancnote{margin-top:10px;font-size:12.5px;color:var(--muted);padding:0 2px}
+/* ---- Allergie e diete ---- */
+.tile .diettag{position:absolute;top:11px;left:11px;width:26px;height:26px;border-radius:999px;background:rgba(11,14,8,.6);backdrop-filter:blur(5px);display:grid;place-items:center;font-size:13px;z-index:2}
+.tile .cooktag + .diettag{left:47px}
+.tile.nonadatta{opacity:.72}
+.chip.dietchip[aria-pressed="true"]{background:var(--tomato);color:#fff;border-color:transparent}
+.chip.fl.adatte[aria-pressed="true"]{background:var(--mint);color:#08130c}
+.dietwarn{background:rgba(255,91,54,.12);border:1px solid rgba(255,91,54,.4);color:var(--cream);font-size:13.5px;line-height:1.5}
+.dietwarn b{color:var(--cream)}
 /* ---- Diario di cucina ---- */
 .tile .cooktag{position:absolute;top:11px;left:11px;width:26px;height:26px;border-radius:999px;background:#3FCB86;color:#08130c;display:grid;place-items:center;font-weight:900;font-size:14px;z-index:2}
 .tile .cooktag + .newtag{left:47px}
@@ -3028,7 +3036,7 @@ function mini(o,grad){
    stepfoto : foto reale del passaggio (id#indice -> url|dataURL)
    ============================================================ */
 const S={porz:4,tab:'ricette',q:'',cat:'Tutte',filtri:[],open:null,frigo:[],spesa:[],bimby:false,robot:'mambo',mie:[],editing:false,draft:null,com:[],pagina:null,
-  foto:{},stepfoto:{},accfoto:{},note:{},pref:[],cols:1,tema:'giorno',ord:'cons',diario:{},soloMancante:false,stile:'normale'};
+  foto:{},stepfoto:{},accfoto:{},note:{},pref:[],cols:1,tema:'giorno',ord:'cons',diario:{},soloMancante:false,stile:'normale',diete:[]};
 function applyStile(){ document.body.classList.toggle('cartoon',S.stile!=='normale'); document.body.classList.toggle('pop',S.stile==='pop'); }
 /* filtri combinabili (AND) con categoria e ricerca */
 const FILTRI=[
@@ -3040,6 +3048,7 @@ const FILTRI=[
   {id:'vapore', lab:'Al vapore', test:r=>r.acc.includes('Vaporiera')||(r.tag||[]).includes('vapore')},
   {id:'note', lab:'Con le mie note', test:r=>!!(S.note[r.id]&&S.note[r.id].trim())},
   {id:'fatte', lab:'Già cucinate', test:r=>!!(S.diario[r.id]&&S.diario[r.id].fatta)},
+  {id:'adatte', lab:'✓ Adatte a me', test:r=>dieteViolate(r).length===0},
   {id:'novita', lab:'Novità', test:r=>isNuova(r)}
 ];
 const mem={};
@@ -3084,7 +3093,7 @@ const CREDITO='Creata da Alfonso Cesare · © 2026 · Tutti i diritti riservati.
 const BUG_EMAIL='tony.bondreview@gmail.com';
 /* Link PayPal per le donazioni. Finche' e' vuoto la sezione non compare. */
 const PAYPAL_URL='https://www.paypal.me/ACesare422';
-const APP_VER='v54 · 07-09';
+const APP_VER='v55 · 07-09';
 const AVVISO_FOTO='Le foto dei piatti sono indicative e in fase di verifica: alcune immagini sono di repertorio o generate con AI e potrebbero non corrispondere esattamente alla ricetta. Vengono aggiornate man mano.';
 const AVVISO_AI='Le ricette sono convertite dai parametri Bimby a quelli del Mambo con l\'aiuto dell\'intelligenza artificiale: possono contenere imprecisioni, verifica sempre dosi, tempi e cotture prima di procedere.';
 /* ---- App nativa Android (Capacitor): riconoscimento ---- */
@@ -3205,8 +3214,10 @@ function tile(r,badge){
   const cam=S.foto[r.id]?'':'<span class="camtag" aria-hidden="true">📷</span>';
   const nota=(S.note[r.id]&&S.note[r.id].trim())?'<span class="notetag" aria-hidden="true">📝</span>':'';
   const cook=(S.diario[r.id]&&S.diario[r.id].fatta)?'<span class="cooktag" aria-hidden="true" title="Già cucinata">✓</span>':'';
+  const dv=S.diete.length?dieteViolate(r):[];
+  const diet=dv.length?`<span class="diettag" title="Non adatta: ${esc(dv.join(', '))}">⚠️</span>`:'';
   const nuova=r.mia?'<span class="newtag miatag">Mia</span>':(r.com?'<span class="newtag comtag">Community</span>':(isNuova(r)?'<span class="newtag">Novità</span>':''));
-  return `<button class="tile" data-open="${r.id}" data-search="${esc(norm(r.nome+' '+r.ing.map(i=>i.n).join(' ')+' '+(r.tag||[]).join(' ')))}">${tileMedia(r)}${badge||''}${cam}${nota}${cook}${nuova}
+  return `<button class="tile${dv.length?' nonadatta':''}" data-open="${r.id}" data-search="${esc(norm(r.nome+' '+r.ing.map(i=>i.n).join(' ')+' '+(r.tag||[]).join(' ')))}">${tileMedia(r)}${badge||''}${cam}${nota}${cook}${diet}${nuova}
     <span class="fav" data-fav="${r.id}" role="button" aria-pressed="${S.pref.includes(r.id)}" aria-label="Preferito">${S.pref.includes(r.id)?'♥':'♡'}</span>
     <span class="lay"><span class="nm">${esc(r.nome)}</span>
     <span class="mt"><span>${durata(r.tempo)}</span><span>${esc(r.cat)}</span>${hab?'<span>caraffa Habana</span>':''}</span></span></button>`;
@@ -3236,7 +3247,7 @@ function vRic(){
     <div class="toolrow">
       <div class="chips">${cats.map(c=>`<button class="chip" data-cat="${esc(c)}" aria-pressed="${c===S.cat}">${esc(c)}</button>`).join('')}</div>
 </div>
-    <div class="chips filtri">${FILTRI.map(fl=>`<button class="chip fl" data-filtro="${fl.id}" aria-pressed="${S.filtri.includes(fl.id)}">${esc(fl.lab)}</button>`).join('')}${S.filtri.length?`<button class="chip clr" data-clrfiltri>Azzera ✕</button>`:''}</div>
+    <div class="chips filtri">${FILTRI.filter(fl=>fl.id!=='adatte'||S.diete.length).map(fl=>`<button class="chip fl${fl.id==='adatte'?' adatte':''}" data-filtro="${fl.id}" aria-pressed="${S.filtri.includes(fl.id)}">${esc(fl.lab)}</button>`).join('')}${S.filtri.length?`<button class="chip clr" data-clrfiltri>Azzera ✕</button>`:''}</div>
     ${f.length?`<div class="listbar"><span class="lbcount"><b id="cnt">${f.length}</b> ricette</span>
       <select id="ord" class="ordsel" aria-label="Ordina le ricette">
         <option value="cons"${S.ord==='cons'?' selected':''}>Ordine consigliato</option>
@@ -3404,6 +3415,7 @@ function vDett(){
     </div>
     ${(()=>{const fl=fuoriDi(r);return fl.length?`<div class="fuori"><div class="fuori-h"><span class="ic">\u{1F373}</span>Prima di iniziare \u2014 da preparare a parte</div><ul>${fl.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>`:'';})()}
     ${r.com?`<div class="card pad ratingcard"><div class="rhd">\u2b50 Voto della community${r.autore?` \u00b7 di <b>${esc(r.autore)}</b>`:''}</div><div id="stars" class="stars">…</div>${(comOn()&&Community.isAdmin&&Community.isAdmin()&&r.comId)?`<button class="pbtn rm" data-rimuovicom="${esc(r.comId)}" style="margin-top:12px">\u{1F5D1}\uFE0F Rimuovi dalla community</button>`:''}</div>`:''}
+    ${(()=>{const dv=S.diete.length?dieteViolate(r):[];return dv.length?`<div class="card pad dietwarn"><b>⚠️ Attenzione</b> — secondo le tue preferenze questa ricetta non è adatta: <b>${esc(dv.join(', '))}</b>. Controlla gli ingredienti.</div>`:'';})()}
     ${diarioCard(r)}
     <div class="card">
       <div class="row"><div class="k">Ti serve</div><div class="v"><div class="accgrid">
@@ -3961,6 +3973,34 @@ function reparto(nome){ const n=norm(nome);
 const REP_ORDER=['Frutta e verdura','Carne e salumi','Pesce','Latticini e uova','Pasta, riso e pane','Dispensa e conserve','Spezie e aromi','Altro'];
 function inFrigo(nome){ const ni=norm(nome);
   return S.frigo.some(p=>{ const np=norm(p); return np && (ni.includes(np)||np.includes(ni.split(' ')[0])); }); }
+/* ---- Allergie e diete: rileva ingredienti non adatti ---- */
+const RE_CARNE=/manz|vitell|maial|pollo|tacchin|agnell|conigl|anatra|salsicc|prosciutt|pancett|guancial|speck|salame|mortadell|wurstel|bresaol|lardo|cotechin|zampon|spezzatin|macinat|polpett|arrost|fesa|ragu|guancia|coppa|\bcarne\b|brodo di carne|brodo di pollo|strutto/;
+const RE_PESCE=/merluzz|salmon|tonn|acciugh|baccal|branzin|orat|sgombr|platess|spigol|nasell|bottarg|\bpesce\b|vongol|cozz|gamber|scampi|calamar|seppi|polpo|moscard|totan|granchi|aragost|astice|ostrich|frutti di mare|molluschi|crostacei/;
+const RE_LATTE=/\blatte\b|burro|panna|formagg|parmigian|pecorin|mozzarell|ricott|mascarpon|gorgonzol|stracchin|fontin|\bgrana\b|taleggi|scamorz|provol|caciocavall|yogurt|bufala|\bfeta\b|besciamell|philadelph|stracciat/;
+const RE_UOVA=/uov|tuorl|albume|maionese/;
+const DIETE=[
+ {id:'glutine', lab:'Senza glutine', re:/farin|pangrattat|\bpane\b|\bpasta\b|spaghett|penne|rigaton|fusill|couscous|semolin|biscott|savoiard|pizza|gnocch|lasagn|tortellin|paccher|bucatin|tagliatell|maccheron|cannellon|ditalin|linguin|orecchiett|\bbirra\b|\borzo\b|seitan|besciamell|farro/},
+ {id:'lattosio', lab:'Senza lattosio', re:RE_LATTE},
+ {id:'uova', lab:'Senza uova', re:RE_UOVA},
+ {id:'naguscio', lab:'Senza frutta a guscio', re:/mandorl|nocciol|\bnoci\b|\bnoce\b|pistacch|anacard|pinoli|arachid/},
+ {id:'maiale', lab:'Senza maiale', re:/prosciutt|pancett|guancial|salsicc|\blardo\b|speck|salame|mortadell|\bcoppa\b|maial|wurstel|cotechin|zampon|strutto/},
+ {id:'pescecro', lab:'Senza pesce e crostacei', re:RE_PESCE},
+ {id:'alcol', lab:'Senza alcol', re:/\bvino\b|liquor|\brum\b|marsala|brandy|cognac|\bbirra\b|grappa|amaretto|limoncell|vermut/},
+ {id:'vegetariano', lab:'Vegetariano', veg:1},
+ {id:'vegano', lab:'Vegano', veg:2},
+];
+const DIETLAB=Object.fromEntries(DIETE.map(d=>[d.id,d.lab]));
+function ingText(r){ return ' '+norm((r.ing||[]).map(i=>i.n).join(' '))+' '; }
+function dietaViola(r,id){
+  const d=DIETE.find(x=>x.id===id); if(!d)return false;
+  const t=ingText(r), tags=r.tag||[];
+  if(d.veg){ const carne=tags.includes('carne')||RE_CARNE.test(t), pesce=tags.includes('pesce')||RE_PESCE.test(t);
+    if(carne||pesce)return true;
+    if(d.veg===2) return RE_LATTE.test(t)||RE_UOVA.test(t)||/\bmiele\b/.test(t);
+    return false; }
+  return d.re.test(t);
+}
+function dieteViolate(r){ return S.diete.filter(id=>dietaViola(r,id)).map(id=>DIETLAB[id]); }
 /* ---- Diario di cucina (già cucinata + voto personale) ---- */
 function oggiISO(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 function fmtData(iso){ if(!iso)return''; const p=iso.split('-'); return p.length===3?p[2]+'/'+p[1]+'/'+p[0].slice(2):''; }
@@ -4126,6 +4166,13 @@ function vConv(){
     <div class="conv"><div class="stilesel r2" style="display:flex;gap:8px">
       ${[['normale','Normale'],['morbido','Cartoon morbido'],['pop','Cartoon pop']].map(([k,l])=>`<button class="chip stilebtn" data-stile="${k}" aria-pressed="${S.stile===k}" style="flex:1">${l}</button>`).join('')}
     </div></div>
+
+    <h3 class="sec">Allergie e diete <span>${S.diete.length?S.diete.length+' attive':'personalizza'}</span></h3>
+    <p class="muted" style="font-size:14px;margin:8px 0 0">Segna cosa vuoi evitare: le ricette non adatte avranno un ⚠️ e potrai filtrarle con “Adatte a me” nell'elenco.</p>
+    <div class="conv"><div class="chips" style="flex-wrap:wrap">
+      ${DIETE.map(d=>`<button class="chip dietchip" data-dieta="${d.id}" aria-pressed="${S.diete.includes(d.id)}">${esc(d.lab)}</button>`).join('')}
+    </div>
+    <div class="cnote" style="margin-top:12px;border-radius:12px">Il controllo è automatico sugli ingredienti: usalo come aiuto, ma <b>verifica sempre l'etichetta</b> per allergie gravi.</div></div>
     ${caffeCard()}
 
     <h2 class="sec">Convertitore rapido</h2>
@@ -4250,6 +4297,9 @@ document.addEventListener('click',e=>{
   const ms=e.target.closest('[data-mystar]'); if(ms){ const box=ms.closest('.stars.mine'); const id=box&&box.dataset.rid;
     if(id){ const n=+ms.dataset.mystar; const cur=S.diario[id]||{}; diarioSet(id,{stelle:cur.stelle===n?0:n}); if(S.open===id)vDett(); else render(); } return; }
   const stb=e.target.closest('[data-stile]'); if(stb){ S.stile=stb.dataset.stile; save('mambo:stile',S.stile); applyStile(); render(); return; }
+  const dtc=e.target.closest('[data-dieta]'); if(dtc){ const id=dtc.dataset.dieta;
+    if(S.diete.includes(id))S.diete=S.diete.filter(x=>x!==id); else S.diete.push(id);
+    save('mambo:diete',S.diete); render(); return; }
   if(e.target.closest('[data-install]')){ apriInstall(); return; }
   if(e.target.closest('[data-instx]')){ chiudiInstall(); return; }
   if(e.target.closest('[data-instclose]')){ nascondiBanner(); chiudiInstall(); if(S.tab==='ricette'&&!S.open)render(); return; }
@@ -4296,6 +4346,7 @@ window.addEventListener('hashchange',openFromHash);
   S.ord=await load('mambo:ord','cons');
   S.diario=await load('mambo:diario',{}); S.soloMancante=await load('mambo:soloMancante',false);
   S.stile=await load('mambo:stile','normale');
+  S.diete=await load('mambo:diete',[]);
   S.mie=await load('mambo:mieric',[]); syncMie();
   S.com=await load('mambo:comcache',[]); syncCom();
   const ix=await load('mambo:fotoidx',[]);
