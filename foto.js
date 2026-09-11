@@ -40,7 +40,6 @@ window.FOTODEF = {
   "arrabbiata": "https://images.pexels.com/photos/32689480/pexels-photo-32689480.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "aglio-olio": "https://images.pexels.com/photos/4431588/pexels-photo-4431588.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "norma": "https://images.pexels.com/photos/10049559/pexels-photo-10049559.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
-  "cacio-pepe": "https://images.pexels.com/photos/5336537/pexels-photo-5336537.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "vongole": "https://images.pexels.com/photos/921374/pexels-photo-921374.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "puttanesca": "https://images.pexels.com/photos/10049559/pexels-photo-10049559.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
   "pasta-tonno": "https://images.pexels.com/photos/7837671/pexels-photo-7837671.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=500&w=800",
